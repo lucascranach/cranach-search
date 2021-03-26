@@ -1,0 +1,49 @@
+@import '../../../../style//000-abstracts/__abstracts-dir';
+
+.artefact-card {
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+
+  background-color: $darker;
+
+  &__image {
+    padding: 1px;
+  }
+
+  &__content {
+    flex-grow: 1;
+
+    padding: $s;
+
+    color: $lighter;
+    border-top: solid $border-stroke-weight-s $accent;
+    background-color: $dark;
+  }
+
+  &__title {
+    font-weight: $fw-semibold;
+    line-height: $lh-headlines;
+
+    margin-bottom: $xxs;
+
+    color: $lightest;
+  }
+
+  &__subtitle {
+    font-weight: $fw-regular;
+    line-height: $lh-headlines;
+
+    margin-bottom: $xxs;
+
+    color: $light;
+  }
+
+  &__text {
+    font-weight: $fw-light;
+    line-height: $lh-normal;
+
+    margin-bottom: $xs;
+  }
+}

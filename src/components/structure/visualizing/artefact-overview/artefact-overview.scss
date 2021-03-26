@@ -1,0 +1,53 @@
+@import "../../../../style//000-abstracts/__abstracts-dir";
+@import "../../../../style//000-abstracts/mixins";
+
+.artefact-overview {
+
+  padding-top: $m;
+
+  &[data-active-view='card'] {
+    @include grid-even-columns($vp-medium, 3);
+    @include grid-even-columns($vp-large, 4);
+    @include grid-even-columns($vp-xlarge, 5);
+    @include grid-even-columns($vp-xxlarge, 6);
+    @include grid-even-columns($vp-3xlarge, 7);
+    @include grid-even-columns($vp-4xlarge, 8);
+  }
+
+  &[data-active-view='card-small'] {
+    @include grid-even-columns($vp-medium, 4);
+    @include grid-even-columns($vp-large, 6);
+    @include grid-even-columns($vp-xlarge, 7);
+    @include grid-even-columns($vp-xxlarge, 8);
+    @include grid-even-columns($vp-3xlarge, 9);
+    @include grid-even-columns($vp-4xlarge, 10);
+    column-gap: $xxs !important;
+    row-gap: $xxs !important;
+  }
+
+  &[data-active-view='list'] {
+    // @include base-grid();
+    padding: $xs;
+    display: grid;
+    @include grid-even-columns($vp-large, 2);
+    @include grid-even-columns($vp-xxlarge, 3);
+    @include grid-even-columns($vp-4xlarge, 4);
+    column-gap: $xs !important;
+    row-gap: $xs !important;
+  }
+
+  &-switcher {
+    &-item-icon {
+      cursor: pointer;
+
+      &.is-active {
+        opacity: 0.3;
+      }
+    }
+  }
+
+  /* Responsive Small
+  -------------------------------------------------------------------------- */
+  // @include base-grid();
+
+}

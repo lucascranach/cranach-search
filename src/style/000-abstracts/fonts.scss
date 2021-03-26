@@ -1,0 +1,66 @@
+///// Font Imports /////
+
+/*
+ * IBM Plex Mono
+ */
+ @font-face {
+  font-family: 'IBMPlexMono';
+  font-style: normal;
+  font-weight: 500;
+  src: url("../fonts/IBMPlex-Mono/IBMPlexMono-Medium.ttf") format('ttf');
+}
+
+@font-face {
+  font-family: 'IBMPlexMono';
+  font-style: normal;
+  font-weight: 500;
+  src: url("../fonts/IBMPlex-Mono/IBMPlexMono-Medium.woff2") format('woff2');
+}
+
+
+/*
+ * IBM Plex Sans
+ */
+@font-face {
+  font-family: 'IBMPlexSans';
+  font-style: normal;
+  font-weight: 300;
+  src: url("../fonts/IBMPlex-Sans/IBMPlexSans-Light.ttf") format('ttf');
+}
+
+@font-face {
+  font-family: 'IBMPlexSans';
+  font-style: normal;
+  font-weight: 300;
+  src: url("../fonts/IBMPlex-Sans/IBMPlexSans-Light.woff2") format('woff2');
+}
+
+
+@font-face {
+  font-family: 'IBMPlexSans';
+  font-style: normal;
+  font-weight: 500;
+  src: url("../fonts/IBMPlex-Sans/IBMPlexSans-Medium.ttf") format('ttf');
+}
+
+@font-face {
+  font-family: 'IBMPlexSans';
+  font-style: normal;
+  font-weight: 500;
+  src: url("../fonts/IBMPlex-Sans/IBMPlexSans-Medium.woff2") format('woff2');
+}
+
+
+@font-face {
+  font-family: 'IBMPlexSans';
+  font-style: normal;
+  font-weight: 700;
+  src: url("../fonts/IBMPlex-Sans/IBMPlexSans-Bold.ttf") format('ttf');
+}
+
+@font-face {
+  font-family: 'IBMPlexSans';
+  font-style: normal;
+  font-weight: 700;
+  src: url("../fonts/IBMPlex-Sans/IBMPlexSans-Bold.woff2") format('woff2');
+}

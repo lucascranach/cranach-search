@@ -1,0 +1,59 @@
+@import "../../../../style//000-abstracts/__abstracts-dir";
+
+.accordion {
+
+  &-entry {
+    &.-open {
+      > .head {
+        > .toggle-control {
+          > .icon {
+            transform: rotate(180deg);
+          }
+        }
+      }
+
+      > .content {
+        height: auto;
+      }
+    }
+
+    & + & {
+      margin-top: $m;
+    }
+
+    > .head {
+      display: flex;
+      align-items: center;
+      border-top: 1px solid rgba($lightest, 0.3);
+
+      > .entry-title {
+        flex: 1 0 auto;
+        color: $lighter;
+        font-weight: $fw-semibold;
+        font-size: $bfs;
+      }
+
+      > .toggle-control {
+        flex: 0 1 auto;
+        color: $accent;
+        cursor: pointer;
+
+        > .icon {
+          transition: 0.15s transform;
+        }
+      }
+    }
+
+    .content {
+      box-sizing: content-box;
+      height: 0;
+      overflow: hidden;
+
+      .box {
+        padding: $s 0;
+        color: $light;
+      }
+    }
+  }
+
+}

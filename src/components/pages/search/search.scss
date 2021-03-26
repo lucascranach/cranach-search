@@ -1,0 +1,12 @@
+
+.search {
+  display: flex;
+
+  &__results-area {
+    flex-basis: 80%;
+  }
+
+  &__sidebar {
+    flex-basis: 20%;
+  }
+}

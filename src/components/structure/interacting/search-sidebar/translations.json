@@ -1,0 +1,21 @@
+{
+  "de": {
+    "Search archive": "Archiv durchsuchen",
+    "all Fields": "alle Felder",
+    "Title": "Titel",
+    "{{catalogWorkReferenceNames}} No.": "{{catalogWorkReferenceNames}} Nr.",
+    "Location": "Standort",
+    "CDA ID / Inventorynumber": "CDA ID / Inventarnummer",
+    "find": "finden",
+    "Filter results by": "Ergebnisse filtern nach",
+    "Attribution": "Zuschreibung",
+    "Kind": "Art",
+    "Dating": "Datierung",
+    "Collection / Location": "Sammlung / Standort",
+    "Examination Techniques": "Untersuchungstechniken",
+    "Content": "Inhalt",
+    "Form": "Form",
+    "Function": "Funktion",
+    "Constituents": "Bestandteile"
+  }
+}
