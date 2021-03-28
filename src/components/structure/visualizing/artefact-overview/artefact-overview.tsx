@@ -50,48 +50,54 @@ const DefaultView = CardView;
 const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, DefaultView: View } = ({
   items = [],
   view = DefaultView,
-}) => (
-    <div
+}) => {
+  const shortenTitle = (title) => {
+    const splitTitle = title.split(' ');
+    return splitTitle.length < 25 ? title : `${splitTitle.slice(0, 24).join(' ')} ...`;
+  };
+  const getItemTo = (item) => `/${item.langCode}/${item.id}`;
 
-    className="artefact-overview"
-    data-component="structure/visualizing/artefact-overview"
-    data-active-view={ view.type }
-  >
-    {
-        items.map(item => (<div
-          key={ item.inventoryNumber }
-          className="overview-item"
-        >
-        { CardView === view && <ArtefactCard
-            title={ item.title } /* TODO: use short-title */
-            subtitle={ item.subtitle }
-            date={ item.date }
-            to={item.to}
-            classification={item.classification}
-            imgSrc={ item.imgSrc || '' }
-          />
-        }
-
-          { CardSmallView === view && <ArtefactCard
-            to={ item.to }
-            imgSrc={ item.imgSrc || '' }
-          />
+  return (<div
+      className="artefact-overview"
+      data-component="structure/visualizing/artefact-overview"
+      data-active-view={ view.type }
+    >
+      {
+          items.map(item => (<div
+            key={ item.id }
+            className="overview-item"
+          >
+          { CardView === view && <ArtefactCard
+              title={ shortenTitle(item.title) }
+              subtitle={ item.subtitle }
+              date={ item.date }
+              to={ getItemTo(item) }
+              classification={ item.classification }
+              imgSrc={ item.imgSrc || '' }
+            />
           }
 
-        { ListView === view && <ArtefactLine
-            title={ item.title }
-            subtitle={ item.subtitle }
-            date={ item.date }
-            additionalInfoList={ item.additionalInfoList }
-            to={ item.to }
-            imgSrc={ item.imgSrc || '' }
-          />
-        }
-        </div>
-        ))
-    }
-  </div>
-);
+            { CardSmallView === view && <ArtefactCard
+              to={ getItemTo(item) }
+              imgSrc={ item.imgSrc || '' }
+            />
+            }
+
+          { ListView === view && <ArtefactLine
+              title={ shortenTitle(item.title) }
+              subtitle={ item.subtitle }
+              date={ item.date }
+              additionalInfoList={ item.additionalInfoList }
+              to={ getItemTo(item) }
+              imgSrc={ item.imgSrc || '' }
+            />
+          }
+          </div>
+          ))
+      }
+    </div>
+  );
+};
 
 ArtefactOverview.Switcher = ({
   view = DefaultView,
