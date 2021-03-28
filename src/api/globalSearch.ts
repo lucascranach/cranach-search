@@ -7,11 +7,7 @@ export default {
   searchGloballyFor(_: any, lang: string): Promise<GlobalSearchResult> {
     return searchGloballyRandomizedByLang(lang);
   }
-} as GlobalSearchAPIInterface;
-
-export interface GlobalSearchAPIInterface {
-  searchGloballyFor(_: any, lang: string): Promise<GlobalSearchResult>
-}
+};
 
 export type GlobalSearchArtifact = {
   inventoryNumber: string;

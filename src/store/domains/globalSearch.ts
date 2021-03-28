@@ -1,12 +1,15 @@
 
 import { makeAutoObservable } from 'mobx';
 import UI from './ui';
-import { GlobalSearchAPIInterface, GlobalSearchArtifact, GlobalSearchResult } from '../../api/globalSearch';
+import GlobalSearchAPI_, { GlobalSearchArtifact, GlobalSearchResult } from '../../api/globalSearch';
+
+type GlobalSearchAPI = typeof GlobalSearchAPI_;
+
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
   uiStore: UI;
 
-  globalSearchAPI: GlobalSearchAPIInterface;
+  globalSearchAPI: GloablSearchAPI;
 
   allFieldsTerm: string = '';
 
@@ -20,7 +23,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   error: string | null = null;
 
-  constructor(uiStore: UI, globalSearchAPI: GlobalSearchAPIInterface) {
+  constructor(uiStore: UI, globalSearchAPI: GlobalSearchAPI) {
     makeAutoObservable(this);
 
     this.uiStore = uiStore;
