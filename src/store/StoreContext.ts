@@ -13,4 +13,4 @@ type StoreDefaultType = {
   globalSearch?: GlobalSearchStoreInterface;
 }
 
-export default createContext({} as StoreDefaultType);
+export default createContext<StoreDefaultType>({});
