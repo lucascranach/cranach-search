@@ -80,27 +80,57 @@ const SearchSidebar = () => {
           <Accordion.Entry title={ t('Attribution') } toggle={ useState<boolean>(false) }>
             Attribution
           </Accordion.Entry>
+
           <Accordion.Entry title={ t('Kind') } toggle={ useState<boolean>(false) }>
             Kind
           </Accordion.Entry>
+
           <Accordion.Entry title={ t('Dating') } toggle={ useState<boolean>(false) }>
-            Dating
+            <div className="cell-row">
+              <div className="cell">
+                <TextInput
+                  className="dating-field"
+                  value={ globalSearch?.filters.dating.from }
+                  placeholder="Von"
+                  onChange={ (date) => globalSearch?.setDatingFrom(date) }
+                ></TextInput>
+              </div>
+
+              <div className="cell">
+                -
+              </div>
+
+              <div className="cell">
+                <TextInput
+                  className="dating-field"
+                  value={ globalSearch?.filters.dating.to }
+                  placeholder="Bis"
+                  onChange={ (date) => globalSearch?.setDatingTo(date) }
+                ></TextInput>
+              </div>
+            </div>
           </Accordion.Entry>
+
           <Accordion.Entry title={ t('Collection / Location') } toggle={ useState<boolean>(false) }>
             Collection / Location
           </Accordion.Entry>
+
           <Accordion.Entry title={ t('Examination Techniques') } toggle={ useState<boolean>(false) }>
             Examination Techniques
           </Accordion.Entry>
+
           <Accordion.Entry title={ t('Content') } toggle={ useState<boolean>(false) }>
             Content
           </Accordion.Entry>
+
           <Accordion.Entry title={ t('Form') } toggle={ useState<boolean>(false) }>
             Form
           </Accordion.Entry>
+
           <Accordion.Entry title={ t('Function') } toggle={ useState<boolean>(false) }>
             Function
           </Accordion.Entry>
+
           <Accordion.Entry title={ t('Constituents') } toggle={ useState<boolean>(false) }>
             Constituents
           </Accordion.Entry>

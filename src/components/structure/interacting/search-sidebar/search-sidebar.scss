@@ -1,7 +1,6 @@
 @import "../../../../style//000-abstracts/__abstracts-dir";
 
 .search-sidebar {
-  background-color: $darkest;
   padding: 0 $m $m;
 
   & > .block {
@@ -19,6 +18,18 @@
 
     > .search-button {
       margin-top: $xl / 2;
+    }
+
+    .dating-field {
+      display: inline-block;
+    }
+
+    .cell-row {
+      display: flex;
+      margin-right: 2rem;
+      .cell {
+        margin: 0 0.5rem;
+      }
     }
   }
 }

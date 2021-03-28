@@ -1,10 +1,20 @@
 
 import { makeAutoObservable } from 'mobx';
 import UI from './ui';
-import GlobalSearchAPI_, { GlobalSearchArtifact, GlobalSearchResult } from '../../api/globalSearch';
+import GlobalSearchAPI_, {
+  GlobalSearchArtifact,
+  GlobalSearchResult,
+  APIFilterType,
+} from '../../api/globalSearch';
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
+export type FilterType = {
+  dating: {
+    from: string,
+    to: string,
+  },
+};
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
   uiStore: UI;
@@ -22,6 +32,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   };
 
   error: string | null = null;
+
+  filters: APIFilterType = {
+    dating: {
+      from: '',
+      to: '',
+    },
+  };
+
+  debounceWaitInMSecs: number = 500;
+  debounceHandler: undefined | number = undefined;
 
   constructor(uiStore: UI, globalSearchAPI: GlobalSearchAPI) {
     makeAutoObservable(this);
@@ -70,19 +90,40 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
     this.setAllFieldsTerm(allFieldsTerm);
 
-    if (allFieldsTerm.trim() === '') {
-      this.resetSearchResults();
-      return;
-    }
+    this.triggerFilterRequest();
+  }
 
-    this.setSearchLoading(true);
+  setDatingFrom(from: string) {
+    this.filters.dating.from = from;
 
-    this.globalSearchAPI.searchGloballyFor(allFieldsTerm, lang).then(
-      (results: GlobalSearchResult) => this.setSearchResults(results),
-      (err: Error) => this.setSearchFailed(err.toString()),
-    ).finally(
-      () => this.setSearchLoading(false),
-    );
+    this.triggerFilterRequest();
+  }
+
+  setDatingTo(to: string) {
+    this.filters.dating.to = to;
+
+    this.triggerFilterRequest();
+  }
+
+  triggerFilterRequest() {
+    clearTimeout(this.debounceHandler);
+
+    this.debounceHandler = window.setTimeout(() => {
+      const { lang } = this.uiStore;
+
+      const apiFilters: APIFilterType = {
+        dating: { ...this.filters.dating },
+      };
+
+      this.setSearchLoading(true);
+
+      this.globalSearchAPI.searchByFiltersAndTerm(this.filters, this.allFieldsTerm, lang).then(
+        (results: GlobalSearchResult) => this.setSearchResults(results),
+        (err: Error) => this.setSearchFailed(err.toString()),
+      ).finally(
+        () => this.setSearchLoading(false),
+      );
+    }, this.debounceWaitInMSecs);
   }
 }
 
@@ -94,6 +135,12 @@ export interface GlobalSearchStoreInterface {
   results: GlobalSearchResult;
 
   error: string | null;
+
+  filters: FilterType;
+
+  debounceWaitInMSecs: number;
+
+  debounceHandler: undefined | number;
 
   flattenedSearchResultItems: GlobalSearchArtifact[];
 
@@ -108,4 +155,10 @@ export interface GlobalSearchStoreInterface {
   setSearchFailed(error: string | null): void;
 
   searchForAllFieldsTerm(allFieldsTerm: string): void;
+
+  setDatingFrom(from: string): void;
+
+  setDatingTo(from: string): void;
+
+  triggerFilterRequest(): void;
 }
