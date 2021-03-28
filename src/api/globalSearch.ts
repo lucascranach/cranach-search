@@ -10,14 +10,14 @@ export default {
 };
 
 export type GlobalSearchArtifact = {
-  inventoryNumber: string;
+  id: string;
+  langCode: string;
   title: string;
   subtitle: string;
   date: string;
-  additionalInfoList: any[];
-  classification: any;
-  to: string;
-  imgSrc: string | null;
+  additionalInfoList: string[];
+  classification: string;
+  imgSrc: string;
 }
 
 export type GlobalSearchResult = {
