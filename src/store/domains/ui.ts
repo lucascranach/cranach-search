@@ -2,7 +2,7 @@
 import { makeAutoObservable } from 'mobx';
 
 export default class UI implements UIStoreInterface {
-  lang = 'en'
+  lang = 'de'
 
   constructor() {
     makeAutoObservable(this);
