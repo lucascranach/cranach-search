@@ -51,11 +51,11 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
   items = [],
   view = DefaultView,
 }) => {
-  const shortenTitle = (title) => {
+  const shortenTitle = (title: string) => {
     const splitTitle = title.split(' ');
     return splitTitle.length < 25 ? title : `${splitTitle.slice(0, 24).join(' ')} ...`;
   };
-  const getItemTo = (item) => `/${item.langCode}/${item.id}`;
+  const getItemTo = (item: GlobalSearchArtifact) => item.to;
 
   return (<div
       className="artefact-overview"
@@ -64,7 +64,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
     >
       {
           items.map(item => (<div
-            key={ item.id }
+            key={ item.inventoryNumber }
             className="overview-item"
           >
           { CardView === view && <ArtefactCard

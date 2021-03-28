@@ -9,7 +9,7 @@ type GlobalSearchAPI = typeof GlobalSearchAPI_;
 export default class GlobalSearch implements GlobalSearchStoreInterface {
   uiStore: UI;
 
-  globalSearchAPI: GloablSearchAPI;
+  globalSearchAPI: GlobalSearchAPI;
 
   allFieldsTerm: string = '';
 
@@ -79,7 +79,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
     this.globalSearchAPI.searchGloballyFor(allFieldsTerm, lang).then(
       (results: GlobalSearchResult) => this.setSearchResults(results),
-      err => this.setSearchFailed(err.toString()),
+      (err: Error) => this.setSearchFailed(err.toString()),
     ).finally(
       () => this.setSearchLoading(false),
     );
