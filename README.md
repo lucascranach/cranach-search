@@ -54,4 +54,4 @@ Components are grouped and categorized by their characteristics on mutliple leve
 | `structure` |               | Components with a stronger and visible structure, to be used for more complex data output (e.g. tabular or hierarchical) or as a composition of components bound or related to at least one or all other components in the composition in some way |                    |
 |             | `interacting` | Used primarily for user interactions                         | `<accordion>`      |
 |             | `visualizing` | Components with the purpose of outputting and visualizing data; complex | `<artefact-card>`  |
-| `pages`     |               | Components to be used as entry points to all aspects of the application; concrete, final and strongly bound to a application | `<search>`         |
+| `pages`     |               | Components to be used as entry points to all aspects of the application; concrete, final and strongly bound to an application | `<search>`         |
