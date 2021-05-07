@@ -1,0 +1,55 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+
+.main-navigation {
+  position: sticky;
+  top: 0;
+  z-index: $level-overall-nav;
+  display: flex;
+  padding: $m;
+  padding-bottom: 0;
+  background-color: $darkest;
+
+  .menu {
+    &-item {
+     // display: none;
+      a {
+        display: block;
+        padding: $s $m;
+        color: $lighter;
+        border-bottom: solid $border-stroke-weight transparent;
+      }
+    }
+    &-item a.is-active {
+      border-bottom: solid $border-stroke-weight $accent;
+    }
+  }
+
+  .right-end {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: $m;
+    bottom: 0;
+
+    .lang-switcher {
+      margin-left: $l;
+
+      &-item {
+        a.is-active {
+          border-bottom: solid $border-stroke-weight $accent;
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: $vp-large) {
+    .menu {
+      display: flex;
+      flex-direction: row;
+    }
+    .menu .menu-item {
+      align-items: flex-end;
+      display: flex;
+    }
+  }
+}
