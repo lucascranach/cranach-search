@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import UI from './ui';
 import GlobalSearchAPI_, {
   GlobalSearchArtifact,
-  GlobalSearchResult,
+  GlobalSearchResults,
   APIFilterType,
 } from '../../api/globalSearch';
 
@@ -25,11 +25,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   loading: boolean = false;
 
-  results: GlobalSearchResult = {
-    graphics: [],
-    paintings: [],
-    archivals: [],
-  };
+  results: GlobalSearchArtifact[] = [];
 
   error: string | null = null;
 
@@ -54,8 +50,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   /* Computed */
 
   get flattenedSearchResultItems(): GlobalSearchArtifact[] {
-    const { graphics, paintings, archivals } = this.results;
-    return [...graphics, ...paintings, ...archivals];
+    return this.results;
   }
 
 
@@ -69,16 +64,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.loading = loading;
   }
 
-  setSearchResults(results: GlobalSearchResult) {
+  setSearchResults(results: GlobalSearchResults) {
     this.results = results;
   }
 
   resetSearchResults() {
-    this.results = {
-      graphics: [],
-      paintings: [],
-      archivals: [],
-    };
+    this.results = [];
   }
 
   setSearchFailed(error: string | null) {
@@ -112,7 +103,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       this.setSearchLoading(true);
 
       this.globalSearchAPI.searchByFiltersAndTerm(this.filters, this.allFieldsTerm, lang).then(
-        (results: GlobalSearchResult) => this.setSearchResults(results),
+        (results: GlobalSearchResults) => this.setSearchResults(results),
         (err: Error) => this.setSearchFailed(err.toString()),
       ).finally(
         () => this.setSearchLoading(false),
@@ -126,7 +117,7 @@ export interface GlobalSearchStoreInterface {
 
   loading: boolean;
 
-  results: GlobalSearchResult;
+  results: GlobalSearchResults;
 
   error: string | null;
 
@@ -142,7 +133,7 @@ export interface GlobalSearchStoreInterface {
 
   setSearchLoading(loading: boolean): void;
 
-  setSearchResults(results: GlobalSearchResult): void;
+  setSearchResults(results: GlobalSearchResults): void;
 
   resetSearchResults(): void;
 

@@ -12,6 +12,8 @@ import './search.scss';
 const Search: FC = () => {
   const { globalSearch } = useContext(StoreContext);
 
+  console.log(globalSearch?.flattenedSearchResultItems);
+
   return (
     <div
       className="search"
