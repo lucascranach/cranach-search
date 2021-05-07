@@ -86,8 +86,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   }
 
   searchForAllFieldsTerm(allFieldsTerm: string) {
-    const { lang } = this.uiStore;
-
     this.setAllFieldsTerm(allFieldsTerm);
 
     this.triggerFilterRequest();
@@ -110,10 +108,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
     this.debounceHandler = window.setTimeout(() => {
       const { lang } = this.uiStore;
-
-      const apiFilters: APIFilterType = {
-        dating: { ...this.filters.dating },
-      };
 
       this.setSearchLoading(true);
 
