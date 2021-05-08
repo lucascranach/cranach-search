@@ -1,40 +1,38 @@
-import React, { useState, useContext } from 'react';
-
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Logo from '../../../base/visualizing/logo';
-import Link from '../../../base/interacting/link';
+import CategoryFilter from '../../../base/interacting/category-filter';
 // import Switcher from '~/components/atoms/switcher';
 
 import translations from './translations.json';
 import './navigation.scss';
 
-// import StoreContext from '../../../../store/StoreContext';
+import StoreContext from '../../../../store/StoreContext';
 
-type Translations = { de: Record<string, string> };
+type Translations = {
+  de: Record<string, string>
+};
 
 const Navigation = () => {
   const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] } );
-
   const { t } = useTranslation('Navigation', translations);
+  const { globalSearch } = useContext(StoreContext);
+  const isActive = (activeFilter:string, filterValue:string) => { return activeFilter === filterValue ? 'is-active' : '' }
 
   const navStructure = [
     {
       title: 'Prints and Drawings',
-      to: '/',
+      filterValue: 'GRAPHICS',
     },
     {
       title: 'Paintings',
-      to: 'http://lucascranach.org/gallery',
+      filterValue: 'PAINTINGS',
     },
     {
       title: 'Archival Documents',
-      to: 'http://lucascranach.org/archival-documents',
-    },
-    {
-      title: 'Literature',
-      to: 'http://lucascranach.org/publications',
-    },
+      filterValue: 'DOCUMENTS',
+    }
   ];
 
   return (
@@ -50,15 +48,15 @@ const Navigation = () => {
         {
           navStructure.map(item => (
             <li className="menu-item"
-              key={item.to}
-            ><Link
-            to={item.to}
-            activeClassName="is-active"
-            partiallyActive={true}
-          >
-            {t(item.title)}
-          </Link>
-
+              key={item.filterValue}
+            >
+              <CategoryFilter
+                className={isActive(globalSearch?.getEntityType, item.filterValue)}
+                filterText={t(item.title)}
+                filterValue={item.filterValue}
+                onClick={(filterValue) => globalSearch?.setEntityType(filterValue) }
+              >
+              </CategoryFilter>
             </li>
           ))
         }

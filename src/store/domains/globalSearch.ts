@@ -14,6 +14,7 @@ export type FilterType = {
     from: string,
     to: string,
   },
+  entityType: string,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
@@ -34,6 +35,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       from: '',
       to: '',
     },
+    entityType: '',
   };
 
   debounceWaitInMSecs: number = 500;
@@ -51,6 +53,10 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   get flattenedSearchResultItems(): GlobalSearchArtifact[] {
     return this.results;
+  }
+
+  get getEntityType() {
+    return this.filters.entityType;
   }
 
 
@@ -91,6 +97,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   setDatingTo(to: string) {
     this.filters.dating.to = to;
 
+    this.triggerFilterRequest();
+  }
+
+  setEntityType(entityType: string) {
+    this.filters.entityType = entityType;
     this.triggerFilterRequest();
   }
 

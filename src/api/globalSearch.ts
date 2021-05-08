@@ -40,6 +40,10 @@ const searchByFiltersAndTerm = async (
     params['dating_end:lte'] = filters.dating.to;
   }
 
+  if (filters.entityType) {
+    params['entity_type:eq'] = filters.entityType;
+  }
+
   const cleanSearchTerm = searchTerm.trim();
   if (cleanSearchTerm !== '') {
     /* Commented out until the free-text search is usable */
