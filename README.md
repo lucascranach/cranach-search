@@ -55,3 +55,8 @@ Components are grouped and categorized by their characteristics on mutliple leve
 |             | `interacting` | Used primarily for user interactions                         | `<accordion>`      |
 |             | `visualizing` | Components with the purpose of outputting and visualizing data; complex | `<artefact-card>`  |
 | `pages`     |               | Components to be used as entry points to all aspects of the application; concrete, final and strongly bound to an application | `<search>`         |
+
+
+## Misc
+
+We are using [Semantic Commit Messages](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716).
