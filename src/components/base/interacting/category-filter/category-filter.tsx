@@ -1,21 +1,19 @@
 import React, { FC } from 'react';
 
 type Props = {
-  filterValue?: string,
   className?: string,
   filterText?: string,
-  onClick?: (value: string) => void
+  onClick?: () => void
 };
 
 const CategoryFilter: FC<Props> = ({
-  filterValue = '',
   className = '',
   filterText = '',
-  onClick = (value: string) => { },
+  onClick = () => { },
 }) => (
   <a
     className={className}
-    onClick={ (e) => { onClick(filterValue); } }
+    onClick={ onClick }
   >
     {filterText}
   </a>

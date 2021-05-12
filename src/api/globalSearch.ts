@@ -29,7 +29,6 @@ const searchByFiltersAndTerm = async (
   const params: Record<string, string|number> = {
     // lang, // `lang` parameter is commented out because of current missing support
     size: 30,
-    'entity_type:eq': 'PAINTING', /* TODO: remove after all other entity types are supported */
   };
 
   if (filters.dating.from) {
@@ -40,7 +39,7 @@ const searchByFiltersAndTerm = async (
     params['dating_end:lte'] = filters.dating.to;
   }
 
-  if (filters.entityType) {
+  if (filters.entityType !== EntityType.UNKNOWN) {
     params['entity_type:eq'] = filters.entityType;
   }
 
@@ -72,11 +71,19 @@ export default {
   }
 };
 
+export enum EntityType {
+  GRAPHICS = 'GRAPHICS',
+  PAINTINGS = 'PAINTINGS',
+  DOCUMENTS = 'DOCUMENTS',
+  UNKNOWN = 'UNKNOWN',
+}
+
 export type APIFilterType = {
   dating: {
     from: string,
     to: string,
   },
+  entityType: EntityType,
 };
 
 export type GlobalSearchArtifact = {

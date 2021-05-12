@@ -8,7 +8,7 @@ import CategoryFilter from '../../../base/interacting/category-filter';
 import translations from './translations.json';
 import './navigation.scss';
 
-import StoreContext from '../../../../store/StoreContext';
+import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
 
 type Translations = {
   de: Record<string, string>
@@ -18,20 +18,20 @@ const Navigation = () => {
   const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] } );
   const { t } = useTranslation('Navigation', translations);
   const { globalSearch } = useContext(StoreContext);
-  const isActive = (activeFilter:string, filterValue:string) => { return activeFilter === filterValue ? 'is-active' : '' }
+  const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => { return activeFilter === filterValue ? 'is-active' : '' }
 
   const navStructure = [
     {
       title: 'Prints and Drawings',
-      filterValue: 'GRAPHICS',
+      filterValue: GlobalSearchEntityType.GRAPHICS,
     },
     {
       title: 'Paintings',
-      filterValue: 'PAINTINGS',
+      filterValue: GlobalSearchEntityType.PAINTINGS,
     },
     {
       title: 'Archival Documents',
-      filterValue: 'DOCUMENTS',
+      filterValue: GlobalSearchEntityType.DOCUMENTS,
     }
   ];
 
@@ -51,10 +51,9 @@ const Navigation = () => {
               key={item.filterValue}
             >
               <CategoryFilter
-                className={isActive(globalSearch?.getEntityType, item.filterValue)}
+                className={isActive(globalSearch?.filters.entityType, item.filterValue)}
                 filterText={t(item.title)}
-                filterValue={item.filterValue}
-                onClick={(filterValue) => globalSearch?.setEntityType(filterValue) }
+                onClick={() => globalSearch?.setEntityType(item.filterValue)}
               >
               </CategoryFilter>
             </li>
