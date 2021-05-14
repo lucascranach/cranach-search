@@ -16,6 +16,8 @@ export type FilterType = {
     from: string,
     to: string,
   },
+  size: number,
+  from: number,
   entityType: EntityType,
 };
 
@@ -30,6 +32,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   results: GlobalSearchArtifact[] = [];
 
+  hits: number = 0;
+
   error: string | null = null;
 
   filters: APIFilterType = {
@@ -37,6 +41,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       from: '',
       to: '',
     },
+    size: 50,
+    from: 0,
     entityType: EntityType.UNKNOWN,
   };
 
@@ -57,7 +63,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     return this.results;
   }
 
-
   /* Actions */
 
   setAllFieldsTerm(allFieldsTerm: string) {
@@ -69,7 +74,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   }
 
   setSearchResults(results: GlobalSearchResults) {
-    this.results = results;
+    this.results = results.items;
+    this.hits = results.meta.hits;
   }
 
   resetSearchResults() {
@@ -82,7 +88,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   searchForAllFieldsTerm(allFieldsTerm: string) {
     this.setAllFieldsTerm(allFieldsTerm);
-
     this.triggerFilterRequest();
   }
 
@@ -94,7 +99,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   setDatingTo(to: string) {
     this.filters.dating.to = to;
+    this.triggerFilterRequest();
+  }
 
+  setFrom(from: number) {
+    this.filters.from = from;
     this.triggerFilterRequest();
   }
 
@@ -130,6 +139,8 @@ export interface GlobalSearchStoreInterface {
 
   error: string | null;
 
+  hits: number;
+
   filters: FilterType;
 
   debounceWaitInMSecs: number;
@@ -152,9 +163,11 @@ export interface GlobalSearchStoreInterface {
 
   setDatingFrom(from: string): void;
 
-  setDatingTo(from: string): void;
+  setDatingTo(to: string): void;
 
   setEntityType(entityType: EntityType): void;
+
+  setFrom(from: number): void;
 
   triggerFilterRequest(): void;
 }

@@ -3,8 +3,6 @@
 
 .artefact-overview {
 
-  padding-top: $m;
-
   &[data-active-view='card'] {
     @include grid-even-columns($vp-medium, 3);
     @include grid-even-columns($vp-large, 4);

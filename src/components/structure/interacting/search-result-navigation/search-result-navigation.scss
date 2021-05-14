@@ -1,0 +1,53 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+.pagination-wrap {
+  position: fixed;
+  z-index: $level-overall-nav;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: $s $m $m $m;
+  background-color: $darken-strongest;
+  border-top: solid $border-stroke-weight-s $lighten-strong;
+}
+
+.pagination {
+
+  display: inline-block;
+  margin-right: $s;
+
+  &__item {
+    display: inline-flex;
+    width: $l;
+    height: $l;
+    align-items: center;
+    justify-content: center;
+    background-color: $darker;
+    margin-right: $border-stroke-weight-s;
+
+    user-select: none;
+    &:hover {
+      cursor: default;
+    }
+    &--clickable {
+      background-color: $dark;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    &--active {
+      background-color: $accent;
+      color: $darkest;
+    }
+    &--hidden {
+      display: none;
+    }
+    &--first-item{
+      border-top-left-radius: $border-radius;
+      border-bottom-left-radius: $border-radius;
+    }
+    &--last-item{
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+  }
+}

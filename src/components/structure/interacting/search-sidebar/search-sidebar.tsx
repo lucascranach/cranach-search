@@ -21,6 +21,7 @@ const SearchSidebar = () => {
   const { t } = useTranslation('SearchSidebar', translations);
   const { globalSearch } = useContext(StoreContext);
 
+  const hits = globalSearch?.hits;
   const title = useState('*');
   const catalogWorkReferenceNumber = useState('*');
   const location = useState('*');
@@ -32,9 +33,13 @@ const SearchSidebar = () => {
       className="search-sidebar"
       data-component="structure/interacting/search-sidebar"
     >
+      <div className="search-result-info">
+        <h2>
+          {hits < 2 && `${hits} ${t('works found')}`}
+          {hits >= 2 && `${hits} ${t('works found')}`}
+        </h2>
+      </div>
       <fieldset className="block">
-        <legend className="headline">{ t('Search archive') }</legend>
-
         <TextInput
           className="search-input"
           label={ t('all Fields') }
