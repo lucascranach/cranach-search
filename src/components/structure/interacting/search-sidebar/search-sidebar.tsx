@@ -26,6 +26,7 @@ const SearchSidebar = () => {
   const location = useState('*');
   const cdaIDInventorynumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
+  globalSearch?.searchForAllFieldsTerm('Debug');
 
   return (
     <div
