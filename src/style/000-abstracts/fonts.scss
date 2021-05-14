@@ -1,5 +1,3 @@
-///// Font Imports /////
-
 /*
  * IBM Plex Mono
  */
@@ -7,14 +5,18 @@
   font-family: 'IBMPlexMono';
   font-style: normal;
   font-weight: 500;
-  src: url("./fonts/IBMPlex-Mono/IBMPlexMono-Medium.ttf") format('ttf');
+  src:
+    url("src/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.woff2") format('woff2'),
+    url("src/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.ttf") format('truetype');
 }
 
 @font-face {
   font-family: 'IBMPlexMono';
   font-style: normal;
   font-weight: 500;
-  src: url("./fonts/IBMPlex-Mono/IBMPlexMono-Medium.woff2") format('woff2');
+  src:
+    url("src/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.woff2") format('woff2'),
+    url("src/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.truetype") format('truetype');
 }
 
 
@@ -23,44 +25,44 @@
  */
 @font-face {
   font-family: 'IBMPlexSans';
+  src: url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Light.woff2') format('woff2'),
+       url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Light.ttf') format('truetype');
+  font-weight: 200;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'IBMPlexSans';
+  src:
+    url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Regular.woff2') format('woff2'),
+    url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Regular.ttf') format('truetype');
   font-weight: 300;
-  src: url("./fonts/IBMPlex-Sans/IBMPlexSans-Light.ttf") format('ttf');
+  font-style: normal;
 }
 
 @font-face {
   font-family: 'IBMPlexSans';
+  src:
+    url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Medium.woff2') format('woff2'),
+    url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Medium.ttf') format('truetype');
+  font-weight: 400;
   font-style: normal;
-  font-weight: 300;
-  src: url("./fonts/IBMPlex-Sans/IBMPlexSans-Light.woff2") format('woff2');
 }
-
 
 @font-face {
   font-family: 'IBMPlexSans';
-  font-style: normal;
+  src:
+    url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-SemiBold.woff2') format('woff2'),
+    url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-SemiBold.ttf') format('truetype');
   font-weight: 500;
-  src: url("./fonts/IBMPlex-Sans/IBMPlexSans-Medium.ttf") format('ttf');
+  font-style: normal;
 }
 
 @font-face {
   font-family: 'IBMPlexSans';
+  src: url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Bold.woff2') format('woff2'),
+       url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Bold.ttf') format('truetype');
+  font-weight: 600;
   font-style: normal;
-  font-weight: 500;
-  src: url("./fonts/IBMPlex-Sans/IBMPlexSans-Medium.woff2") format('woff2');
 }
 
-
-@font-face {
-  font-family: 'IBMPlexSans';
-  font-style: normal;
-  font-weight: 700;
-  src: url("./fonts/IBMPlex-Sans/IBMPlexSans-Bold.ttf") format('ttf');
-}
-
-@font-face {
-  font-family: 'IBMPlexSans';
-  font-style: normal;
-  font-weight: 700;
-  src: url("./fonts/IBMPlex-Sans/IBMPlexSans-Bold.woff2") format('woff2');
-}
