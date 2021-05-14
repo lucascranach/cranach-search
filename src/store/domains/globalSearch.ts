@@ -5,7 +5,9 @@ import GlobalSearchAPI_, {
   GlobalSearchArtifact,
   GlobalSearchResults,
   APIFilterType,
+  EntityType,
 } from '../../api/globalSearch';
+export { EntityType as GlobalSearchEntityType } from '../../api/globalSearch';
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
@@ -14,6 +16,7 @@ export type FilterType = {
     from: string,
     to: string,
   },
+  entityType: EntityType,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
@@ -34,6 +37,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       from: '',
       to: '',
     },
+    entityType: EntityType.UNKNOWN,
   };
 
   debounceWaitInMSecs: number = 500;
@@ -94,6 +98,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.triggerFilterRequest();
   }
 
+  setEntityType(entityType: EntityType) {
+    this.filters.entityType = entityType;
+    this.triggerFilterRequest();
+  }
+
   triggerFilterRequest() {
     clearTimeout(this.debounceHandler);
 
@@ -144,6 +153,8 @@ export interface GlobalSearchStoreInterface {
   setDatingFrom(from: string): void;
 
   setDatingTo(from: string): void;
+
+  setEntityType(entityType: EntityType): void;
 
   triggerFilterRequest(): void;
 }
