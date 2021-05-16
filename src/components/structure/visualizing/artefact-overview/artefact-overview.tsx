@@ -67,7 +67,8 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
             key={ item.id }
             className="overview-item"
           >
-          { CardView === view && <ArtefactCard
+            { CardView === view && <ArtefactCard
+              id={ item.id}
               title={ shortenTitle(item.title) }
               subtitle={ item.subtitle }
               date={ item.date }

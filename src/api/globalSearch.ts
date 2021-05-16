@@ -5,20 +5,27 @@ const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
+const setHistory = (queryParams: string) => {
+  const baseurl = location.protocol + '//' + location.host + location.pathname;
+  const nextState = {searchParams: queryParams};
+  const nextTitle = "cda_ // Search ";
+  const nextURL = `${baseurl}?${queryParams}`;
+  window.history.pushState(nextState, nextTitle, nextURL);
+}
+
 const toArtefact = (item: any) => {
   const { _data_all: d } = item;
 
   return {
-    id: d.inventoryNumber,
+    id: item.id,
     langCode: d.langCode,
     title: d.titles[0].title,
     subtitle: '',
     date: '',
     additionalInfoList: [],
     classification: '',
-    imgSrc: d.images ? d.images.representative.variants[0].s.src : '',
+    imgSrc: item.images ? item.images.overall.images[0].small.src : '',
   };
-
 };
 
 const searchByFiltersAndTerm = async (
@@ -29,6 +36,7 @@ const searchByFiltersAndTerm = async (
   const params: Record<string, string|number> = {
     // lang, // `lang` parameter is commented out because of current missing support
     size: 30,
+    'size_height:gt': 200,
   };
 
   if (filters.dating.from) {
@@ -53,8 +61,11 @@ const searchByFiltersAndTerm = async (
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
 
+  const queryParams = querify(params);
+  setHistory(queryParams);
+
   return await fetch(
-    `${host}/?${querify(params)}`,
+    `${host}/?${queryParams}`,
     { method: 'GET', headers: headers },
   ).then(resp => resp.json())
   .then((obj: any) => obj.data.results.map(toArtefact))
