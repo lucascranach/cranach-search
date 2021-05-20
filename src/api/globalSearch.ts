@@ -9,14 +9,14 @@ const toArtefact = (item: any) => {
   const { _data_all: d } = item;
 
   return {
-    id: d.inventoryNumber,
+    id: item.id,
     langCode: d.langCode,
     title: d.titles[0].title,
     subtitle: '',
     date: '',
     additionalInfoList: [],
     classification: '',
-    imgSrc: d.images ? d.images.representative.variants[0].s.src : '',
+    imgSrc: item.images ? item.images.overall.images[0].small.src : '',
   };
 
 };
@@ -29,6 +29,7 @@ const searchByFiltersAndTerm = async (
   const params: Record<string, string|number> = {
     // lang, // `lang` parameter is commented out because of current missing support
     size: 30,
+    'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
 
   if (filters.dating.from) {

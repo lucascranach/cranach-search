@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
@@ -11,6 +11,10 @@ import './search.scss';
 
 const Search: FC = () => {
   const { globalSearch } = useContext(StoreContext);
+
+  useEffect(() => {
+    globalSearch?.triggerFilterRequest();
+  }, [])
 
   return (
     <div
