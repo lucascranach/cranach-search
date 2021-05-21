@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import UI from './ui';
 import GlobalSearchAPI_, {
   GlobalSearchArtifact,
-  GlobalSearchResults,
+  GlobalSearchResult,
   APIFilterType,
   EntityType,
 } from '../../api/globalSearch';
@@ -16,6 +16,8 @@ export type FilterType = {
     from: string,
     to: string,
   },
+  size: number,
+  from: number,
   entityType: EntityType,
 };
 
@@ -28,7 +30,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   loading: boolean = false;
 
-  results: GlobalSearchArtifact[] = [];
+  result: GlobalSearchResult | null = null;
 
   error: string | null = null;
 
@@ -37,6 +39,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       from: '',
       to: '',
     },
+    size: 50,
+    from: 0,
     entityType: EntityType.UNKNOWN,
   };
 
@@ -54,9 +58,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   /* Computed */
 
   get flattenedSearchResultItems(): GlobalSearchArtifact[] {
-    return this.results;
+    return this.result?.items ?? [];
   }
-
 
   /* Actions */
 
@@ -68,12 +71,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.loading = loading;
   }
 
-  setSearchResults(results: GlobalSearchResults) {
-    this.results = results;
+  setSearchResult(result: GlobalSearchResult | null) {
+    this.result = result;
   }
 
-  resetSearchResults() {
-    this.results = [];
+  resetSearchResult() {
+    this.result = null;
   }
 
   setSearchFailed(error: string | null) {
@@ -82,7 +85,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   searchForAllFieldsTerm(allFieldsTerm: string) {
     this.setAllFieldsTerm(allFieldsTerm);
-
     this.triggerFilterRequest();
   }
 
@@ -94,7 +96,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   setDatingTo(to: string) {
     this.filters.dating.to = to;
+    this.triggerFilterRequest();
+  }
 
+  setFrom(from: number) {
+    this.filters.from = from;
     this.triggerFilterRequest();
   }
 
@@ -106,17 +112,23 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   triggerFilterRequest() {
     clearTimeout(this.debounceHandler);
 
-    this.debounceHandler = window.setTimeout(() => {
+    this.debounceHandler = window.setTimeout(async () => {
       const { lang } = this.uiStore;
 
       this.setSearchLoading(true);
 
-      this.globalSearchAPI.searchByFiltersAndTerm(this.filters, this.allFieldsTerm, lang).then(
-        (results: GlobalSearchResults) => this.setSearchResults(results),
-        (err: Error) => this.setSearchFailed(err.toString()),
-      ).finally(
-        () => this.setSearchLoading(false),
-      );
+      try {
+        const result = await this.globalSearchAPI.searchByFiltersAndTerm(
+          this.filters,
+          this.allFieldsTerm,
+          lang,
+        );
+        this.setSearchResult(result);
+      } catch(err) {
+        this.setSearchFailed(err.toString());
+      } finally {
+        this.setSearchLoading(false);
+      }
     }, this.debounceWaitInMSecs);
   }
 }
@@ -126,7 +138,7 @@ export interface GlobalSearchStoreInterface {
 
   loading: boolean;
 
-  results: GlobalSearchResults;
+  result: GlobalSearchResult | null;
 
   error: string | null;
 
@@ -142,9 +154,9 @@ export interface GlobalSearchStoreInterface {
 
   setSearchLoading(loading: boolean): void;
 
-  setSearchResults(results: GlobalSearchResults): void;
+  setSearchResult(result: GlobalSearchResult | null): void;
 
-  resetSearchResults(): void;
+  resetSearchResult(): void;
 
   setSearchFailed(error: string | null): void;
 
@@ -152,9 +164,11 @@ export interface GlobalSearchStoreInterface {
 
   setDatingFrom(from: string): void;
 
-  setDatingTo(from: string): void;
+  setDatingTo(to: string): void;
 
   setEntityType(entityType: EntityType): void;
+
+  setFrom(from: number): void;
 
   triggerFilterRequest(): void;
 }

@@ -1,9 +1,15 @@
 
-const querify = (obj: Record<string, string|number>) => Object.entries(obj).map(([name, value]) => `${name}=${encodeURIComponent(value)}`).join('&');
+const querify = (obj: Record<string, string | number>) => Object.entries(obj).map(([name, value]) => `${name}=${encodeURIComponent(value)}`).join('&');
 
 const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
+
+const assembleResultData = (resultset: any): GlobalSearchResult => {
+  const items = resultset.data.results.map((item: any) => toArtefact(item));
+  const meta = resultset.data.meta;
+  return { items, meta };
+}
 
 const setHistory = (queryParams: string) => {
   const baseurl = location.protocol + '//' + location.host + location.pathname;
@@ -32,12 +38,19 @@ const searchByFiltersAndTerm = async (
   filters: APIFilterType,
   searchTerm: string,
   lang: string
-): Promise<GlobalSearchResults> =>  {
-  const params: Record<string, string|number> = {
+): Promise<GlobalSearchResult | null> => {
+  const params: Record<string, string | number> = {
     // lang, // `lang` parameter is commented out because of current missing support
-    size: 30,
-    'size_height:gt': 200,
+    'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
+
+  if (filters.size) {
+    params['size'] = filters.size;
+  }
+
+  if (filters.from) {
+    params['from'] = filters.from;
+  }
 
   if (filters.dating.from) {
     params['dating_begin:gte'] = filters.dating.from;
@@ -64,12 +77,18 @@ const searchByFiltersAndTerm = async (
   const queryParams = querify(params);
   setHistory(queryParams);
 
-  return await fetch(
-    `${host}/?${queryParams}`,
-    { method: 'GET', headers: headers },
-  ).then(resp => resp.json())
-  .then((obj: any) => obj.data.results.map(toArtefact))
-  .catch((e) => console.error(e));
+  try {
+    const resp = await fetch(
+      `${host}/?${querify(params)}`,
+      { method: 'GET', headers: headers },
+    );
+    const bodyJSON = await resp.json();
+    return assembleResultData(bodyJSON);
+  } catch(err) {
+    console.error(err);
+  }
+
+  return null;
 };
 
 export default {
@@ -77,15 +96,15 @@ export default {
     filters: APIFilterType,
     searchTerm: string,
     lang: string,
-  ): Promise<GlobalSearchResults> {
+  ): Promise<GlobalSearchResult | null> {
     return await searchByFiltersAndTerm(filters, searchTerm, lang);
   }
 };
 
 export enum EntityType {
-  GRAPHICS = 'GRAPHICS',
-  PAINTINGS = 'PAINTINGS',
-  DOCUMENTS = 'DOCUMENTS',
+  GRAPHICS = 'GRAPHIC',
+  PAINTINGS = 'PAINTING',
+  DOCUMENTS = 'DOCUMENT',
   UNKNOWN = 'UNKNOWN',
 }
 
@@ -94,6 +113,8 @@ export type APIFilterType = {
     from: string,
     to: string,
   },
+  size: number,
+  from: number,
   entityType: EntityType,
 };
 
@@ -108,4 +129,9 @@ export type GlobalSearchArtifact = {
   imgSrc: string;
 }
 
-export type GlobalSearchResults = GlobalSearchArtifact[];
+export type GlobalSearchResult = {
+  items: GlobalSearchArtifact[];
+  meta: {
+    hits: number;
+  };
+}

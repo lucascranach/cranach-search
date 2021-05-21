@@ -47,7 +47,7 @@ const Navigation = () => {
         <li><i className="material-icons" /></li>
         {
           navStructure.map(item => (
-            <li className="menu-item"
+            <li className="menu__item"
               key={item.filterValue}
             >
               <CategoryFilter
