@@ -21,7 +21,7 @@ const SearchSidebar = () => {
   const { t } = useTranslation('SearchSidebar', translations);
   const { globalSearch } = useContext(StoreContext);
 
-  const hits = globalSearch?.hits;
+  const hits = globalSearch?.result?.meta.hits ?? 0;
   const title = useState('*');
   const catalogWorkReferenceNumber = useState('*');
   const location = useState('*');
@@ -35,7 +35,7 @@ const SearchSidebar = () => {
     >
       <div className="search-result-info">
         <h2>
-          {hits < 2 && `${hits} ${t('works found')}`}
+          {hits < 2 && `${hits} ${t('work found')}`}
           {hits >= 2 && `${hits} ${t('works found')}`}
         </h2>
       </div>
