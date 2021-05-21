@@ -11,6 +11,14 @@ const assembleResultData = (resultset: any): GlobalSearchResult => {
   return { items, meta };
 }
 
+const setHistory = (queryParams: string) => {
+  const baseurl = location.protocol + '//' + location.host + location.pathname;
+  const nextState = {searchParams: queryParams};
+  const nextTitle = "cda_ // Search ";
+  const nextURL = `${baseurl}?${queryParams}`;
+  window.history.pushState(nextState, nextTitle, nextURL);
+}
+
 const toArtefact = (item: any) => {
   const { _data_all: d } = item;
 
@@ -24,7 +32,6 @@ const toArtefact = (item: any) => {
     classification: '',
     imgSrc: item.images ? item.images.overall.images[0].small.src : '',
   };
-
 };
 
 const searchByFiltersAndTerm = async (
@@ -66,6 +73,9 @@ const searchByFiltersAndTerm = async (
   const authString = btoa(`${authUser}:${authPass}`);
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
+
+  const queryParams = querify(params);
+  setHistory(queryParams);
 
   try {
     const resp = await fetch(
