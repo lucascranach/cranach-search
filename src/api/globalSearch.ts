@@ -13,17 +13,17 @@ const setHistory = (queryParams: string) => {
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any) => {
+const toArtefact = (item: any): GlobalSearchArtifact => {
   const { _data_all: d } = item;
 
   return {
     id: item.id,
     langCode: d.langCode,
-    title: d.titles[0].title,
-    subtitle: '',
-    date: '',
+    title: item.title,
+    subtitle: item.subtitle,
+    date: item.date,
     additionalInfoList: [],
-    classification: '',
+    classification: item.classification,
     imgSrc: item.images ? item.images.overall.images[0].small.src : '',
   };
 };
@@ -83,9 +83,9 @@ export default {
 };
 
 export enum EntityType {
-  GRAPHICS = 'GRAPHICS',
-  PAINTINGS = 'PAINTINGS',
-  DOCUMENTS = 'DOCUMENTS',
+  GRAPHICS = 'GRAPHIC',
+  PAINTINGS = 'PAINTING',
+  DOCUMENTS = 'DOCUMENT',
   UNKNOWN = 'UNKNOWN',
 }
 

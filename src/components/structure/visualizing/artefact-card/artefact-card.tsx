@@ -44,8 +44,7 @@ const ArtefactCard: FC<Props> = ({
             <a href={to}>
               <h2 className="artefact-card__title">{title}, {date}</h2>
               <p className="artefact-card__subtitle">{classification}</p>
-          <p className="artefact-card__subtitle">{subtitle}</p>
-          <p className="artefact-card__smalltext">{id}</p>
+              <p className="artefact-card__subtitle">{subtitle}</p>
             </a>
           </div>
         )
