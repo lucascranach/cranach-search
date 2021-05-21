@@ -1,94 +1,110 @@
-import React, { useContext } from 'react';
+import React, { FC, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import translations from './translations.json';
 import './search-result-navigation.scss';
 
-import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
+import StoreContext from '../../../../store/StoreContext';
 
-type Translations = {
-  de: Record<string, string>
+type Props = {
+  range?: number,
 };
 
-const range = 6;
+enum PaginationDirection {
+  UP = 'UP',
+  DOWN = 'DOWN',
+};
 
 const SearchResultNavigation: FC<Props> = ({
-  hits = 0,
-  size = 0,
-  from = 0
+  range = 6,
 }) => {
-  const useTranslation = (_: string, translations: Translations) => ({ t: (key: string, _?: Record<string, string>) => translations.de[key] });
-  const { t } = useTranslation('Navigation', translations);
+  const paginationClass = 'pagination__item';
+  const clickableClass = `${paginationClass}--clickable`;
+  const activeClass = `${paginationClass}--active`;
+  const firstItemClass = `${paginationClass}--first-item`;
+  const lastItemClass = `${paginationClass}--last-item`;
+  const hiddenClass = `${paginationClass}--hidden`;
+
   const { globalSearch } = useContext(StoreContext);
-  const pages = Math.ceil(hits / size);
+  const { size, from } = globalSearch?.filters ?? { size: 1, from: 1 };
+  const hits = globalSearch?.result?.meta.hits ?? 0;
 
-  const pos = () => (from / size) + 1;
-  const firstIsActive = () => (pos() > 1) ? true : false;
-  const lastIsActive = () => (pos() < pages) ? true : false;
+  const maxPages = Math.ceil(hits / size);
+  const currentPos = (from / size);
 
-  const getChunks = () => {
-    const ret = [];
-    const pages = Math.ceil(hits / size);
-    for (var i = 1; i <= pages; i++) { ret.push(i); }
-    return ret;
+  const firstIsActive = currentPos > 0;
+  const lastIsActive = currentPos < maxPages - 1;
+
+  const arrayToClassName = (classes: string[]): string => classes.join(' ');
+
+  const getPaginationNavItemClassName = (pos: number, currentPos: number): string => {
+    if (pos === currentPos) {
+      const classes = [paginationClass, clickableClass, activeClass];
+
+      if (pos === 0) classes.push(firstItemClass);
+      if (pos === maxPages) classes.push(lastItemClass);
+
+      return arrayToClassName(classes);
+    }
+
+    if (pos === 0) {
+      return arrayToClassName([paginationClass, clickableClass, firstItemClass]);
+    }
+
+    if (pos === maxPages - 1) {
+      return arrayToClassName([paginationClass, clickableClass, lastItemClass]);
+    }
+
+    const addRight = currentPos <= range ? (range - currentPos) : 0;
+    if (pos > currentPos - range && pos < (currentPos + range + addRight)) {
+      return arrayToClassName([paginationClass, clickableClass]);
+    }
+
+    return arrayToClassName([paginationClass, hiddenClass]);
   }
 
-  const getPaginationNavItemStatus = (item: number) => {
-
-    const addfirst = item === 1 ? ' pagination__item--first-item' : '';
-    const addLast = item === pages ? ' pagination__item--first-item' : '';
-
-    if (item === pos()) {
-      return 'pagination__item pagination__item--clickable pagination__item--active' + addfirst + addLast;
-    }
-
-    if (item === 1) {
-      return 'pagination__item pagination__item--clickable pagination__item--first-item';
-    }
-
-    if (item === pages) {
-      return 'pagination__item pagination__item--clickable pagination__item--last-item';
-    }
-
-    const addRight = pos() <= range ? range - pos() + 1 : 0;
-    if (item > pos() - range && item < pos() + range + addRight) {
-      return 'pagination__item pagination__item--clickable ';
-    }
-
-    return 'pagination__item pagination__item--hidden '
-  }
-
-  const setPagination = (direction: string) => {
-    const newFrom = (direction === 'up') ? from = from + size : from = from - size;
+  const setPagination = (direction: PaginationDirection) => {
+    const newFrom = (direction === PaginationDirection.UP) ? from + size : from - size;
     globalSearch?.setFrom(newFrom);
   }
 
-  const setPaginationDirect = (page: number) => {
+  const jumpToPage = (page: number) => {
     globalSearch?.setFrom(page * size);
   }
 
+  const navItems = Array(maxPages).fill(0).map((_, idx) => ({
+    pos: idx,
+    text: idx + 1,
+    className: getPaginationNavItemClassName(idx, currentPos),
+  }));
+
   return (
     <div className="pagination-wrap">
-      {pages > 1 &&
+      {maxPages > 1 &&
         <ul className="pagination">
           <li
-            className={firstIsActive() ? 'pagination__item pagination__item--first-item pagination__item--clickable' : 'pagination__item pagination__item--first-item'}
-            onClick={() => { firstIsActive() ? setPagination('down') : false; }}
+            className={firstIsActive
+              ? arrayToClassName([paginationClass, firstItemClass, clickableClass])
+              : arrayToClassName([paginationClass, firstItemClass])
+            }
+            onClick={() => { firstIsActive && setPagination(PaginationDirection.DOWN); }}
           >&lt;</li>
           <li
-            className={lastIsActive() ? 'pagination__item pagination__item--last-item pagination__item--clickable' : 'pagination__item pagination__item--last-item'}
-            onClick={() => { lastIsActive() ? setPagination('up') : false; }}
+            className={lastIsActive
+              ? arrayToClassName([paginationClass, lastItemClass, clickableClass])
+              : arrayToClassName([paginationClass, lastItemClass])
+            }
+            onClick={() => { lastIsActive && setPagination(PaginationDirection.UP); }}
           >&gt;</li>
         </ul>
       }
-      {pages > 2 &&
+      {maxPages > 2 &&
         <ul className="pagination">
-          {getChunks().map(item => (
+          {navItems.map(navItem => (
             <li
-              className={getPaginationNavItemStatus(item)}
-              key={item}
-              onClick={() => { setPaginationDirect(item - 1) }}
-            >{item}</li>))
+              className={navItem.className}
+              key={navItem.pos}
+              onClick={() => { jumpToPage(navItem.pos) }}
+            >{navItem.text}</li>))
           }
 
         </ul>

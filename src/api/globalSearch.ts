@@ -5,8 +5,8 @@ const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
-const assembleResultData = (resultset: object) => {
-  const items = resultset.data.results.map(item => toArtefact(item));
+const assembleResultData = (resultset: any): GlobalSearchResult => {
+  const items = resultset.data.results.map((item: any) => toArtefact(item));
   const meta = resultset.data.meta;
   return { items, meta };
 }
@@ -31,7 +31,7 @@ const searchByFiltersAndTerm = async (
   filters: APIFilterType,
   searchTerm: string,
   lang: string
-): Promise<GlobalSearchResults> => {
+): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
     // lang, // `lang` parameter is commented out because of current missing support
     'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
@@ -67,12 +67,18 @@ const searchByFiltersAndTerm = async (
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
 
-  return await fetch(
-    `${host}/?${querify(params)}`,
-    { method: 'GET', headers: headers },
-  ).then(resp => resp.json())
-    .then((obj: any) => assembleResultData(obj))
-    .catch((e) => console.error(e));
+  try {
+    const resp = await fetch(
+      `${host}/?${querify(params)}`,
+      { method: 'GET', headers: headers },
+    );
+    const bodyJSON = await resp.json();
+    return assembleResultData(bodyJSON);
+  } catch(err) {
+    console.error(err);
+  }
+
+  return null;
 };
 
 export default {
@@ -80,15 +86,15 @@ export default {
     filters: APIFilterType,
     searchTerm: string,
     lang: string,
-  ): Promise<GlobalSearchResults> {
+  ): Promise<GlobalSearchResult | null> {
     return await searchByFiltersAndTerm(filters, searchTerm, lang);
   }
 };
 
 export enum EntityType {
-  GRAPHICS = 'GRAPHICS',
-  PAINTINGS = 'PAINTINGS',
-  DOCUMENTS = 'DOCUMENTS',
+  GRAPHICS = 'GRAPHIC',
+  PAINTINGS = 'PAINTING',
+  DOCUMENTS = 'DOCUMENT',
   UNKNOWN = 'UNKNOWN',
 }
 
@@ -113,4 +119,9 @@ export type GlobalSearchArtifact = {
   imgSrc: string;
 }
 
-export type GlobalSearchResults = GlobalSearchArtifact[];
+export type GlobalSearchResult = {
+  items: GlobalSearchArtifact[];
+  meta: {
+    hits: number;
+  };
+}

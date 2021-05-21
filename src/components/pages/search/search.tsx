@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
@@ -23,11 +23,7 @@ const Search: FC = () => {
       data-component="page/search"
     >
       <div className="search__results-area">
-        <SearchResultNavigation
-          hits={globalSearch?.hits}
-          size={globalSearch?.filters.size}
-          from={globalSearch?.filters.from}
-        ></SearchResultNavigation>
+        <SearchResultNavigation></SearchResultNavigation>
       { globalSearch?.loading && 'Loading...' }
       { !globalSearch?.loading
         && <ArtefactOverview
