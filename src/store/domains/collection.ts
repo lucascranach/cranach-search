@@ -17,7 +17,7 @@ export default class Collection implements CollectionStoreInterface {
   }
 
   removeArtefactFromCollection(artefact: string) {
-    this.artefacts.push(artefact);
+    this.artefacts = this.artefacts.filter(item => item != artefact);
     localStorage.setItem('collection', this.artefacts);
     return true;
   }

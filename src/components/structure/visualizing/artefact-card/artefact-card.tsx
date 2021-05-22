@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useState } from 'react';
 
 import Image from '../../../base/visualizing/image';
 import StoreContext from '../../../../store/StoreContext';
@@ -30,22 +30,12 @@ const ArtefactCard: FC<Props> = ({
 
   const { collection } = useContext(StoreContext);
 
-  let isFav = collection?.artefacts.includes(id);
+  let isStoredFavorite = collection?.artefacts.includes(id);
+  const [isFavorite, setFavorite] = useState(!!isStoredFavorite);
 
-  const setFavorite = (id: string) => {
-    if (isFav) {
-      collection?.removeArtefactFromCollection(id);
-    } else {
-      collection?.addArtefactToCollection(id);
-    }
-    isFav = !isFav;
-  }
-
-
-  const getClassName = (id: string) => {
-    const additionalClass = isFav ? ' artefact-card__favorite--is-active' : '';
-    return `artefact-card__favorite ${additionalClass}`;
-  }
+  const toggleFav = () => {
+    setFavorite(!isFavorite);
+  };
 
   return(
     <div
@@ -71,10 +61,9 @@ const ArtefactCard: FC<Props> = ({
               <p className="artefact-card__smalltext">{id}</p>
             </a>
             <a
-              className={getClassName(id)}
-              onClick={() => setFavorite(id) }
-          ><i className="icon"></i>
-            </a>
+              className={`artefact-card__favorite ${isFavorite ? 'artefact-card__favorite--is-active' : ''}` }
+              onClick={toggleFav}
+            ></a>
           </div>
         )
       }
