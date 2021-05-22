@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 
 import Switcher from '../../../base/interacting/switcher';
 import ArtefactCard from '../artefact-card';
 import ArtefactLine from '../artefact-line';
+
 
 import './artefact-overview.scss';
 
@@ -45,6 +46,8 @@ const SupportedViews = [
   ListView,
 ];
 
+
+
 const DefaultView = CardView;
 
 const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, DefaultView: View } = ({
@@ -71,7 +74,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
               id={ item.id}
               title={ shortenTitle(item.title) }
               subtitle={ item.subtitle }
-              date={ item.date }
+              date={item.date}
               to={ getItemTo(item) }
               classification={ item.classification }
               imgSrc={ item.imgSrc || '' }

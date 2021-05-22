@@ -106,7 +106,9 @@ export enum EntityType {
   PAINTINGS = 'PAINTING',
   DOCUMENTS = 'DOCUMENT',
   UNKNOWN = 'UNKNOWN',
+  COLLECTION = 'COLLECTION'
 }
+
 
 export type APIFilterType = {
   dating: {

@@ -13,6 +13,7 @@
   }
 
   &__content {
+    position: relative;
     flex-grow: 1;
 
     padding: $s;
@@ -45,5 +46,31 @@
     line-height: $lh-normal;
 
     margin-bottom: $xs;
+  }
+
+  &__favorite{
+    position: absolute;
+    right: $xxs;
+    bottom: $s;
+
+    color: $accent;
+    opacity: 0.3;
+    transition: opacity $tr-fast;
+
+    &:hover{
+      opacity: 1;
+      cursor: pointer;
+    }
+
+    i.icon:after{
+      content: 'favorite_border'
+    }
+
+    &--is-active{
+      i.icon:after{
+        content: 'favorite'
+      }
+    }
+
   }
 }
