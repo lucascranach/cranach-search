@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 
 import ArtefactOverview from '../../structure/visualizing/artefact-overview';
 import SearchSidebar from '../../structure/interacting/search-sidebar';
+import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
 
 import StoreContext from '../../../store/StoreContext';
 
@@ -22,6 +23,7 @@ const Search: FC = () => {
       data-component="page/search"
     >
       <div className="search__results-area">
+        <SearchResultNavigation></SearchResultNavigation>
       { globalSearch?.loading && 'Loading...' }
       { !globalSearch?.loading
         && <ArtefactOverview

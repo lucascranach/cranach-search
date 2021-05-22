@@ -8,9 +8,10 @@
   padding: $m;
   padding-bottom: 0;
   background-color: $darkest;
+  min-height: $xl + $s;
 
   .menu {
-    &-item {
+    &__item {
      // display: none;
       a {
         display: block;
@@ -19,7 +20,7 @@
         border-bottom: solid $border-stroke-weight transparent;
       }
     }
-    &-item a.is-active {
+    &__item a.is-active {
       border-bottom: solid $border-stroke-weight $accent;
     }
 

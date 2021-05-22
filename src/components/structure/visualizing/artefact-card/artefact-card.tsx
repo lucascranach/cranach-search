@@ -5,6 +5,7 @@ import Image from '../../../base/visualizing/image';
 import './artefact-card.scss';
 
 type Props = {
+  id?: string,
   title?: string,
   subtitle?: string,
   date?: string,
@@ -13,8 +14,8 @@ type Props = {
   imgAlt?: string,
   classification?: string,
 }
-
 const ArtefactCard: FC<Props> = ({
+  id='',
   title = '',
   subtitle = '',
   date = '',
@@ -37,13 +38,14 @@ const ArtefactCard: FC<Props> = ({
           />
         </a>
       </div>
-      {title
+      {id
         && (
           <div className="artefact-card__content">
             <a href={to}>
               <h2 className="artefact-card__title">{title}, {date}</h2>
               <p className="artefact-card__subtitle">{classification}</p>
-              <p className="artefact-card__subtitle">{subtitle}</p>
+          <p className="artefact-card__subtitle">{subtitle}</p>
+          <p className="artefact-card__smalltext">{id}</p>
             </a>
           </div>
         )
