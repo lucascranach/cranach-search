@@ -34,6 +34,11 @@ const ArtefactCard: FC<Props> = ({
   const [isFavorite, setFavorite] = useState(!!isStoredFavorite);
 
   const toggleFav = () => {
+    if (isFavorite) {
+      collection?.removeArtefactFromCollection(id);
+    } else {
+      collection?.addArtefactToCollection(id);
+    }
     setFavorite(!isFavorite);
   };
 

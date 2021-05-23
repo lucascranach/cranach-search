@@ -29,6 +29,7 @@ export default class Collection implements CollectionStoreInterface {
 }
 
 export interface CollectionStoreInterface {
+  artefacts: string[];
   readCollectionFromLocalStorage(): void;
   addArtefactToCollection(artefact: string): void;
   removeArtefactFromCollection(artefact: string): void;
