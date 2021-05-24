@@ -13,6 +13,7 @@
   }
 
   &__content {
+    position: relative;
     flex-grow: 1;
 
     padding: $s;
@@ -45,5 +46,29 @@
     line-height: $lh-normal;
 
     margin-bottom: $xs;
+  }
+
+  &__favorite{
+    position: absolute;
+    right: $s;
+    bottom: $s;
+    border: solid $border-stroke-weight-s $light;
+    background-color: transparent;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    transition: border-color $tr-fast, background-color $tr-fast;
+
+    &:hover, &--is-active{
+      border-color: $accent;
+      background-color: $accent;
+      cursor: pointer;
+      transform: scale(1.4);
+    }
+
+    &--is-active{
+      transform: scale(1);
+    }
+
   }
 }

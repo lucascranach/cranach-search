@@ -32,8 +32,21 @@ const Navigation = () => {
     {
       title: 'Archival Documents',
       filterValue: GlobalSearchEntityType.DOCUMENTS,
+    },
+    {
+      title: 'My Collection',
+      filterValue: GlobalSearchEntityType.COLLECTION,
     }
   ];
+
+  const triggerAction = (filterValue: GlobalSearchEntityType) => {
+    if (filterValue === GlobalSearchEntityType.COLLECTION) {
+      globalSearch?.setCollectionItemsAsIds();
+    } else {
+      globalSearch?.setEntityType(filterValue);
+    }
+
+  }
 
   return (
     <nav
@@ -53,7 +66,7 @@ const Navigation = () => {
               <CategoryFilter
                 className={isActive(globalSearch?.filters.entityType, item.filterValue)}
                 filterText={t(item.title)}
-                onClick={() => globalSearch?.setEntityType(item.filterValue)}
+                onClick={() => triggerAction(item.filterValue) }
               >
               </CategoryFilter>
             </li>

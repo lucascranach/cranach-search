@@ -1,6 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useContext, useState } from 'react';
+
+import { observer } from 'mobx-react-lite';
 
 import Image from '../../../base/visualizing/image';
+import StoreContext from '../../../../store/StoreContext';
 
 import './artefact-card.scss';
 
@@ -14,8 +17,10 @@ type Props = {
   imgAlt?: string,
   classification?: string,
 }
+
+
 const ArtefactCard: FC<Props> = ({
-  id='',
+  id = '',
   title = '',
   subtitle = '',
   date = '',
@@ -23,7 +28,20 @@ const ArtefactCard: FC<Props> = ({
   imgSrc = '',
   imgAlt = '',
   classification = '',
-}) => (
+}) => {
+  const { collection } = useContext(StoreContext);
+
+  let isStoredFavorite = !!(collection?.artefacts.includes(id));
+
+  const toggleFav = () => {
+    if (isStoredFavorite) {
+      collection?.removeArtefactFromCollection(id);
+    } else {
+      collection?.addArtefactToCollection(id);
+    }
+  };
+
+  return(
     <div
       className="artefact-card"
       data-component="structure/visualizing/artefact-card"
@@ -34,7 +52,6 @@ const ArtefactCard: FC<Props> = ({
             src={imgSrc}
             alt={imgAlt}
             modifierWithBox={true}
-
           />
         </a>
       </div>
@@ -44,13 +61,18 @@ const ArtefactCard: FC<Props> = ({
             <a href={to}>
               <h2 className="artefact-card__title">{title}, {date}</h2>
               <p className="artefact-card__subtitle">{classification}</p>
-          <p className="artefact-card__subtitle">{subtitle}</p>
-          <p className="artefact-card__smalltext">{id}</p>
+              <p className="artefact-card__subtitle">{subtitle}</p>
+              <p className="artefact-card__smalltext">{id}</p>
             </a>
+            <a
+              className={`artefact-card__favorite ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}` }
+              onClick={toggleFav}
+            ></a>
           </div>
         )
       }
     </div>
-);
+  );
+};
 
-export default ArtefactCard;
+export default observer(ArtefactCard);
