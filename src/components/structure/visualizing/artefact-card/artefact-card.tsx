@@ -1,5 +1,7 @@
 import React, { FC, useContext, useState } from 'react';
 
+import { observer } from 'mobx-react-lite';
+
 import Image from '../../../base/visualizing/image';
 import StoreContext from '../../../../store/StoreContext';
 
@@ -27,19 +29,16 @@ const ArtefactCard: FC<Props> = ({
   imgAlt = '',
   classification = '',
 }) => {
-
   const { collection } = useContext(StoreContext);
 
-  let isStoredFavorite = collection?.artefacts.includes(id);
-  const [isFavorite, setFavorite] = useState(!!isStoredFavorite);
+  let isStoredFavorite = !!(collection?.artefacts.includes(id));
 
   const toggleFav = () => {
-    if (isFavorite) {
+    if (isStoredFavorite) {
       collection?.removeArtefactFromCollection(id);
     } else {
       collection?.addArtefactToCollection(id);
     }
-    setFavorite(!isFavorite);
   };
 
   return(
@@ -66,7 +65,7 @@ const ArtefactCard: FC<Props> = ({
               <p className="artefact-card__smalltext">{id}</p>
             </a>
             <a
-              className={`artefact-card__favorite ${isFavorite ? 'artefact-card__favorite--is-active' : ''}` }
+              className={`artefact-card__favorite ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}` }
               onClick={toggleFav}
             ></a>
           </div>
@@ -76,4 +75,4 @@ const ArtefactCard: FC<Props> = ({
   );
 };
 
-export default ArtefactCard;
+export default observer(ArtefactCard);
