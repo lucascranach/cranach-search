@@ -39,8 +39,8 @@ const Navigation = () => {
     }
   ];
 
-  const triggerAction = (filterValue: EntityType) => {
-    if (filterValue === 'COLLECTION') {
+  const triggerAction = (filterValue: GlobalSearchEntityType) => {
+    if (filterValue === GlobalSearchEntityType.COLLECTION) {
       globalSearch?.setCollectionItemsAsIds();
     } else {
       globalSearch?.setEntityType(filterValue);
