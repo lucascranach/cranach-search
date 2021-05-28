@@ -44,7 +44,20 @@
     margin-bottom: $l;
   }
 
+  .thesaurus-filter-item {
+    display: flex;
+
+    &__checkbox {
+    }
+    &__name {
+      margin-left: $xs;
+
+      &:after {
+        content: " (" attr(data-count) ")";
+        color: $accent;
+        font-size: $s;
+      }
+    }
+  }
+
 }
-
-
-

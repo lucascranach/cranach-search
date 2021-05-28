@@ -1,10 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 
 
 import Btn from '../../../base/interacting/btn';
 import TextInput from '../../../base/interacting/text-input';
 import Accordion from '../accordion';
+import Checkbox from '../../../base/interacting/checkbox';
+import TreeList, { TreeListItem } from '../tree-list';
 
 import translations from './translations.json';
 import './search-sidebar.scss';
@@ -15,8 +17,8 @@ type Translations = {
   de: Record<string, string>
 };
 
-const SearchSidebar = () => {
-  const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] } );
+const SearchSidebar: FC = () => {
+  const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] || key } );
 
   const { t } = useTranslation('SearchSidebar', translations);
   const { globalSearch } = useContext(StoreContext);
@@ -27,6 +29,23 @@ const SearchSidebar = () => {
   const location = useState('*');
   const cdaIDInventorynumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
+
+  const thesaurusFilters = globalSearch?.result?.filters.thesaurus ?? [];
+
+  const mapThesaurusFiltersToTreeList = (filters: typeof thesaurusFilters): TreeListItem[] => filters.map((filter) => ({
+    id: filter.id,
+    name: filter.name,
+    children: mapThesaurusFiltersToTreeList(filter.children),
+    data: {
+      count: filter.count,
+    },
+  }));
+
+  const mappedThesaurusFilters = mapThesaurusFiltersToTreeList(thesaurusFilters);
+
+  const toggleThesaurusFilterActiveStatusForId = (filterId: string) => {
+     globalSearch?.toggleThesaurusFilterActiveStatus(filterId);
+  };
 
   return (
     <div
@@ -82,15 +101,15 @@ const SearchSidebar = () => {
         <legend className="headline">{ t('Filter results by') }</legend>
 
         <Accordion>
-          <Accordion.Entry title={ t('Attribution') } toggle={ useState<boolean>(false) }>
+          <Accordion.Entry title={ t('Attribution') }>
             Attribution
           </Accordion.Entry>
 
-          <Accordion.Entry title={ t('Kind') } toggle={ useState<boolean>(false) }>
+          <Accordion.Entry title={ t('Kind') }>
             Kind
           </Accordion.Entry>
 
-          <Accordion.Entry title={ t('Dating') } toggle={ useState<boolean>(false) }>
+          <Accordion.Entry title={ t('Dating') }>
             <div className="cell-row">
               <div className="cell">
                 <TextInput
@@ -116,29 +135,35 @@ const SearchSidebar = () => {
             </div>
           </Accordion.Entry>
 
-          <Accordion.Entry title={ t('Collection / Location') } toggle={ useState<boolean>(false) }>
+          <Accordion.Entry title={ t('Collection / Location') }>
             Collection / Location
           </Accordion.Entry>
 
-          <Accordion.Entry title={ t('Examination Techniques') } toggle={ useState<boolean>(false) }>
+          <Accordion.Entry title={ t('Examination Techniques') }>
             Examination Techniques
           </Accordion.Entry>
 
-          <Accordion.Entry title={ t('Content') } toggle={ useState<boolean>(false) }>
-            Content
-          </Accordion.Entry>
 
-          <Accordion.Entry title={ t('Form') } toggle={ useState<boolean>(false) }>
-            Form
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Function') } toggle={ useState<boolean>(false) }>
-            Function
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Constituents') } toggle={ useState<boolean>(false) }>
-            Constituents
-          </Accordion.Entry>
+          { mappedThesaurusFilters.map(
+              (item) => {
+                return (<Accordion.Entry key={ item.id } title={ item.name }>
+                  <TreeList
+                    items={ item?.children ?? [] }
+                    wrapComponent={
+                      (item) => (<span className="thesaurus-filter-item">
+                        <Checkbox
+                          className="thesaurus-filter-item__checkbox"
+                          checked={ globalSearch?.filters.thesaurus.has(item.id) }
+                          onChange={ () => toggleThesaurusFilterActiveStatusForId(item.id) }
+                        />
+                        <span className="thesaurus-filter-item__name" data-count={ item.data?.count }>{ item.name }</span>
+                      </span>)
+                    }
+                  ></TreeList>
+                </Accordion.Entry>)
+              }
+            )
+          }
         </Accordion>
       </fieldset>
     </div>

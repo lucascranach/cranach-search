@@ -5,10 +5,24 @@ const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
+/* Temporary helper function */
+const cleanThesaurusItem = (item: any): GlobalSearchThesaurusItem => {
+  return {
+    id: item.alt.dkultTermIdentifier,
+    name: item.term,
+    count: item.doc_count,
+    is_available: item.is_available,
+    children: item.subTerms.map(cleanThesaurusItem),
+  }
+}
+
 const assembleResultData = (resultset: any): GlobalSearchResult => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
+  const filters = {
+    thesaurus: resultset.data.filters.thesaurus.map(cleanThesaurusItem),
+  };
   const meta = resultset.data.meta;
-  return { items, meta };
+  return { items, filters, meta };
 }
 
 const setHistory = (queryParams: string) => {
@@ -118,6 +132,7 @@ export type APIFilterType = {
   size: number,
   from: number,
   entityType: EntityType,
+  thesaurus: Set<string>,
 };
 
 export type GlobalSearchArtifact = {
@@ -131,8 +146,21 @@ export type GlobalSearchArtifact = {
   imgSrc: string;
 }
 
+export type GlobalSearchThesaurusItem = {
+  id: string;
+  name: string;
+  count: number;
+  is_available: boolean;
+  children: GlobalSearchThesaurusItem[];
+}
+
+export type GlobalSearchFilters = {
+  thesaurus: GlobalSearchThesaurusItem[];
+}
+
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
+  filters: GlobalSearchFilters;
   meta: {
     hits: number;
   };

@@ -1,5 +1,5 @@
 
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, observable } from 'mobx';
 import UI from './ui';
 import Collection from './collection';
 import GlobalSearchAPI_, {
@@ -20,6 +20,7 @@ export type FilterType = {
   size: number,
   from: number,
   entityType: EntityType,
+  thesaurus: Set<string>,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
@@ -45,6 +46,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     size: 50,
     from: 0,
     entityType: EntityType.UNKNOWN,
+    thesaurus: observable.set(new Set()),
   };
 
   debounceWaitInMSecs: number = 500;
@@ -105,6 +107,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   setFrom(from: number) {
     this.filters.from = from;
+    this.triggerFilterRequest();
+  }
+
+  toggleThesaurusFilterActiveStatus(filterId: string) {
+    if (this.filters.thesaurus.has(filterId)) {
+      this.filters.thesaurus.delete(filterId);
+    } else {
+      this.filters.thesaurus.add(filterId);
+    }
+
     this.triggerFilterRequest();
   }
 
@@ -183,6 +195,8 @@ export interface GlobalSearchStoreInterface {
   setCollectionItemsAsIds(): void;
 
   setFrom(from: number): void;
+
+  toggleThesaurusFilterActiveStatus(filterId: string): void;
 
   triggerFilterRequest(): void;
 
