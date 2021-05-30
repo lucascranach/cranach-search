@@ -4,6 +4,7 @@ import './checkbox.scss';
 
 type Props = {
   className?: string,
+  name?: string,
   value?: string,
   checked?: boolean,
   onChange?: (val: boolean) => void,
@@ -11,18 +12,24 @@ type Props = {
 
 const Checkbox: FC<Props> = ({
   className = '',
+  name = '',
   value = '',
   checked = false,
   onChange = (_: boolean) => {},
+  children,
 }) => (
-  <input
-    className={ `checkbox ${className}` }
-    data-component="base/interacting/checkbox"
-    type="checkbox"
-    value={ value }
-    checked={ checked }
-    onChange={ (evt) => onChange(evt.target.checked) }
-  />
+  <label>
+    <input
+      className={ `checkbox ${className}` }
+      data-component="base/interacting/checkbox"
+      type="checkbox"
+      name={ name }
+      value={ value }
+      checked={ checked }
+      onChange={ (evt) => onChange(evt.target.checked) }
+    />
+    { children }
+  </label>
 );
 
 export default Checkbox;

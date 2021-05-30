@@ -13,7 +13,7 @@ type Props = {
   items: TreeListItem[];
   className?: string;
   classNameOnClickable?: string;
-  wrapComponent?: (item: TreeListItem) => ReactElement;
+  wrapComponent?: (item: TreeListItem, toggle: () => void) => ReactElement;
 };
 
 
@@ -31,12 +31,18 @@ const TreeList: FC<Props> = ({
       const [isOpen, setIsOpen] = useState(false);
       const hasChildren = !!item.children && item.children.length > 0;
 
+      const toggle = () => hasChildren && setIsOpen(!isOpen);
+
       return (<li key={ item.id } className={`tree-list__item ${ hasChildren ? 'tree-list__item--has-children' : '' } ${ isOpen ? 'tree-list__item--is-open' : '' }`}>
+        { hasChildren && (<span
+          className={`tree-list__item-fold-indicator ${isOpen ? 'tree-list__item-fold-indicator--is-open' : ''}`}
+          onClick={ toggle }
+        ></span>)}
         <span
           className={ `tree-list__item-name ${ hasChildren ? ['tree-list__item-name--is-clickable', classNameOnClickable].join(' ') : '' }` }
-          onClick={ () => hasChildren && setIsOpen(!isOpen) }
+          onClick={ () => !wrapComponent && toggle() }
         >
-          { wrapComponent ? wrapComponent(item): item.name }
+          { wrapComponent ? wrapComponent(item, toggle): item.name }
         </span>
         { isOpen && hasChildren && <TreeList items={ item.children || [] } wrapComponent={ wrapComponent } classNameOnClickable={classNameOnClickable}></TreeList> }
       </li>);

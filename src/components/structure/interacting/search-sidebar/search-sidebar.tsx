@@ -150,13 +150,17 @@ const SearchSidebar: FC = () => {
                   <TreeList
                     items={ item?.children ?? [] }
                     wrapComponent={
-                      (item) => (<span className="thesaurus-filter-item">
+                      (item, toggle) => (<span className="thesaurus-filter-item">
                         <Checkbox
                           className="thesaurus-filter-item__checkbox"
                           checked={ globalSearch?.filters.thesaurus.has(item.id) }
                           onChange={ () => toggleThesaurusFilterActiveStatusForId(item.id) }
                         />
-                        <span className="thesaurus-filter-item__name" data-count={ item.data?.count }>{ item.name }</span>
+                        <span
+                          className="thesaurus-filter-item__name"
+                          data-count={ item.data?.count }
+                          onClick={ toggle }
+                        >{ item.name }</span>
                       </span>)
                     }
                   ></TreeList>

@@ -51,6 +51,7 @@
     }
     &__name {
       margin-left: $xs;
+      line-height: $m;
 
       &:after {
         content: " (" attr(data-count) ")";
