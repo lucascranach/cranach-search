@@ -5,7 +5,6 @@ import Collection from './collection';
 import GlobalSearchAPI_, {
   GlobalSearchArtifact,
   GlobalSearchResult,
-  APIFilterType,
   EntityType,
 } from '../../api/globalSearch';
 export { EntityType as GlobalSearchEntityType } from '../../api/globalSearch';
@@ -38,7 +37,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   error: string | null = null;
 
-  filters: APIFilterType = {
+  filters: FilterType = {
     dating: {
       from: '',
       to: '',
@@ -46,7 +45,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     size: 50,
     from: 0,
     entityType: EntityType.UNKNOWN,
-    thesaurus: observable.set(new Set()),
+    thesaurus: new Set(),
   };
 
   debounceWaitInMSecs: number = 500;
