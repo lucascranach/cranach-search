@@ -1,4 +1,5 @@
 import React , { FC } from 'react';
+import { observer } from 'mobx-react-lite';
 
 import './checkbox.scss';
 
@@ -32,4 +33,4 @@ const Checkbox: FC<Props> = ({
   </label>
 );
 
-export default Checkbox;
+export default observer(Checkbox);

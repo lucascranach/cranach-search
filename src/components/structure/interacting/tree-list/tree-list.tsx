@@ -1,4 +1,5 @@
 import React, { FC, ReactElement, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 
 import './tree-list.scss';
 
@@ -50,4 +51,4 @@ const TreeList: FC<Props> = ({
   </ul>
 );
 
-export default TreeList;
+export default observer(TreeList);
