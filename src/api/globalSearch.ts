@@ -78,6 +78,10 @@ const searchByFiltersAndTerm = async (
     params['entity_type:eq'] = filters.entityType;
   }
 
+  if (filters.thesaurus.size > 0) {
+    params['thesaurus:eq'] = Array.from(filters.thesaurus).join(',');
+  }
+
   const cleanSearchTerm = searchTerm.trim();
   if (cleanSearchTerm !== '') {
     /* Commented out until the free-text search is usable */
