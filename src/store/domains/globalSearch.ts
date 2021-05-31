@@ -1,5 +1,5 @@
 
-import { makeAutoObservable, observable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import UI from './ui';
 import Collection from './collection';
 import GlobalSearchAPI_, {
