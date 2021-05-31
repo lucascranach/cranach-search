@@ -19,10 +19,11 @@ const Checkbox: FC<Props> = ({
   onChange = (_: boolean) => {},
   children,
 }) => (
-  <label>
+  <label
+    className={ `checkbox ${className}` }
+    data-component="base/interacting/checkbox"
+  >
     <input
-      className={ `checkbox ${className}` }
-      data-component="base/interacting/checkbox"
       type="checkbox"
       name={ name }
       value={ value }
