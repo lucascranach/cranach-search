@@ -1,12 +1,19 @@
 
 import { makeAutoObservable } from 'mobx';
+import GlobalSearch from './globalSearch';
 
 export default class Collection implements CollectionStoreInterface {
   artefacts: string[] = [];
+  globalSearchStore: GlobalSearch;
 
-  constructor() {
+  constructor(globalSearchStore: GlobalSearch) {
     makeAutoObservable(this);
+    this.globalSearchStore = globalSearchStore;
     this.readCollectionFromLocalStorage();
+  }
+
+  readFromLocalStorage(): void {
+    throw new Error('Method not implemented.');
   }
 
   /* Actions */
@@ -29,11 +36,17 @@ export default class Collection implements CollectionStoreInterface {
     }
     return true;
   }
+
+  showCollection() {
+    this.readCollectionFromLocalStorage();
+    console.log(this.artefacts);
+  }
 }
 
 export interface CollectionStoreInterface {
   artefacts: string[];
-  readCollectionFromLocalStorage(): void;
+  showCollection(): void;
+  readFromLocalStorage(): void;
   addArtefactToCollection(artefact: string): void;
   removeArtefactFromCollection(artefact: string): void;
 }
