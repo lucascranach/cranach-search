@@ -17,8 +17,10 @@ type Translations = {
 const Navigation = () => {
   const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] } );
   const { t } = useTranslation('Navigation', translations);
-  const { globalSearch } = useContext(StoreContext);
-  const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => { return activeFilter === filterValue ? 'is-active' : '' }
+  const { globalSearch, collection } = useContext(StoreContext);
+  const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => {
+    return activeFilter === filterValue ? 'is-active' : ''
+  }
 
   const navStructure = [
     {
@@ -35,17 +37,17 @@ const Navigation = () => {
     },
     {
       title: 'My Collection',
-      filterValue: GlobalSearchEntityType.COLLECTION,
+      filterValue: GlobalSearchEntityType.UNKNOWN,
     }
   ];
 
   const triggerAction = (filterValue: GlobalSearchEntityType) => {
-    if (filterValue === GlobalSearchEntityType.COLLECTION) {
-      globalSearch?.setCollectionItemsAsIds();
+    if (filterValue === GlobalSearchEntityType.UNKNOWN) {
+      globalSearch?.setEntityType(filterValue);
+      collection?.showCollection();
     } else {
       globalSearch?.setEntityType(filterValue);
     }
-
   }
 
   return (

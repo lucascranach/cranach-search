@@ -60,6 +60,10 @@ const searchByFiltersAndTerm = async (
     params['dating_end:lte'] = filters.dating.to;
   }
 
+  if (filters.id) {
+    params['id:eq'] = filters.id;
+  }
+
   if (filters.entityType !== EntityType.UNKNOWN) {
     params['entity_type:eq'] = filters.entityType;
   }
@@ -118,6 +122,7 @@ export type APIFilterType = {
   size: number,
   from: number,
   entityType: EntityType,
+  id: string
 };
 
 export type GlobalSearchArtifact = {

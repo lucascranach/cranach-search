@@ -19,6 +19,7 @@ export type FilterType = {
   size: number,
   from: number,
   entityType: EntityType,
+  id: string,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
@@ -42,6 +43,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     size: 50,
     from: 0,
     entityType: EntityType.UNKNOWN,
+    id: '',
   };
 
   debounceWaitInMSecs: number = 500;
@@ -117,7 +119,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       const { lang } = this.uiStore;
 
       this.setSearchLoading(true);
-
+      console.log(this.filters);
       try {
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
           this.filters,
