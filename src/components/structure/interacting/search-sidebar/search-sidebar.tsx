@@ -30,21 +30,21 @@ const SearchSidebar: FC = () => {
   const cdaIDInventorynumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
-  const thesaurusFilters = globalSearch?.result?.filters.thesaurus ?? [];
+  const filterInfos = globalSearch?.result?.filters ?? [];
 
-  const mapThesaurusFiltersToTreeList = (filters: typeof thesaurusFilters): TreeListItem[] => filters.map((filter) => ({
+  const mapFilterInfosToTreeList = (filters: typeof filterInfos): TreeListItem[] => filters.map((filter) => ({
     id: filter.id,
-    name: filter.name,
-    children: mapThesaurusFiltersToTreeList(filter.children),
+    name: filter.text,
+    children: mapFilterInfosToTreeList(filter.children),
     data: {
-      count: filter.count,
+      count: filter.doc_count,
     },
   }));
 
-  const mappedThesaurusFilters = mapThesaurusFiltersToTreeList(thesaurusFilters);
+  const mappedFiltersInfos = mapFilterInfosToTreeList(filterInfos);
 
-  const toggleThesaurusFilterActiveStatusForId = (filterId: string) => {
-     globalSearch?.toggleThesaurusFilterActiveStatus(filterId);
+  const toggleThesaurusFilterActiveStatusForId = (filterInfoId: string) => {
+     globalSearch?.toggleFilterInfoActiveStatus(filterInfoId);
   };
 
   return (
@@ -101,50 +101,7 @@ const SearchSidebar: FC = () => {
         <legend className="headline">{ t('Filter results by') }</legend>
 
         <Accordion>
-          <Accordion.Entry title={ t('Attribution') }>
-            Attribution
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Kind') }>
-            Kind
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Dating') }>
-            <div className="cell-row">
-              <div className="cell">
-                <TextInput
-                  className="dating-field"
-                  value={ globalSearch?.filters.dating.from }
-                  placeholder="Von"
-                  onChange={ (date) => globalSearch?.setDatingFrom(date) }
-                ></TextInput>
-              </div>
-
-              <div className="cell">
-                -
-              </div>
-
-              <div className="cell">
-                <TextInput
-                  className="dating-field"
-                  value={ globalSearch?.filters.dating.to }
-                  placeholder="Bis"
-                  onChange={ (date) => globalSearch?.setDatingTo(date) }
-                ></TextInput>
-              </div>
-            </div>
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Collection / Location') }>
-            Collection / Location
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Examination Techniques') }>
-            Examination Techniques
-          </Accordion.Entry>
-
-
-          { mappedThesaurusFilters.map(
+          { mappedFiltersInfos.map(
               (item) => {
                 return (<Accordion.Entry key={ item.id } title={ item.name }>
                   <TreeList
@@ -153,7 +110,7 @@ const SearchSidebar: FC = () => {
                       (item, toggle) => (<span className="thesaurus-filter-item">
                         <Checkbox
                           className="thesaurus-filter-item__checkbox"
-                          checked={ globalSearch?.filters.thesaurus.has(item.id) }
+                          checked={ globalSearch?.filters.filterInfos.has(item.id) }
                           onChange={ () => toggleThesaurusFilterActiveStatusForId(item.id) }
                         />
                         <span

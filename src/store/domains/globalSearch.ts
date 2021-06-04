@@ -19,7 +19,7 @@ export type FilterType = {
   size: number,
   from: number,
   entityType: EntityType,
-  thesaurus: Set<string>,
+  filterInfos: Set<string>,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
@@ -45,7 +45,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     size: 50,
     from: 0,
     entityType: EntityType.UNKNOWN,
-    thesaurus: new Set(),
+    filterInfos: new Set(),
   };
 
   debounceWaitInMSecs: number = 500;
@@ -109,11 +109,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.triggerFilterRequest();
   }
 
-  toggleThesaurusFilterActiveStatus(filterId: string) {
-    if (this.filters.thesaurus.has(filterId)) {
-      this.filters.thesaurus.delete(filterId);
+  toggleFilterInfoActiveStatus(filterInfoId: string) {
+    if (this.filters.filterInfos.has(filterInfoId)) {
+      this.filters.filterInfos.delete(filterInfoId);
     } else {
-      this.filters.thesaurus.add(filterId);
+      this.filters.filterInfos.add(filterInfoId);
     }
 
     this.triggerFilterRequest();
@@ -195,7 +195,7 @@ export interface GlobalSearchStoreInterface {
 
   setFrom(from: number): void;
 
-  toggleThesaurusFilterActiveStatus(filterId: string): void;
+  toggleFilterInfoActiveStatus(filterId: string): void;
 
   triggerFilterRequest(): void;
 

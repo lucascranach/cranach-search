@@ -5,22 +5,10 @@ const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
-/* Temporary helper function */
-const cleanThesaurusItem = (item: any): GlobalSearchThesaurusItem => {
-  return {
-    id: item.alt.dkultTermIdentifier,
-    name: item.term,
-    count: item.doc_count,
-    is_available: item.is_available,
-    children: item.subTerms.map(cleanThesaurusItem),
-  }
-}
 
-const assembleResultData = (resultset: any): GlobalSearchResult => {
-  const items = resultset.data.results.map((item: any) => toArtefact(item));
-  const filters = {
-    thesaurus: resultset.data.filters.thesaurus.map(cleanThesaurusItem),
-  };
+const assembleResultData = (resultset: any, langCode: string): GlobalSearchResult => {
+  const items = resultset.data.results.map((item: any) => toArtefact(item, langCode));
+  const filters = resultset.data.filters.filterInfos;
   const meta = resultset.data.meta;
   return { items, filters, meta };
 }
@@ -33,28 +21,28 @@ const setHistory = (queryParams: string) => {
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any) => {
-  const { _data_all: d } = item;
+const toArtefact = (item: any, langCode: string) => {
+  const { data_all: d } = item;
 
   return {
-    id: item.id,
-    langCode: d.langCode,
-    title: d.titles[0].title,
+    id: d.id,
+    langCode: langCode,
+    title: item.title,
     subtitle: '',
     date: '',
     additionalInfoList: [],
     classification: '',
-    imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+    imgSrc: d.images ? d.images.overall.images[0].small.src : '',
   };
 };
 
 const searchByFiltersAndTerm = async (
   filters: APIFilterType,
   searchTerm: string,
-  lang: string
+  langCode: string
 ): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
-    // lang, // `lang` parameter is commented out because of current missing support
+    language: langCode,
     'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
 
@@ -78,8 +66,8 @@ const searchByFiltersAndTerm = async (
     params['entity_type:eq'] = filters.entityType;
   }
 
-  if (filters.thesaurus.size > 0) {
-    params['thesaurus:eq'] = Array.from(filters.thesaurus).join(',');
+  if (filters.filterInfos.size > 0) {
+    params['filterInfos:eq'] = Array.from(filters.filterInfos).join(',');
   }
 
   const cleanSearchTerm = searchTerm.trim();
@@ -101,7 +89,7 @@ const searchByFiltersAndTerm = async (
       { method: 'GET', headers: headers },
     );
     const bodyJSON = await resp.json();
-    return assembleResultData(bodyJSON);
+    return assembleResultData(bodyJSON, langCode);
   } catch(err) {
     console.error(err);
   }
@@ -136,7 +124,7 @@ export type APIFilterType = {
   size: number,
   from: number,
   entityType: EntityType,
-  thesaurus: Set<string>,
+  filterInfos: Set<string>,
 };
 
 export type GlobalSearchArtifact = {
@@ -150,21 +138,17 @@ export type GlobalSearchArtifact = {
   imgSrc: string;
 }
 
-export type GlobalSearchThesaurusItem = {
+export type GlobalSearchFilterInfoItem = {
   id: string;
-  name: string;
-  count: number;
+  text: string;
+  doc_count: number;
   is_available: boolean;
-  children: GlobalSearchThesaurusItem[];
-}
-
-export type GlobalSearchFilters = {
-  thesaurus: GlobalSearchThesaurusItem[];
+  children: GlobalSearchFilterInfoItem[];
 }
 
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
-  filters: GlobalSearchFilters;
+  filters: GlobalSearchFilterInfoItem[];
   meta: {
     hits: number;
   };
