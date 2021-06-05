@@ -84,14 +84,14 @@ const Navigation = () => {
             className={`btn btn--is-reduced ${isVisibleMyCranach}`}
             onClick={()=> toggleSidebar()}
           >
-            <i className="icon">list</i>
+            <i className="icon icon--is-inline">list</i>
             { t('goto My Cranach') }
           </button>
           <button
             className={`btn btn--is-reduced ${isVisibleFilter}`}
             onClick={()=> toggleSidebar()}
           >
-            <i className="icon">manage_search</i>
+            <i className="icon icon--is-inline">manage_search</i>
             { t('goto search') }
           </button>
         </li>
