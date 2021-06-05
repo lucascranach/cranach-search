@@ -3,14 +3,9 @@
 
 .artefact-overview {
 
-  &[data-active-view='card'] {
-    @include grid-even-columns($vp-medium, 3);
-    @include grid-even-columns($vp-large, 4);
-    @include grid-even-columns($vp-xlarge, 5);
-    @include grid-even-columns($vp-xxlarge, 6);
-    @include grid-even-columns($vp-3xlarge, 7);
-    @include grid-even-columns($vp-4xlarge, 8);
-  }
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($tile-xs, 1fr));
+  gap: $s;
 
   &[data-active-view='card-small'] {
     @include grid-even-columns($vp-medium, 4);
