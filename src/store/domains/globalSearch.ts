@@ -111,6 +111,10 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.triggerFilterRequest();
   }
 
+  resetEntityType() {
+    this.filters.entityType = EntityType.UNKNOWN;
+  }
+
   triggerFilterRequest() {
 
     clearTimeout(this.debounceHandler);
@@ -177,5 +181,7 @@ export interface GlobalSearchStoreInterface {
   setFrom(from: number): void;
 
   triggerFilterRequest(): void;
+
+  resetEntityType(): void;
 
 }

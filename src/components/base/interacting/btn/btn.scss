@@ -39,4 +39,9 @@
   &--is-hidden{
     display: none;
   }
+
+  &--is-disabled{
+    opacity: $op-low;
+    pointer-events: none;
+  }
 }

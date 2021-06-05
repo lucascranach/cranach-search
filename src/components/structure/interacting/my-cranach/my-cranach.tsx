@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 
+import Size from '../../../base/visualizing/size';
 
 import translations from './translations.json';
 import './my-cranach.scss';
@@ -18,6 +19,7 @@ const MyCranach = () => {
   const { collection } = useContext(StoreContext);
   const showCollection = () => collection?.showCollection();
   const triggerComparism = () =>  collection?.startComparism();
+  const compareIsActive = collection?.size && collection?.size > 1 ? 'btn--is-active' : 'btn--is-disabled';
 
   return (
     <div
@@ -32,12 +34,12 @@ const MyCranach = () => {
           onClick={() => showCollection()}
         >
           <i className="icon">collections_bookmark</i>
-          {t('Show My Collection')}
+          {t('Show My Collection')}<Size size={collection?.size} />
 
         </li>
 
         <li
-          className="btn btn--is-reduced btn--is-stacked"
+          className={`btn btn--is-reduced btn--is-stacked ${compareIsActive}`}
           onClick={() => triggerComparism()}
         >
           <i className="icon">compare</i>

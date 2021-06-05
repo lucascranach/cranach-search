@@ -6,11 +6,13 @@ const cranachCompareURL = import.meta.env.VITE_CRANACH_COMPARE_URL;
 export default class Collection implements CollectionStoreInterface {
   artefacts: string[] = [];
   globalSearchStore: GlobalSearch;
+  size: number = 0;
 
   constructor(globalSearchStore: GlobalSearch) {
     makeAutoObservable(this);
     this.globalSearchStore = globalSearchStore;
     this.readCollectionFromLocalStorage();
+    this.updateSize();
   }
 
   readFromLocalStorage(): void {
@@ -18,15 +20,21 @@ export default class Collection implements CollectionStoreInterface {
   }
 
   /* Actions */
+  updateSize() {
+    this.size = this.artefacts.length;
+  }
+
   addArtefactToCollection(artefact: string) {
     this.artefacts.push(artefact);
     localStorage.setItem('collection', this.artefacts.join(','));
+    this.updateSize();
     return true;
   }
 
   removeArtefactFromCollection(artefact: string) {
     this.artefacts = this.artefacts.filter(item => item != artefact);
     localStorage.setItem('collection', this.artefacts.join(','));
+    this.updateSize();
     return true;
   }
 
@@ -40,6 +48,7 @@ export default class Collection implements CollectionStoreInterface {
 
   showCollection() {
     this.readCollectionFromLocalStorage();
+    this.globalSearchStore?.resetEntityType();
     const artefactInventoryNumbers = this.artefacts.map(artefact => artefact.replace(/&.*/, ''));
     this.globalSearchStore.filters.id = artefactInventoryNumbers.join(',');
     this.globalSearchStore.triggerFilterRequest();
@@ -56,6 +65,7 @@ export default class Collection implements CollectionStoreInterface {
 
 export interface CollectionStoreInterface {
   artefacts: string[];
+  size: number;
   showCollection(): void;
   startComparism(): void;
   readFromLocalStorage(): void;
