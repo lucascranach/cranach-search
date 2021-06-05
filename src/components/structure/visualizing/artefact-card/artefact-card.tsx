@@ -43,6 +43,8 @@ const ArtefactCard: FC<Props> = ({
     }
   };
 
+  const bookmarkIcon = isStoredFavorite ? 'bookmark_remove' : 'bookmark_add';
+
   return(
     <div
       className="artefact-card"
@@ -67,9 +69,9 @@ const ArtefactCard: FC<Props> = ({
             <p className="artefact-card__smalltext">{slug}</p>
             </a>
             <a
-              className={`artefact-card__favorite ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}` }
+              className={`artefact-card__favorite icon ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}` }
               onClick={toggleFav}
-            ></a>
+          >{bookmarkIcon}</a>
           </div>
         )
       }
