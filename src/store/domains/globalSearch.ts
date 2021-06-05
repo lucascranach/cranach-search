@@ -119,7 +119,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       const { lang } = this.uiStore;
 
       this.setSearchLoading(true);
-      console.log(this.filters);
+
       try {
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
           this.filters,

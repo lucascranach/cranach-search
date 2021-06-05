@@ -20,16 +20,17 @@ const setHistory = (queryParams: string) => {
 }
 
 const toArtefact = (item: any) => {
-  const { _data_all: d } = item;
+  const { data_all: d } = item;
 
   return {
-    id: item.id,
+    id: item.inventory_number,
     langCode: d.langCode,
-    title: d.titles[0].title,
-    subtitle: '',
+    title: item.title,
+    subtitle: item.owner,
     date: '',
     additionalInfoList: [],
     classification: '',
+    objectName: item.objectName,
     imgSrc: item.images ? item.images.overall.images[0].small.src : '',
   };
 };
@@ -61,7 +62,7 @@ const searchByFiltersAndTerm = async (
   }
 
   if (filters.id) {
-    params['id:eq'] = filters.id;
+    params['inventory_number:eq'] = filters.id;
   }
 
   if (filters.entityType !== EntityType.UNKNOWN) {
