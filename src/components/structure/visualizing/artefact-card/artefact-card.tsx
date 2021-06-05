@@ -9,6 +9,7 @@ import './artefact-card.scss';
 
 type Props = {
   id?: string,
+  slug?:string,
   title?: string,
   subtitle?: string,
   date?: string,
@@ -21,6 +22,7 @@ type Props = {
 
 const ArtefactCard: FC<Props> = ({
   id = '',
+  slug='',
   title = '',
   subtitle = '',
   date = '',
@@ -31,13 +33,13 @@ const ArtefactCard: FC<Props> = ({
 }) => {
   const { collection } = useContext(StoreContext);
 
-  let isStoredFavorite = !!(collection?.artefacts.includes(id));
+  let isStoredFavorite = !!(collection?.artefacts.includes(slug));
 
   const toggleFav = () => {
     if (isStoredFavorite) {
-      collection?.removeArtefactFromCollection(id);
+      collection?.removeArtefactFromCollection(slug);
     } else {
-      collection?.addArtefactToCollection(id);
+      collection?.addArtefactToCollection(slug);
     }
   };
 
@@ -62,7 +64,7 @@ const ArtefactCard: FC<Props> = ({
               <h2 className="artefact-card__title">{title}, {date}</h2>
               <p className="artefact-card__subtitle">{classification}</p>
               <p className="artefact-card__subtitle">{subtitle}</p>
-              <p className="artefact-card__smalltext">{id}</p>
+            <p className="artefact-card__smalltext">{slug}</p>
             </a>
             <a
               className={`artefact-card__favorite ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}` }

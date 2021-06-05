@@ -40,7 +40,8 @@ export default class Collection implements CollectionStoreInterface {
 
   showCollection() {
     this.readCollectionFromLocalStorage();
-    this.globalSearchStore.filters.id = this.artefacts.join(',');
+    const artefactInventoryNumbers = this.artefacts.map(artefact => artefact.replace(/&.*/, ''));
+    this.globalSearchStore.filters.id = artefactInventoryNumbers.join(',');
     this.globalSearchStore.triggerFilterRequest();
     return true;
   }

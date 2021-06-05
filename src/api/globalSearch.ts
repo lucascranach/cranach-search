@@ -30,7 +30,7 @@ const toArtefact = (item: any) => {
     date: '',
     additionalInfoList: [],
     classification: '',
-    objectName: item.objectName,
+    objectName: item.object_name,
     imgSrc: item.images ? item.images.overall.images[0].small.src : '',
   };
 };
@@ -128,6 +128,7 @@ export type APIFilterType = {
 
 export type GlobalSearchArtifact = {
   id: string;
+  objectName: string;
   langCode: string;
   title: string;
   subtitle: string;
