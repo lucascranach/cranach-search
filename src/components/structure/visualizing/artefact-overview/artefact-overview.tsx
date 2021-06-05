@@ -72,7 +72,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
           >
             { CardView === view && <ArtefactCard
               id={item.id}
-              slug={`${item.id}&${item.objectName}`}
+              slug={`${item.id}:${item.objectName}`}
               title={ shortenTitle(item.title) }
               subtitle={ item.subtitle }
               date={item.date}
@@ -84,7 +84,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
 
             { CardSmallView === view && <ArtefactCard
               to={getItemTo(item)}
-              slug={`${item.id}&${item.objectName}`}
+              slug={`${item.id}:${item.objectName}`}
               imgSrc={ item.imgSrc || '' }
             />
             }

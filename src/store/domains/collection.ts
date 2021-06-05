@@ -49,7 +49,7 @@ export default class Collection implements CollectionStoreInterface {
   showCollection() {
     this.readCollectionFromLocalStorage();
     this.globalSearchStore?.resetEntityType();
-    const artefactInventoryNumbers = this.artefacts.map(artefact => artefact.replace(/&.*/, ''));
+    const artefactInventoryNumbers = this.artefacts.map(artefact => artefact.replace(/:.*/, ''));
     this.globalSearchStore.filters.id = artefactInventoryNumbers.join(',');
     this.globalSearchStore.triggerFilterRequest();
     return true;
