@@ -32,6 +32,8 @@ const toArtefact = (item: any) => {
     classification: '',
     objectName: item.object_name,
     imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+    entityType: item.entity_type,
+    entityTypeShortcut: item.entity_type.substr(0,1)
   };
 };
 
@@ -110,9 +112,16 @@ export enum EntityType {
   GRAPHICS = 'GRAPHIC',
   PAINTINGS = 'PAINTING',
   DOCUMENTS = 'DOCUMENT',
-  UNKNOWN = 'UNKNOWN',
-  COLLECTION = 'COLLECTION'
+  UNKNOWN = 'UNKNOWN'
 }
+
+export enum EntityTypeShortcuts {
+  GRAPHICS = 'G',
+  PAINTINGS = 'P',
+  DOCUMENTS = 'D',
+  UNKNOWN = 'U'
+}
+
 
 
 export type APIFilterType = {
@@ -136,6 +145,8 @@ export type GlobalSearchArtifact = {
   additionalInfoList: string[];
   classification: string;
   imgSrc: string;
+  entityType: string;
+  entityTypeShortcut: string;
 }
 
 export type GlobalSearchResult = {
