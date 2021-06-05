@@ -29,12 +29,13 @@
     }
   }
 
-  .right-end {
+  .sidebar-menu {
     display: flex;
     align-items: center;
     position: absolute;
-    right: $m;
-    bottom: 0;
+    width: 20%;
+    right: $xs;
+
 
     .lang-switcher {
       margin-left: $l;

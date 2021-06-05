@@ -47,7 +47,8 @@ export default class Collection implements CollectionStoreInterface {
   }
 
   startComparism() {
-    const url = `${cranachCompareURL}${this.artefacts.join(',')}`;
+    const artefactList = this.artefacts.map(artefact => artefact.replace(/&/, "_"));
+    const url = `${cranachCompareURL}${artefactList.join(',')}`;
     window.open(url, "_blank");
     return true;
   }

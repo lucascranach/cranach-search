@@ -35,8 +35,8 @@ const SearchSidebar = () => {
     >
       <div className="search-result-info">
         <h2>
-          {hits < 2 && `${hits} ${t('work found')}`}
-          {hits >= 2 && `${hits} ${t('works found')}`}
+          {hits === 1 && `${hits} ${t('work found')}`}
+          {(hits >= 2 || hits === 0) && `${hits} ${t('works found')}`}
         </h2>
       </div>
       <fieldset className="block">

@@ -17,12 +17,16 @@ type Translations = {
 const Navigation = () => {
   const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] } );
   const { t } = useTranslation('Navigation', translations);
-  const { globalSearch, collection } = useContext(StoreContext);
+  const { globalSearch, ui } = useContext(StoreContext);
   const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => {
     return activeFilter === filterValue ? 'is-active' : ''
   }
 
   const navStructure = [
+    {
+      title: 'All Departments',
+      filterValue: GlobalSearchEntityType.UNKNOWN,
+    },
     {
       title: 'Prints and Drawings',
       filterValue: GlobalSearchEntityType.GRAPHICS,
@@ -34,21 +38,19 @@ const Navigation = () => {
     {
       title: 'Archival Documents',
       filterValue: GlobalSearchEntityType.DOCUMENTS,
-    },
-    {
-      title: 'My Collection',
-      filterValue: GlobalSearchEntityType.UNKNOWN,
     }
   ];
 
   const triggerAction = (filterValue: GlobalSearchEntityType) => {
-    if (filterValue === GlobalSearchEntityType.UNKNOWN) {
-      globalSearch?.setEntityType(filterValue);
-      collection?.showCollection();
-    } else {
-      globalSearch?.setEntityType(filterValue);
-    }
+    globalSearch?.setEntityType(filterValue);
   }
+
+  const toggleSidebar = () => {
+    ui?.toggleSidebar();
+  }
+
+  const isVisibleMyCranach = ui?.sidebar === 'filter' ? 'btn--is-visible' : 'btn--is-hidden';
+  const isVisibleFilter = ui?.sidebar === 'myCranach' ? 'btn--is-visible' : 'btn--is-hidden';
 
   return (
     <nav
@@ -74,6 +76,25 @@ const Navigation = () => {
             </li>
           ))
         }
+      </ul>
+
+      <ul className="sidebar-menu">
+        <li>
+        <button
+            className={`btn btn--is-reduced ${isVisibleMyCranach}`}
+            onClick={()=> toggleSidebar()}
+          >
+            <i className="icon">list</i>
+            { t('goto My Cranach') }
+          </button>
+          <button
+            className={`btn btn--is-reduced ${isVisibleFilter}`}
+            onClick={()=> toggleSidebar()}
+          >
+            <i className="icon">manage_search</i>
+            { t('goto search') }
+          </button>
+        </li>
       </ul>
 
     </nav>
