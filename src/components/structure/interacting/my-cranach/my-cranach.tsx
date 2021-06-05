@@ -33,7 +33,7 @@ const MyCranach = () => {
           className="btn btn--is-reduced btn--is-stacked"
           onClick={() => showCollection()}
         >
-          <i className="icon">collections_bookmark</i>
+          <i className="icon icon--is-medium icon--is-inline">collections_bookmark</i>
           {t('Show My Collection')}<Size size={collection?.size} />
 
         </li>
@@ -42,7 +42,7 @@ const MyCranach = () => {
           className={`btn btn--is-reduced btn--is-stacked ${compareIsActive}`}
           onClick={() => triggerComparism()}
         >
-          <i className="icon">compare</i>
+          <i className="icon icon--is-medium icon--is-inline">compare</i>
           {t('Compare Artefacts')}
 
         </li>

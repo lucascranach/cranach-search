@@ -1,9 +1,8 @@
 // Icons
-i.icon {
+.icon {
   height: auto;
   width: auto;
   font-family: $font-icons;
-  margin-right: .5rem;
   vertical-align: middle;
   font-weight: normal;
   font-style: normal;
@@ -19,10 +18,11 @@ i.icon {
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
   font-feature-settings: 'liga';
+  text-transform: none;
 }
 
 // Sizes
-i.icon {
+.icon {
   &.i12:before { font-size: 12px !important; }
   &.i14:before { font-size: 14px !important; }
   &.i18:before { font-size: 18px !important; }
@@ -31,15 +31,26 @@ i.icon {
   &.i48:before { font-size: 48px !important; }
 }
 
-i.icon:before {
+.icon:before {
    content: attr(data-icon);
 }
-i.icon {
+.icon {
   &.red {color: red;}
 }
 
-//.icon Font Awesome Extend
 .icon {
-  font-family: $font-icons;
-  text-transform: none;
+
+  &--is-small{
+    font-size: $s;
+  }
+
+  &--is-medium{
+    font-size: $m;
+  }
+
+  &--is-inline{
+    margin-right: $s;
+  }
 }
+
+
