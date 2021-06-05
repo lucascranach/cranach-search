@@ -21,20 +21,16 @@ const setHistory = (queryParams: string) => {
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any, langCode: string) => {
-  const { data_all: d } = item;
-
-  return {
-    id: d.id,
-    langCode: langCode,
-    title: item.title,
-    subtitle: '',
-    date: '',
-    additionalInfoList: [],
-    classification: '',
-    imgSrc: d.images ? d.images.overall.images[0].small.src : '',
-  };
-};
+const toArtefact = (item: any, langCode: string) => ({
+  id: item.inventory_number,
+  langCode: langCode,
+  title: item.title,
+  subtitle: '',
+  date: '',
+  additionalInfoList: [],
+  classification: '',
+  imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+});
 
 const searchByFiltersAndTerm = async (
   filters: APIFilterType,
