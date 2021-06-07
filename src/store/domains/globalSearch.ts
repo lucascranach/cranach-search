@@ -5,7 +5,6 @@ import Collection from './collection';
 import GlobalSearchAPI_, {
   GlobalSearchArtifact,
   GlobalSearchResult,
-  APIFilterType,
   EntityType,
 } from '../../api/globalSearch';
 export { EntityType as GlobalSearchEntityType } from '../../api/globalSearch';
@@ -20,6 +19,7 @@ export type FilterType = {
   size: number,
   from: number,
   entityType: EntityType,
+  filterInfos: Set<string>,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
@@ -37,7 +37,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   error: string | null = null;
 
-  filters: APIFilterType = {
+  filters: FilterType = {
     dating: {
       from: '',
       to: '',
@@ -45,6 +45,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     size: 50,
     from: 0,
     entityType: EntityType.UNKNOWN,
+    filterInfos: new Set(),
   };
 
   debounceWaitInMSecs: number = 500;
@@ -105,6 +106,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   setFrom(from: number) {
     this.filters.from = from;
+    this.triggerFilterRequest();
+  }
+
+  toggleFilterInfoActiveStatus(filterInfoId: string) {
+    if (this.filters.filterInfos.has(filterInfoId)) {
+      this.filters.filterInfos.delete(filterInfoId);
+    } else {
+      this.filters.filterInfos.add(filterInfoId);
+    }
+
     this.triggerFilterRequest();
   }
 
@@ -183,6 +194,8 @@ export interface GlobalSearchStoreInterface {
   setCollectionItemsAsIds(): void;
 
   setFrom(from: number): void;
+
+  toggleFilterInfoActiveStatus(filterId: string): void;
 
   triggerFilterRequest(): void;
 
