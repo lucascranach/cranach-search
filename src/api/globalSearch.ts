@@ -6,8 +6,8 @@ const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
 
-const assembleResultData = (resultset: any, langCode: string): GlobalSearchResult => {
-  const items = resultset.data.results.map((item: any) => toArtefact(item, langCode));
+const assembleResultData = (resultset: any): GlobalSearchResult => {
+  const items = resultset.data.results.map((item: any) => toArtefact(item));
   const filters = resultset.data.filters.filterInfos;
   const meta = resultset.data.meta;
   return { items, filters, meta };
@@ -21,9 +21,8 @@ const setHistory = (queryParams: string) => {
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any, langCode: string) => ({
+const toArtefact = (item: any) => ({
   id: item.inventory_number,
-  langCode: langCode,
   title: item.title,
   subtitle: '',
   date: '',
@@ -85,7 +84,7 @@ const searchByFiltersAndTerm = async (
       { method: 'GET', headers: headers },
     );
     const bodyJSON = await resp.json();
-    return assembleResultData(bodyJSON, langCode);
+    return assembleResultData(bodyJSON);
   } catch(err) {
     console.error(err);
   }
@@ -125,7 +124,6 @@ export type APIFilterType = {
 
 export type GlobalSearchArtifact = {
   id: string;
-  langCode: string;
   title: string;
   subtitle: string;
   date: string;

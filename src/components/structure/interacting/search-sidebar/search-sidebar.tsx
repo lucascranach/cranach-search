@@ -43,7 +43,7 @@ const SearchSidebar: FC = () => {
 
   const mappedFiltersInfos = mapFilterInfosToTreeList(filterInfos);
 
-  const toggleThesaurusFilterActiveStatusForId = (filterInfoId: string) => {
+  const toggleFilterInfoActiveStatus = (filterInfoId: string) => {
      globalSearch?.toggleFilterInfoActiveStatus(filterInfoId);
   };
 
@@ -107,14 +107,14 @@ const SearchSidebar: FC = () => {
                   <TreeList
                     items={ item?.children ?? [] }
                     wrapComponent={
-                      (item, toggle) => (<span className="thesaurus-filter-item">
+                      (item, toggle) => (<span className="filter-info-item">
                         <Checkbox
-                          className="thesaurus-filter-item__checkbox"
+                          className="filter-info-item__checkbox"
                           checked={ globalSearch?.filters.filterInfos.has(item.id) }
-                          onChange={ () => toggleThesaurusFilterActiveStatusForId(item.id) }
+                          onChange={ () => toggleFilterInfoActiveStatus(item.id) }
                         />
                         <span
-                          className="thesaurus-filter-item__name"
+                          className="filter-info-item__name"
                           data-count={ item.data?.count }
                           onClick={ toggle }
                         >{ item.name }</span>
