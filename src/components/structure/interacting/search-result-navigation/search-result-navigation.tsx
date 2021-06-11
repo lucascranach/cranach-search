@@ -25,8 +25,8 @@ const SearchResultNavigation: FC<Props> = ({
   const hiddenClass = `${paginationClass}--hidden`;
 
   const { globalSearch } = useContext(StoreContext);
-  const { size, from } = globalSearch?.filters ?? { size: 1, from: 1 };
-  const hits = globalSearch?.result?.meta.hits ?? 0;
+  const { size, from } = globalSearch.filters ?? { size: 1, from: 1 };
+  const hits = globalSearch.result?.meta.hits ?? 0;
 
   const maxPages = Math.ceil(hits / size);
   const currentPos = (from / size);
@@ -64,11 +64,11 @@ const SearchResultNavigation: FC<Props> = ({
 
   const setPagination = (direction: PaginationDirection) => {
     const newFrom = (direction === PaginationDirection.UP) ? from + size : from - size;
-    globalSearch?.setFrom(newFrom);
+    globalSearch.setFrom(newFrom);
   }
 
   const jumpToPage = (page: number) => {
-    globalSearch?.setFrom(page * size);
+    globalSearch.setFrom(page * size);
   }
 
   const navItems = Array(maxPages).fill(0).map((_, idx) => ({

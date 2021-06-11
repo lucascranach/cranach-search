@@ -23,14 +23,14 @@ const SearchSidebar: FC = () => {
   const { t } = useTranslation('SearchSidebar', translations);
   const { globalSearch } = useContext(StoreContext);
 
-  const hits = globalSearch?.result?.meta.hits ?? 0;
+  const hits = globalSearch.result?.meta.hits ?? 0;
   const title = useState('*');
   const catalogWorkReferenceNumber = useState('*');
   const location = useState('*');
   const cdaIDInventorynumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
-  const filterInfos = globalSearch?.result?.filters ?? [];
+  const filterInfos = globalSearch.result?.filters ?? [];
 
   const mapFilterInfosToTreeList = (filters: typeof filterInfos): TreeListItem[] => filters.map((filter) => ({
     id: filter.id,
@@ -44,7 +44,7 @@ const SearchSidebar: FC = () => {
   const mappedFiltersInfos = mapFilterInfosToTreeList(filterInfos);
 
   const toggleFilterInfoActiveStatus = (filterInfoId: string) => {
-     globalSearch?.toggleFilterInfoActiveStatus(filterInfoId);
+     globalSearch.toggleFilterInfoActiveStatus(filterInfoId);
   };
 
   return (
@@ -62,8 +62,8 @@ const SearchSidebar: FC = () => {
         <TextInput
           className="search-input"
           label={ t('all Fields') }
-          value={ globalSearch?.allFieldsTerm }
-          onChange={ term => globalSearch?.searchForAllFieldsTerm(term) }
+          value={ globalSearch.allFieldsTerm }
+          onChange={ term => globalSearch.searchForAllFieldsTerm(term) }
         ></TextInput>
 
         <TextInput
@@ -105,12 +105,12 @@ const SearchSidebar: FC = () => {
               (item) => {
                 return (<Accordion.Entry key={ item.id } title={ item.name }>
                   <TreeList
-                    items={ item?.children ?? [] }
+                    items={ item.children ?? [] }
                     wrapComponent={
                       (item, toggle) => (<span className="filter-info-item">
                         <Checkbox
                           className="filter-info-item__checkbox"
-                          checked={ globalSearch?.filters.filterInfos.has(item.id) }
+                          checked={ globalSearch.filters.filterInfos.has(item.id) }
                           onChange={ () => toggleFilterInfoActiveStatus(item.id) }
                         />
                         <span

@@ -12,9 +12,9 @@ configure({
 });
 
 type StoreDefaultType = {
-  ui?: UIStoreInterface;
-  globalSearch?: GlobalSearchStoreInterface;
-  collection?: CollectionStoreInterface;
+  ui: UIStoreInterface;
+  globalSearch: GlobalSearchStoreInterface;
+  collection: CollectionStoreInterface;
 }
 
-export default createContext<StoreDefaultType>({});
+export default createContext<StoreDefaultType>({} as StoreDefaultType);
