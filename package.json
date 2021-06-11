@@ -7,10 +7,12 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "i18next": "^20.3.1",
     "mobx": "^6.1.8",
     "mobx-react-lite": "^3.2.0",
     "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react-dom": "^17.0.0",
+    "react-i18next": "^11.10.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",

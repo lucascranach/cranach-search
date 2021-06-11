@@ -18,10 +18,9 @@ type Translations = {
 };
 
 const SearchSidebar: FC = () => {
-  const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] || key } );
+  const { globalSearch, ui } = useContext(StoreContext);
 
-  const { t } = useTranslation('SearchSidebar', translations);
-  const { globalSearch } = useContext(StoreContext);
+  const { t } = ui?.useTranslation('SearchSidebar', translations) ?? { t: ((str: string) => str) };
 
   const hits = globalSearch?.result?.meta.hits ?? 0;
   const title = useState('*');
