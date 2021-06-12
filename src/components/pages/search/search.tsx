@@ -14,7 +14,7 @@ const Search: FC = () => {
   const { globalSearch } = useContext(StoreContext);
 
   useEffect(() => {
-    globalSearch?.triggerFilterRequest();
+    globalSearch.triggerFilterRequest();
   }, [])
 
   return (
@@ -24,10 +24,10 @@ const Search: FC = () => {
     >
       <div className="search__results-area">
         <SearchResultNavigation></SearchResultNavigation>
-      { globalSearch?.loading && 'Loading...' }
-      { !globalSearch?.loading
+      { globalSearch.loading && 'Loading...' }
+      { !globalSearch.loading
         && <ArtefactOverview
-          items={ globalSearch?.flattenedSearchResultItems }
+          items={ globalSearch.flattenedSearchResultItems }
         />
       }
       </div>

@@ -41,9 +41,9 @@ const Navigation = () => {
 
   const triggerAction = (filterValue: GlobalSearchEntityType) => {
     if (filterValue === GlobalSearchEntityType.COLLECTION) {
-      globalSearch?.setCollectionItemsAsIds();
+      globalSearch.setCollectionItemsAsIds();
     } else {
-      globalSearch?.setEntityType(filterValue);
+      globalSearch.setEntityType(filterValue);
     }
 
   }
@@ -64,7 +64,7 @@ const Navigation = () => {
               key={item.filterValue}
             >
               <CategoryFilter
-                className={isActive(globalSearch?.filters.entityType, item.filterValue)}
+                className={isActive(globalSearch.filters.entityType, item.filterValue)}
                 filterText={t(item.title)}
                 onClick={() => triggerAction(item.filterValue) }
               >

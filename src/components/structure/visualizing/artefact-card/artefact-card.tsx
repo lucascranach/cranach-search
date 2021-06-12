@@ -31,13 +31,13 @@ const ArtefactCard: FC<Props> = ({
 }) => {
   const { collection } = useContext(StoreContext);
 
-  let isStoredFavorite = !!(collection?.artefacts.includes(id));
+  let isStoredFavorite = !!(collection.artefacts.includes(id));
 
   const toggleFav = () => {
     if (isStoredFavorite) {
-      collection?.removeArtefactFromCollection(id);
+      collection.removeArtefactFromCollection(id);
     } else {
-      collection?.addArtefactToCollection(id);
+      collection.addArtefactToCollection(id);
     }
   };
 
