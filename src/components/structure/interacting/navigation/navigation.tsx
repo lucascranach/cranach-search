@@ -15,9 +15,10 @@ type Translations = {
 };
 
 const Navigation = () => {
-  const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] } );
-  const { t } = useTranslation('Navigation', translations);
-  const { globalSearch } = useContext(StoreContext);
+  const { globalSearch, ui } = useContext(StoreContext);
+
+  const { t } = ui?.useTranslation('Navigation', translations) ?? { t: ((str: string) => str) };
+
   const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => { return activeFilter === filterValue ? 'is-active' : '' }
 
   const navStructure = [
