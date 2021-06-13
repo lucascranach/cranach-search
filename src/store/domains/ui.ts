@@ -51,6 +51,7 @@ export default class UI implements UIStoreInterface {
 }
 
 export interface UIStoreInterface {
+  lang: string;
   setLanguage(lang: string): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
 }
