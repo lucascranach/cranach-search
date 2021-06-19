@@ -21,8 +21,9 @@ const setHistory = (queryParams: string) => {
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any) => ({
+const toArtefact = (item: any): GlobalSearchArtifact => ({
   id: item.inventory_number,
+  entityType: item.entity_type,
   title: item.title,
   subtitle: '',
   date: '',
@@ -124,6 +125,7 @@ export type APIFilterType = {
 
 export type GlobalSearchArtifact = {
   id: string;
+  entityType: EntityType,
   title: string;
   subtitle: string;
   date: string;
