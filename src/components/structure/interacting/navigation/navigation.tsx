@@ -8,7 +8,7 @@ import CategoryFilter from '../../../base/interacting/category-filter';
 import translations from './translations.json';
 import './navigation.scss';
 
-import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
+import StoreContext, { GlobalSearchEntityType, UISidebarType } from '../../../../store/StoreContext';
 
 type Translations = {
   de: Record<string, string>
@@ -49,8 +49,8 @@ const Navigation = () => {
     ui?.toggleSidebar();
   }
 
-  const isVisibleMyCranach = ui?.sidebar === 'filter' ? 'btn--is-visible' : 'btn--is-hidden';
-  const isVisibleFilter = ui?.sidebar === 'myCranach' ? 'btn--is-visible' : 'btn--is-hidden';
+  const isVisibleMyCranach = ui?.sidebar === UISidebarType.FILTER ? 'btn--is-visible' : 'btn--is-hidden';
+  const isVisibleFilter = ui?.sidebar === UISidebarType.MY_CRANACH ? 'btn--is-visible' : 'btn--is-hidden';
 
   return (
     <nav

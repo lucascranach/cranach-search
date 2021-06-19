@@ -6,6 +6,7 @@ import { CollectionStoreInterface } from './domains/collection';
 import { GlobalSearchStoreInterface } from './domains/globalSearch';
 
 export { GlobalSearchEntityType as GlobalSearchEntityType } from './domains/globalSearch';
+export { UISidebarType } from './domains/ui';
 
 configure({
   useProxies: 'never',

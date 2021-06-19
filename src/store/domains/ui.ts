@@ -2,8 +2,8 @@
 import { makeAutoObservable } from 'mobx';
 
 export default class UI implements UIStoreInterface {
-  lang:string = 'de'
-  sidebar: string = 'myCranach'
+  lang: string = 'de';
+  sidebar: UISidebarType = UISidebarType.MY_CRANACH;
 
   constructor() {
     makeAutoObservable(this);
@@ -17,12 +17,18 @@ export default class UI implements UIStoreInterface {
   }
 
   toggleSidebar() {
-    this.sidebar = this.sidebar === 'filter' ? 'myCranach' : 'filter';
+    this.sidebar = (this.sidebar === UISidebarType.FILTER)
+      ? UISidebarType.MY_CRANACH
+      : UISidebarType.FILTER;
   }
 }
 
+export enum UISidebarType {
+  MY_CRANACH = 'myCranach',
+  FILTER = 'filter',
+}
 export interface UIStoreInterface {
   setLanguage(lang: string): void;
   toggleSidebar(): void;
-  sidebar: string;
+  sidebar: UISidebarType;
 }
