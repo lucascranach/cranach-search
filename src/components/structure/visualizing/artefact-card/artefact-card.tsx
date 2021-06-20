@@ -17,6 +17,7 @@ type Props = {
   imgSrc?: string,
   imgAlt?: string,
   classification?: string,
+  openInNewWindow?: boolean,
 }
 
 
@@ -30,6 +31,7 @@ const ArtefactCard: FC<Props> = ({
   imgSrc = '',
   imgAlt = '',
   classification = '',
+  openInNewWindow = false,
 }) => {
   const { collection } = useContext(StoreContext);
 
@@ -51,7 +53,11 @@ const ArtefactCard: FC<Props> = ({
       data-component="structure/visualizing/artefact-card"
     >
       <div className="card-image">
-        <a href={to}>
+        <a
+          href={to}
+          target={openInNewWindow ? '_blank' : ''}
+          rel={ 'noopener noreferrer' }
+        >
           <Image
             src={imgSrc}
             alt={imgAlt}
@@ -62,7 +68,11 @@ const ArtefactCard: FC<Props> = ({
       {id
         && (
           <div className="artefact-card__content">
-            <a href={to}>
+            <a
+              href={to}
+              target={ openInNewWindow ? '_blank' : '' }
+              rel={ 'noopener noreferrer' }
+            >
               <h2 className="artefact-card__title">{title}, {date}</h2>
               <p className="artefact-card__subtitle">{classification}</p>
               <p className="artefact-card__subtitle">{subtitle}</p>

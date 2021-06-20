@@ -43,7 +43,21 @@
 
   }
 
+  .filter-info-item {
+    display: flex;
+
+    &__checkbox {
+    }
+    &__name {
+      margin-left: $xs;
+      line-height: $m;
+
+      &:after {
+        content: " (" attr(data-count) ")";
+        color: $accent;
+        font-size: $s;
+      }
+    }
+  }
+
 }
-
-
-

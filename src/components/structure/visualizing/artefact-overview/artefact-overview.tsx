@@ -7,8 +7,20 @@ import ArtefactLine from '../artefact-line';
 
 import './artefact-overview.scss';
 
-/* TODO: introduce an item type only for the artefact overview */
-import { GlobalSearchArtifact } from '../../../../api/globalSearch';
+export type ArtefactOverviewItem = {
+  id: string;
+  entityType: string;
+  objectName: string;
+  title: string;
+  subtitle: string;
+  date: string;
+  additionalInfoList: string[];
+  classification: string;
+  imgSrc: string;
+  entityTypeShortcut: string;
+  to: string;
+  openInNewWindow: boolean;
+};
 
 type View = {
   type: string,
@@ -16,7 +28,7 @@ type View = {
 };
 
 type OverviewProps = {
-  items?: GlobalSearchArtifact[],
+  items?: ArtefactOverviewItem[],
   view?: View,
 }
 
@@ -58,7 +70,6 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
     const splitTitle = title.split(' ');
     return splitTitle.length < 25 ? title : `${splitTitle.slice(0, 24).join(' ')} ...`;
   };
-  const getItemTo = (item: GlobalSearchArtifact) => `/${item.langCode}/${item.id}`;
 
   return (<div
       className="artefact-overview"
@@ -76,14 +87,15 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
               title={ shortenTitle(item.title) }
               subtitle={ item.subtitle }
               date={item.date}
-              to={ getItemTo(item) }
+              to={ item.to }
               classification={ item.classification }
               imgSrc={ item.imgSrc || '' }
+              openInNewWindow={ item.openInNewWindow }
             />
           }
 
             { CardSmallView === view && <ArtefactCard
-              to={getItemTo(item)}
+              to={ item.to }
               storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
               imgSrc={ item.imgSrc || '' }
             />
@@ -94,7 +106,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
               subtitle={ item.subtitle }
               date={ item.date }
               additionalInfoList={ item.additionalInfoList }
-              to={ getItemTo(item) }
+              to={ item.to }
               imgSrc={ item.imgSrc || '' }
             />
           }

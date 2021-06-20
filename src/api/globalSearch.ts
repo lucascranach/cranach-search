@@ -5,10 +5,12 @@ const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
+
 const assembleResultData = (resultset: any): GlobalSearchResult => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
+  const filters = resultset.data.filters.filterInfos;
   const meta = resultset.data.meta;
-  return { items, meta };
+  return { items, filters, meta };
 }
 
 const setHistory = (queryParams: string) => {
@@ -19,31 +21,26 @@ const setHistory = (queryParams: string) => {
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any) => {
-  const { data_all: d } = item;
-
-  return {
-    id: item.inventory_number,
-    langCode: d.langCode,
-    title: item.title,
-    subtitle: item.owner,
-    date: '',
-    additionalInfoList: [],
-    classification: '',
-    objectName: item.object_name,
-    imgSrc: item.images ? item.images.overall.images[0].small.src : '',
-    entityType: item.entity_type,
-    entityTypeShortcut: item.entity_type.substr(0,1)
-  };
-};
+const toArtefact = (item: any): GlobalSearchArtifact => ({
+  id: item.inventory_number,
+  entityType: item.entity_type,
+  title: item.title,
+  subtitle: item.owner,
+  date: '',
+  additionalInfoList: [],
+  classification: '',
+  objectName: item.object_name,
+  imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+  entityTypeShortcut: item.entity_type.substr(0,1),
+});
 
 const searchByFiltersAndTerm = async (
   filters: APIFilterType,
   searchTerm: string,
-  lang: string
+  langCode: string
 ): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
-    // lang, // `lang` parameter is commented out because of current missing support
+    language: langCode,
     'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
 
@@ -69,6 +66,10 @@ const searchByFiltersAndTerm = async (
 
   if (filters.entityType !== EntityType.UNKNOWN) {
     params['entity_type:eq'] = filters.entityType;
+  }
+
+  if (filters.filterInfos.size > 0) {
+    params['filterInfos:eq'] = Array.from(filters.filterInfos).join(',');
   }
 
   const cleanSearchTerm = searchTerm.trim();
@@ -133,24 +134,33 @@ export type APIFilterType = {
   from: number,
   entityType: EntityType,
   id: string
+  filterInfos: Set<string>,
 };
 
 export type GlobalSearchArtifact = {
   id: string;
   objectName: string;
-  langCode: string;
+  entityType: EntityType,
   title: string;
   subtitle: string;
   date: string;
   additionalInfoList: string[];
   classification: string;
   imgSrc: string;
-  entityType: string;
   entityTypeShortcut: string;
+}
+
+export type GlobalSearchFilterInfoItem = {
+  id: string;
+  text: string;
+  doc_count: number;
+  is_available: boolean;
+  children: GlobalSearchFilterInfoItem[];
 }
 
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
+  filters: GlobalSearchFilterInfoItem[];
   meta: {
     hits: number;
   };

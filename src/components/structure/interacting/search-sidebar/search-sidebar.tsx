@@ -1,32 +1,46 @@
-import React, { useState, useContext } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 
 
 import Btn from '../../../base/interacting/btn';
 import TextInput from '../../../base/interacting/text-input';
 import Accordion from '../accordion';
+import Checkbox from '../../../base/interacting/checkbox';
+import TreeList, { TreeListItem } from '../tree-list';
 
 import translations from './translations.json';
 import './search-sidebar.scss';
 
 import StoreContext from '../../../../store/StoreContext';
 
-type Translations = {
-  de: Record<string, string>
-};
+const SearchSidebar: FC = () => {
+  const { globalSearch, ui } = useContext(StoreContext);
 
-const SearchSidebar = () => {
-  const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] } );
+  const { t } = ui.useTranslation('SearchSidebar', translations);
 
-  const { t } = useTranslation('SearchSidebar', translations);
-  const { globalSearch } = useContext(StoreContext);
-
-  const hits = globalSearch?.result?.meta.hits ?? 0;
+  const hits = globalSearch.result?.meta.hits ?? 0;
   const title = useState('*');
   const catalogWorkReferenceNumber = useState('*');
   const location = useState('*');
   const cdaIDInventorynumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
+
+  const filterInfos = globalSearch.result?.filters ?? [];
+
+  const mapFilterInfosToTreeList = (filters: typeof filterInfos): TreeListItem[] => filters.map((filter) => ({
+    id: filter.id,
+    name: filter.text,
+    children: mapFilterInfosToTreeList(filter.children),
+    data: {
+      count: filter.doc_count,
+    },
+  }));
+
+  const mappedFiltersInfos = mapFilterInfosToTreeList(filterInfos);
+
+  const toggleFilterInfoActiveStatus = (filterInfoId: string) => {
+     globalSearch.toggleFilterInfoActiveStatus(filterInfoId);
+  };
 
   return (
     <div
@@ -43,8 +57,8 @@ const SearchSidebar = () => {
         <TextInput
           className="search-input"
           label={ t('all Fields') }
-          value={ globalSearch?.allFieldsTerm }
-          onChange={ term => globalSearch?.searchForAllFieldsTerm(term) }
+          value={ globalSearch.allFieldsTerm }
+          onChange={ term => globalSearch.searchForAllFieldsTerm(term) }
         ></TextInput>
 
         <TextInput
@@ -82,63 +96,30 @@ const SearchSidebar = () => {
         <legend className="headline">{ t('Filter results by') }</legend>
 
         <Accordion>
-          <Accordion.Entry title={ t('Attribution') } toggle={ useState<boolean>(false) }>
-            Attribution
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Kind') } toggle={ useState<boolean>(false) }>
-            Kind
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Dating') } toggle={ useState<boolean>(false) }>
-            <div className="cell-row">
-              <div className="cell">
-                <TextInput
-                  className="dating-field"
-                  value={ globalSearch?.filters.dating.from }
-                  placeholder="Von"
-                  onChange={ (date) => globalSearch?.setDatingFrom(date) }
-                ></TextInput>
-              </div>
-
-              <div className="cell">
-                -
-              </div>
-
-              <div className="cell">
-                <TextInput
-                  className="dating-field"
-                  value={ globalSearch?.filters.dating.to }
-                  placeholder="Bis"
-                  onChange={ (date) => globalSearch?.setDatingTo(date) }
-                ></TextInput>
-              </div>
-            </div>
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Collection / Location') } toggle={ useState<boolean>(false) }>
-            Collection / Location
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Examination Techniques') } toggle={ useState<boolean>(false) }>
-            Examination Techniques
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Content') } toggle={ useState<boolean>(false) }>
-            Content
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Form') } toggle={ useState<boolean>(false) }>
-            Form
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Function') } toggle={ useState<boolean>(false) }>
-            Function
-          </Accordion.Entry>
-
-          <Accordion.Entry title={ t('Constituents') } toggle={ useState<boolean>(false) }>
-            Constituents
-          </Accordion.Entry>
+          { mappedFiltersInfos.map(
+              (item) => {
+                return (<Accordion.Entry key={ item.id } title={ item.name }>
+                  <TreeList
+                    items={ item.children ?? [] }
+                    wrapComponent={
+                      (item, toggle) => (<span className="filter-info-item">
+                        <Checkbox
+                          className="filter-info-item__checkbox"
+                          checked={ globalSearch.filters.filterInfos.has(item.id) }
+                          onChange={ () => toggleFilterInfoActiveStatus(item.id) }
+                        />
+                        <span
+                          className="filter-info-item__name"
+                          data-count={ item.data?.count }
+                          onClick={ toggle }
+                        >{ item.name }</span>
+                      </span>)
+                    }
+                  ></TreeList>
+                </Accordion.Entry>)
+              }
+            )
+          }
         </Accordion>
       </fieldset>
     </div>

@@ -1,0 +1,34 @@
+@import "../../../../style//000-abstracts/__abstracts-dir";
+
+.tree-list {
+
+  padding-left: $m;
+
+  &__item {
+    margin: $xs 0;
+    position: relative;
+  }
+
+  &__item-fold-indicator {
+    position: absolute;
+    left: -$s;
+    cursor: pointer;
+
+    &:before {
+      content: '+';
+    }
+
+    &--is-open {
+      &:before {
+        content: '–';
+      }
+    }
+  }
+
+  &__item-name {
+    &--is-clickable {
+      cursor: pointer;
+    }
+  }
+
+}

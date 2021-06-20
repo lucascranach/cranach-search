@@ -8,15 +8,10 @@ import './my-cranach.scss';
 
 import StoreContext from '../../../../store/StoreContext';
 
-type Translations = {
-  de: Record<string, string>
-};
 
 const MyCranach = () => {
-  const useTranslation = (_: string, translations: Translations) => ({ t: (key: string, _?: Record<string, string>) => translations.de[key] });
-
-  const { t } = useTranslation('SearchSidebar', translations);
-  const { collection } = useContext(StoreContext);
+  const { collection, ui } = useContext(StoreContext);
+  const { t } = ui.useTranslation('SearchSidebar', translations);
   const showCollection = () => collection?.showCollection();
   const triggerComparism = () =>  collection?.startComparism();
   const compareIsActive = collection?.size && collection?.size > 1 ? 'btn--is-active' : 'btn--is-disabled';

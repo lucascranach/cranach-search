@@ -10,17 +10,13 @@ import './navigation.scss';
 
 import StoreContext, { GlobalSearchEntityType, UISidebarType } from '../../../../store/StoreContext';
 
-type Translations = {
-  de: Record<string, string>
-};
 
 const Navigation = () => {
-  const useTranslation = (_: string, translations: Translations) => ( { t: (key: string, _?: Record<string, string>) => translations.de[key] } );
-  const { t } = useTranslation('Navigation', translations);
   const { globalSearch, ui } = useContext(StoreContext);
-  const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => {
-    return activeFilter === filterValue ? 'is-active' : ''
-  }
+
+  const { t } = ui.useTranslation('Navigation', translations);
+
+  const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => { return activeFilter === filterValue ? 'is-active' : '' }
 
   const navStructure = [
     {
@@ -42,15 +38,15 @@ const Navigation = () => {
   ];
 
   const triggerAction = (filterValue: GlobalSearchEntityType) => {
-    globalSearch?.setEntityType(filterValue);
+    globalSearch.setEntityType(filterValue);
   }
 
   const toggleSidebar = () => {
-    ui?.toggleSidebar();
+    ui.toggleSidebar();
   }
 
-  const isVisibleMyCranach = ui?.sidebar === UISidebarType.FILTER ? 'btn--is-visible' : 'btn--is-hidden';
-  const isVisibleFilter = ui?.sidebar === UISidebarType.MY_CRANACH ? 'btn--is-visible' : 'btn--is-hidden';
+  const isVisibleMyCranach = ui.sidebar === UISidebarType.FILTER ? 'btn--is-visible' : 'btn--is-hidden';
+  const isVisibleFilter = ui.sidebar === UISidebarType.MY_CRANACH ? 'btn--is-visible' : 'btn--is-hidden';
 
   return (
     <nav
@@ -68,7 +64,7 @@ const Navigation = () => {
               key={item.filterValue}
             >
               <CategoryFilter
-                className={isActive(globalSearch?.filters.entityType, item.filterValue)}
+                className={isActive(globalSearch.filters.entityType, item.filterValue)}
                 filterText={t(item.title)}
                 onClick={() => triggerAction(item.filterValue) }
               >
