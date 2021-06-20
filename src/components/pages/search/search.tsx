@@ -5,13 +5,15 @@ import { observer } from 'mobx-react-lite';
 import ArtefactOverview, { ArtefactOverviewItem } from '../../structure/visualizing/artefact-overview';
 import SearchSidebar from '../../structure/interacting/search-sidebar';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
-
-import StoreContext, { GlobalSearchEntityType } from '../../../store/StoreContext';
+import MyCranach from '../../structure/interacting/my-cranach';
+import StoreContext, { UISidebarType, GlobalSearchEntityType } from '../../../store/StoreContext';
 
 import './search.scss';
 
 const Search: FC = () => {
   const { globalSearch, ui } = useContext(StoreContext);
+  const isActiveFilter = ui.sidebar === UISidebarType.FILTER ? 'search__filter--is-active' : '';
+  const isActiveMyCranach = ui.sidebar === UISidebarType.MY_CRANACH ? 'search__my-cranach--is-active' : '';
 
   useEffect(() => {
     globalSearch.triggerFilterRequest();
@@ -59,8 +61,11 @@ const Search: FC = () => {
         />
       }
       </div>
-      <div className="search__sidebar">
+      <div className={`search__filter ${isActiveFilter}`}>
         <SearchSidebar />
+      </div>
+      <div className={`search__my-cranach ${isActiveMyCranach}`}>
+        <MyCranach />
       </div>
     </div>
   );

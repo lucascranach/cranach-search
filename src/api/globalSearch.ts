@@ -25,11 +25,13 @@ const toArtefact = (item: any): GlobalSearchArtifact => ({
   id: item.inventory_number,
   entityType: item.entity_type,
   title: item.title,
-  subtitle: '',
+  subtitle: item.owner,
   date: '',
   additionalInfoList: [],
   classification: '',
+  objectName: item.object_name,
   imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+  entityTypeShortcut: item.entity_type.substr(0,1),
 });
 
 const searchByFiltersAndTerm = async (
@@ -56,6 +58,10 @@ const searchByFiltersAndTerm = async (
 
   if (filters.dating.to) {
     params['dating_end:lte'] = filters.dating.to;
+  }
+
+  if (filters.id) {
+    params['inventory_number:eq'] = filters.id;
   }
 
   if (filters.entityType !== EntityType.UNKNOWN) {
@@ -107,9 +113,16 @@ export enum EntityType {
   GRAPHICS = 'GRAPHIC',
   PAINTINGS = 'PAINTING',
   DOCUMENTS = 'DOCUMENT',
-  UNKNOWN = 'UNKNOWN',
-  COLLECTION = 'COLLECTION'
+  UNKNOWN = 'UNKNOWN'
 }
+
+export enum EntityTypeShortcuts {
+  GRAPHICS = 'G',
+  PAINTINGS = 'P',
+  DOCUMENTS = 'D',
+  UNKNOWN = 'U'
+}
+
 
 
 export type APIFilterType = {
@@ -120,11 +133,13 @@ export type APIFilterType = {
   size: number,
   from: number,
   entityType: EntityType,
+  id: string
   filterInfos: Set<string>,
 };
 
 export type GlobalSearchArtifact = {
   id: string;
+  objectName: string;
   entityType: EntityType,
   title: string;
   subtitle: string;
@@ -132,6 +147,7 @@ export type GlobalSearchArtifact = {
   additionalInfoList: string[];
   classification: string;
   imgSrc: string;
+  entityTypeShortcut: string;
 }
 
 export type GlobalSearchFilterInfoItem = {

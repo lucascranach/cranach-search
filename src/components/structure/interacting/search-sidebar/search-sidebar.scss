@@ -2,8 +2,6 @@
 
 .search-sidebar {
   padding: 0 $m $m;
-  position: sticky;
-  top: $xxl;
 
   & > .block {
     padding: 0;
@@ -42,6 +40,7 @@
   .search-result-info{
     font-weight: $fw-semibold;
     margin-bottom: $l;
+
   }
 
   .filter-info-item {

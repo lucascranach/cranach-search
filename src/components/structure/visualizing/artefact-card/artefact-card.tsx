@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
@@ -9,6 +9,7 @@ import './artefact-card.scss';
 
 type Props = {
   id?: string,
+  storageSlug?:string,
   title?: string,
   subtitle?: string,
   date?: string,
@@ -22,6 +23,7 @@ type Props = {
 
 const ArtefactCard: FC<Props> = ({
   id = '',
+  storageSlug='',
   title = '',
   subtitle = '',
   date = '',
@@ -33,15 +35,17 @@ const ArtefactCard: FC<Props> = ({
 }) => {
   const { collection } = useContext(StoreContext);
 
-  let isStoredFavorite = !!(collection.artefacts.includes(id));
+  let isStoredFavorite = !!(collection?.artefacts.includes(storageSlug));
 
   const toggleFav = () => {
     if (isStoredFavorite) {
-      collection.removeArtefactFromCollection(id);
+      collection?.removeArtefactFromCollection(storageSlug);
     } else {
-      collection.addArtefactToCollection(id);
+      collection?.addArtefactToCollection(storageSlug);
     }
   };
+
+  const bookmarkIcon = isStoredFavorite ? 'bookmark_remove' : 'bookmark_add';
 
   return(
     <div
@@ -72,12 +76,12 @@ const ArtefactCard: FC<Props> = ({
               <h2 className="artefact-card__title">{title}, {date}</h2>
               <p className="artefact-card__subtitle">{classification}</p>
               <p className="artefact-card__subtitle">{subtitle}</p>
-              <p className="artefact-card__smalltext">{id}</p>
+            <p className="artefact-card__smalltext">{storageSlug}</p>
             </a>
             <a
-              className={`artefact-card__favorite ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}` }
+              className={`artefact-card__favorite icon ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}` }
               onClick={toggleFav}
-            ></a>
+          >{bookmarkIcon}</a>
           </div>
         )
       }

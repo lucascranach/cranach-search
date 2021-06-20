@@ -1,0 +1,11 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+.size {
+  color: $decoration;
+
+  &::before{
+    content: "#";
+    display: inline-block;
+    margin-left: $xxs;
+    color: $dark;
+  }
+}

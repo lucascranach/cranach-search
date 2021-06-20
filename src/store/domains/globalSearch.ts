@@ -1,7 +1,6 @@
 
 import { makeAutoObservable } from 'mobx';
 import UI from './ui';
-import Collection from './collection';
 import GlobalSearchAPI_, {
   GlobalSearchArtifact,
   GlobalSearchResult,
@@ -19,13 +18,12 @@ export type FilterType = {
   size: number,
   from: number,
   entityType: EntityType,
+  id: string,
   filterInfos: Set<string>,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
   uiStore: UI;
-
-  collectionStore: Collection;
 
   globalSearchAPI: GlobalSearchAPI;
 
@@ -45,17 +43,17 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     size: 50,
     from: 0,
     entityType: EntityType.UNKNOWN,
+    id: '',
     filterInfos: new Set(),
   };
 
   debounceWaitInMSecs: number = 500;
   debounceHandler: undefined | number = undefined;
 
-  constructor(uiStore: UI, collectionStore: Collection, globalSearchAPI: GlobalSearchAPI) {
+  constructor(uiStore: UI, globalSearchAPI: GlobalSearchAPI) {
     makeAutoObservable(this);
 
     this.uiStore = uiStore;
-    this.collectionStore = collectionStore;
     this.globalSearchAPI = globalSearchAPI;
   }
 
@@ -124,8 +122,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.triggerFilterRequest();
   }
 
-  setCollectionItemsAsIds() {
-    this.triggerFilterRequest();
+  resetEntityType() {
+    this.filters.entityType = EntityType.UNKNOWN;
   }
 
   triggerFilterRequest() {
@@ -191,12 +189,12 @@ export interface GlobalSearchStoreInterface {
 
   setEntityType(entityType: EntityType): void;
 
-  setCollectionItemsAsIds(): void;
-
   setFrom(from: number): void;
 
   toggleFilterInfoActiveStatus(filterId: string): void;
 
   triggerFilterRequest(): void;
+
+  resetEntityType(): void;
 
 }

@@ -8,20 +8,21 @@ import CategoryFilter from '../../../base/interacting/category-filter';
 import translations from './translations.json';
 import './navigation.scss';
 
-import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
+import StoreContext, { GlobalSearchEntityType, UISidebarType } from '../../../../store/StoreContext';
 
-type Translations = {
-  de: Record<string, string>
-};
 
 const Navigation = () => {
   const { globalSearch, ui } = useContext(StoreContext);
 
-  const { t } = ui?.useTranslation('Navigation', translations) ?? { t: ((str: string) => str) };
+  const { t } = ui.useTranslation('Navigation', translations);
 
   const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => { return activeFilter === filterValue ? 'is-active' : '' }
 
   const navStructure = [
+    {
+      title: 'All Departments',
+      filterValue: GlobalSearchEntityType.UNKNOWN,
+    },
     {
       title: 'Prints and Drawings',
       filterValue: GlobalSearchEntityType.GRAPHICS,
@@ -33,21 +34,19 @@ const Navigation = () => {
     {
       title: 'Archival Documents',
       filterValue: GlobalSearchEntityType.DOCUMENTS,
-    },
-    {
-      title: 'My Collection',
-      filterValue: GlobalSearchEntityType.COLLECTION,
     }
   ];
 
   const triggerAction = (filterValue: GlobalSearchEntityType) => {
-    if (filterValue === GlobalSearchEntityType.COLLECTION) {
-      globalSearch.setCollectionItemsAsIds();
-    } else {
-      globalSearch.setEntityType(filterValue);
-    }
-
+    globalSearch.setEntityType(filterValue);
   }
+
+  const toggleSidebar = () => {
+    ui.toggleSidebar();
+  }
+
+  const isVisibleMyCranach = ui.sidebar === UISidebarType.FILTER ? 'btn--is-visible' : 'btn--is-hidden';
+  const isVisibleFilter = ui.sidebar === UISidebarType.MY_CRANACH ? 'btn--is-visible' : 'btn--is-hidden';
 
   return (
     <nav
@@ -73,6 +72,25 @@ const Navigation = () => {
             </li>
           ))
         }
+      </ul>
+
+      <ul className="sidebar-menu">
+        <li>
+        <button
+            className={`btn btn--is-reduced ${isVisibleMyCranach}`}
+            onClick={()=> toggleSidebar()}
+          >
+            <i className="icon icon--is-inline">list</i>
+            { t('goto My Cranach') }
+          </button>
+          <button
+            className={`btn btn--is-reduced ${isVisibleFilter}`}
+            onClick={()=> toggleSidebar()}
+          >
+            <i className="icon icon--is-inline">manage_search</i>
+            { t('goto search') }
+          </button>
+        </li>
       </ul>
 
     </nav>

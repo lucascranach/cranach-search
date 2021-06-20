@@ -13,14 +13,10 @@ import './search-sidebar.scss';
 
 import StoreContext from '../../../../store/StoreContext';
 
-type Translations = {
-  de: Record<string, string>
-};
-
 const SearchSidebar: FC = () => {
   const { globalSearch, ui } = useContext(StoreContext);
 
-  const { t } = ui?.useTranslation('SearchSidebar', translations) ?? { t: ((str: string) => str) };
+  const { t } = ui.useTranslation('SearchSidebar', translations);
 
   const hits = globalSearch.result?.meta.hits ?? 0;
   const title = useState('*');
@@ -53,8 +49,8 @@ const SearchSidebar: FC = () => {
     >
       <div className="search-result-info">
         <h2>
-          {hits < 2 && `${hits} ${t('work found')}`}
-          {hits >= 2 && `${hits} ${t('works found')}`}
+          {hits === 1 && `${hits} ${t('work found')}`}
+          {(hits >= 2 || hits === 0) && `${hits} ${t('works found')}`}
         </h2>
       </div>
       <fieldset className="block">

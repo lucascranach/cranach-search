@@ -25,7 +25,7 @@ const SearchResultNavigation: FC<Props> = ({
   const hiddenClass = `${paginationClass}--hidden`;
 
   const { globalSearch } = useContext(StoreContext);
-  const { size, from } = globalSearch.filters ?? { size: 1, from: 1 };
+  const { size, from } = globalSearch.filters;
   const hits = globalSearch.result?.meta.hits ?? 0;
 
   const maxPages = Math.ceil(hits / size);

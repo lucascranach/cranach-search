@@ -1,0 +1,13 @@
+@import "../../../../style//000-abstracts/__abstracts-dir";
+
+.my-cranach {
+  padding: 0 $m $m;
+
+  &__title{
+    margin-bottom: $m;
+    font-weight: $fw-semibold;
+  }
+}
+
+
+

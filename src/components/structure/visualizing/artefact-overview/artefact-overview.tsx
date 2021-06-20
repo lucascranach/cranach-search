@@ -10,12 +10,14 @@ import './artefact-overview.scss';
 export type ArtefactOverviewItem = {
   id: string;
   entityType: string;
+  objectName: string;
   title: string;
   subtitle: string;
   date: string;
   additionalInfoList: string[];
   classification: string;
   imgSrc: string;
+  entityTypeShortcut: string;
   to: string;
   openInNewWindow: boolean;
 };
@@ -80,7 +82,8 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
             className="overview-item"
           >
             { CardView === view && <ArtefactCard
-              id={ item.id}
+              id={item.id}
+              storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
               title={ shortenTitle(item.title) }
               subtitle={ item.subtitle }
               date={item.date}
@@ -93,11 +96,12 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
 
             { CardSmallView === view && <ArtefactCard
               to={ item.to }
+              storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
               imgSrc={ item.imgSrc || '' }
             />
             }
 
-          { ListView === view && <ArtefactLine
+            { ListView === view && <ArtefactLine
               title={ shortenTitle(item.title) }
               subtitle={ item.subtitle }
               date={ item.date }

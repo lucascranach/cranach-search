@@ -10,6 +10,7 @@ import {
 
 export default class UI implements UIStoreInterface {
   lang: string = 'de';
+  sidebar: UISidebarType = UISidebarType.MY_CRANACH;
 
   constructor() {
     makeAutoObservable(this);
@@ -48,10 +49,22 @@ export default class UI implements UIStoreInterface {
 
     return useTranslation(namespace);
   }
+
+  toggleSidebar() {
+    this.sidebar = (this.sidebar === UISidebarType.FILTER)
+      ? UISidebarType.MY_CRANACH
+      : UISidebarType.FILTER;
+  }
 }
 
+export enum UISidebarType {
+  MY_CRANACH = 'myCranach',
+  FILTER = 'filter',
+}
 export interface UIStoreInterface {
   lang: string;
+  sidebar: UISidebarType;
   setLanguage(lang: string): void;
+  toggleSidebar(): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
 }
