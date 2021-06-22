@@ -7,6 +7,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax($tile-xs, 1fr));
   gap: $s;
+  align-content: flex-start;
 
   &[data-active-view='card-small'] {
     @include grid-even-columns($vp-medium, 4);
