@@ -20,8 +20,8 @@ const Search: FC = () => {
   }, [])
 
   const getToUrlForArtifact = (entityType: GlobalSearchEntityType, id: string): string => {
-    const cdaBaseUrl = 'https://lucascranach.org';
-    const graphicsBaseUrl = 'https://lucascranach.github.io/cranach-grafiken-gatsby';
+    const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
+    const graphicsBaseUrl = import.meta.env.VITE_CDA_GRAPHICS_BASE_URL;
 
     switch(entityType) {
       case GlobalSearchEntityType.GRAPHICS:

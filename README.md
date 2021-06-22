@@ -14,37 +14,31 @@
 | `npm run build` | Build the project; build can then be found in `/dist`        |
 | `npm run serve` | Serve the project build; build has to exist; see `npm run build` |
 
-
 ## Environment variables
 
 The Search API URL and access credentials can be controlled with environment variables found in `.env`.
 For local development one can also create a `.env.local` not tracked by the VCS, to overwrite environment variables defined and set in `.env`.
 
-
 **Important:** Only environment variables prefixed with a `VITE_` are accessible in the application and are replaced wih their value at build time.
 
+## Custom environment variables
 
-
-**Custom environment variables**
-
-| Environment variable       | Description                        | Example                                        |
-| -------------------------- | ---------------------------------= | ---------------------------------------------- |
-| `VITE_SEARCH_API_URL`      | API endpoint                       | `http://localhost:3000`                        |
-| `VITE_CRANACH_COMPARE_URL` | Url called for artefact comparison | `https://lucascranach.org/compare/?artefacts=` |
-| `VITE_AUTH_USER`           | Username for basic authentication  | `peter`                                        |
-| `VITE_AUTH_PASS`           | Password for basic authentication  | `parker`                                       |
-
+| Environment variable            | Description                        | Example                                        |
+| ------------------------------- | ---------------------------------= | ---------------------------------------------- |
+| `VITE_SEARCH_API_URL`           | API endpoint                       | `http://localhost:3000`                        |
+| `VITE_CRANACH_COMPARE_URL`      | Url called for artefact comparison | `https://lucascranach.org/compare/?artefacts=` |
+| `VITE_AUTH_USER`                | Username for basic authentication  | `peter`                                        |
+| `VITE_AUTH_PASS`                | Password for basic authentication  | `parker`                                       |
+| `VITE_CDA_BASE_URL`             | CDA Base Urk                       | `parker`                                       |
+| `VITE_CDA_GRAPHICS_BASE_URL`    | Graphics Frontend Url              | `https://lucascranach.org`                     |
 
 `VITE_AUTH_USER` and `VITE_AUTH_PASS` should be overwritten with a `.env.local`.
 
 For more infos see: [Vite: Env Variables and Modes](https://vitejs.dev/guide/env-and-mode.html)
 
-
 ## Components
 
 Components are grouped and categorized by their characteristics on mutliple levels:
-
-
 
 | First level | Second level  | Description                                                  | Example components |
 | ----------- | ------------- | ------------------------------------------------------------ | ------------------ |
@@ -55,7 +49,6 @@ Components are grouped and categorized by their characteristics on mutliple leve
 |             | `interacting` | Used primarily for user interactions                         | `<accordion>`      |
 |             | `visualizing` | Components with the purpose of outputting and visualizing data; complex | `<artefact-card>`  |
 | `pages`     |               | Components to be used as entry points to all aspects of the application; concrete, final and strongly bound to an application | `<search>`         |
-
 
 ## Misc
 
