@@ -2,10 +2,8 @@
 
 .artefact-card {
   display: flex;
-  flex-direction: column;
-
   height: 100%;
-
+  flex-direction: column;
   background-color: $darker;
 
   &__image {
@@ -15,55 +13,48 @@
   &__content {
     position: relative;
     flex-grow: 1;
-
     padding: $s;
-
-    color: $lighter;
     border-top: solid $border-stroke-weight-s $accent;
     background-color: $dark;
+    color: $lighter;
   }
 
   &__title {
+    margin-bottom: $xxs;
+    color: $lightest;
     font-weight: $fw-semibold;
     line-height: $lh-headlines;
-
-    margin-bottom: $xxs;
-
-    color: $lightest;
   }
 
   &__subtitle {
+    margin-bottom: $xxs;
+    color: $light;
     font-weight: $fw-regular;
     line-height: $lh-headlines;
-
-    margin-bottom: $xxs;
-
-    color: $light;
   }
 
   &__text {
+    margin-bottom: $xs;
     font-weight: $fw-light;
     line-height: $lh-normal;
-
-    margin-bottom: $xs;
   }
 
-  &__favorite{
+  &__favorite {
     position: absolute;
     right: $s;
     bottom: $s;
     color: $light;
     transition: transform $tr-fast, color $tr-fast;
 
-    &:hover, &--is-active{
+    &:hover,
+    &--is-active {
       color: $accent;
       cursor: pointer;
       transform: scale(1.4);
     }
 
-    &--is-active{
+    &--is-active {
       transform: scale(1);
     }
-
   }
 }

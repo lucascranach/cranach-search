@@ -1,25 +1,26 @@
 @mixin overlay($height, $color) {
   &::after {
-    content: '';
     position: absolute;
     bottom: 0;
     left: 0;
-    height: $height;
     width: 100%;
+    height: $height;
     background: linear-gradient(180deg, rgba($color, 0), $color 100%);
+    content: '';
   }
 }
 
 @mixin base-grid {
   display: grid;
   column-gap: $m;
-  row-gap: $m;
   grid-auto-rows: 1fr;
+  row-gap: $m;
 }
 
 @mixin grid-even-2-columns($viewport) {
   @media only screen and (min-width: #{$viewport}) {
     @include base-grid;
+
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -27,6 +28,7 @@
 @mixin grid-uneven-2-columns($viewport) {
   @media only screen and (min-width: #{$viewport}) {
     @include base-grid;
+
     grid-template-columns: 342px 1fr;
   }
 }
@@ -34,6 +36,7 @@
 @mixin grid-even-3-columns($viewport) {
   @media only screen and (min-width: #{$viewport}) {
     @include base-grid;
+
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
@@ -41,6 +44,7 @@
 @mixin grid-even-columns($viewport, $columns) {
   @media only screen and (min-width: #{$viewport}) {
     @include base-grid;
+
     grid-template-columns: repeat(#{$columns}, 1fr);
   }
 }

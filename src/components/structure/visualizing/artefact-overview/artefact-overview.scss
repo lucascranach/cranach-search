@@ -2,12 +2,12 @@
 @import "../../../../style//000-abstracts/mixins";
 
 .artefact-overview {
-  height: 100vh;
-  overflow-y: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax($tile-xs, 1fr));
-  gap: $s;
+  height: 100vh;
   align-content: flex-start;
+  gap: $s;
+  grid-template-columns: repeat(auto-fill, minmax($tile-xs, 1fr));
+  overflow-y: auto;
 
   &[data-active-view='card-small'] {
     @include grid-even-columns($vp-medium, 4);
@@ -16,19 +16,21 @@
     @include grid-even-columns($vp-xxlarge, 8);
     @include grid-even-columns($vp-3xlarge, 9);
     @include grid-even-columns($vp-4xlarge, 10);
+
     column-gap: $xxs !important;
     row-gap: $xxs !important;
   }
 
   &[data-active-view='list'] {
+    display: grid;
     // @include base-grid();
     padding: $xs;
-    display: grid;
+    column-gap: $xs !important;
+    row-gap: $xs !important;
+
     @include grid-even-columns($vp-large, 2);
     @include grid-even-columns($vp-xxlarge, 3);
     @include grid-even-columns($vp-4xlarge, 4);
-    column-gap: $xs !important;
-    row-gap: $xs !important;
   }
 
   &-switcher {
@@ -44,5 +46,4 @@
   /* Responsive Small
   -------------------------------------------------------------------------- */
   // @include base-grid();
-
 }
