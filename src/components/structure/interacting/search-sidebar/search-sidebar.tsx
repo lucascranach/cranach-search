@@ -7,6 +7,7 @@ import TextInput from '../../../base/interacting/text-input';
 import Accordion from '../accordion';
 import Checkbox from '../../../base/interacting/checkbox';
 import TreeList, { TreeListItem } from '../tree-list';
+import Size from '../../../base/visualizing/size';
 
 import translations from './translations.json';
 import './search-sidebar.scss';
@@ -110,9 +111,8 @@ const SearchSidebar: FC = () => {
                         />
                         <span
                           className="filter-info-item__name"
-                          data-count={ item.data?.count }
                           onClick={ toggle }
-                        >{ item.name }</span>
+                        >{item.name}<Size size={item.data?.count} /></span>
                       </span>)
                     }
                   ></TreeList>
