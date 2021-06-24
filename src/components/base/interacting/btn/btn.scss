@@ -1,13 +1,13 @@
 @import "../../../../style/000-abstracts/__abstracts-dir";
+
 .btn {
-  background-color: $accent;
-  color: $darkest;
-  border-width: 0;
   padding: $xs $s;
+  border-width: 0;
+  background-color: $accent;
   border-radius: $border-radius;
+  color: $darkest;
 
-
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 
@@ -16,31 +16,31 @@
   }
 
   &--is-reduced {
+    display: flex;
+    align-items: center;
     background-color: transparent;
     color: $light;
     font-weight: $fw-light;
-    display: flex;
-    align-items: center;
 
-    &>.icon {
+    & > .icon {
       color: $accent;
     }
 
     &:active {
-      color: $lightest;
       background-color: transparent;
+      color: $lightest;
     }
   }
 
-  &--is-stacked{
+  &--is-stacked {
     padding-left: 0;
   }
 
-  &--is-hidden{
+  &--is-hidden {
     display: none;
   }
 
-  &--is-disabled{
+  &--is-disabled {
     opacity: $op-low;
     pointer-events: none;
   }

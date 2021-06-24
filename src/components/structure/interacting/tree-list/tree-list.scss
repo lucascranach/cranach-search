@@ -1,12 +1,11 @@
 @import "../../../../style//000-abstracts/__abstracts-dir";
 
 .tree-list {
-
   padding-left: $m;
 
   &__item {
-    margin: $xs 0;
     position: relative;
+    margin: $xs 0;
   }
 
   &__item-fold-indicator {
@@ -14,12 +13,12 @@
     left: -$s;
     cursor: pointer;
 
-    &:before {
+    &::before {
       content: '+';
     }
 
     &--is-open {
-      &:before {
+      &::before {
         content: '–';
       }
     }
@@ -30,5 +29,4 @@
       cursor: pointer;
     }
   }
-
 }

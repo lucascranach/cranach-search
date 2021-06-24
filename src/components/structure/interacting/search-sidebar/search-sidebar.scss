@@ -27,20 +27,20 @@
     .cell-row {
       display: flex;
       margin-right: 2rem;
+
       .cell {
         margin: 0 0.5rem;
       }
     }
   }
 
-  .search-title{
+  .search-title {
     margin-bottom: $l;
   }
 
-  .search-result-info{
-    font-weight: $fw-semibold;
+  .search-result-info {
     margin-bottom: $l;
-
+    font-weight: $fw-semibold;
   }
 
   .filter-info-item {
@@ -51,5 +51,4 @@
       line-height: $m;
     }
   }
-
 }

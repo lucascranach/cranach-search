@@ -1,56 +1,44 @@
 // Icons
 .icon {
-  height: auto;
-  width: auto;
-  font-family: $font-icons;
-  vertical-align: middle;
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
   display: inline-block;
-  line-height: inherit;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
+  width: auto;
+  height: auto;
   direction: ltr;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: $font-icons;
   font-feature-settings: 'liga';
+  font-size: 24px;  /* Preferred icon size */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: inherit;
+  text-rendering: optimizeLegibility;
   text-transform: none;
-}
+  vertical-align: middle;
+  white-space: nowrap;
+  word-wrap: normal;
 
-// Sizes
-.icon {
-  &.i12:before { font-size: 12px !important; }
-  &.i14:before { font-size: 14px !important; }
-  &.i18:before { font-size: 18px !important; }
-  &.i24:before { font-size: 24px !important; }
-  &.i36:before { font-size: 36px !important; }
-  &.i48:before { font-size: 48px !important; }
-}
+  &.i12::before { font-size: 12px !important; }
+  &.i14::before { font-size: 14px !important; }
+  &.i18::before { font-size: 18px !important; }
+  &.i24::before { font-size: 24px !important; }
+  &.i36::before { font-size: 36px !important; }
+  &.i48::before { font-size: 48px !important; }
 
-.icon:before {
-   content: attr(data-icon);
-}
-.icon {
-  &.red {color: red;}
-}
+  &::before {
+    content: attr(data-icon);
+  }
 
-.icon {
-
-  &--is-small{
+  &--is-small {
     font-size: $s;
   }
 
-  &--is-medium{
+  &--is-medium {
     font-size: $m;
   }
 
-  &--is-inline{
+  &--is-inline {
     margin-right: $xs;
   }
 }
-
-

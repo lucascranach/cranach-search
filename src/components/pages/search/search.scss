@@ -1,23 +1,28 @@
 .search {
   display: flex;
+
   &__results-area {
     flex-basis: 80%;
   }
+
   &__filter {
-    width: 0;
     overflow: hidden;
+    width: 0;
+
     &--is-active {
-      flex-basis: 20%;
       width: 20%;
+      flex-basis: 20%;
     }
   }
+
   &__my-cranach {
-    width: 0;
     overflow: hidden;
+    width: 0;
     flex-basis: 0;
+
     &--is-active {
-      flex-basis: 20%;
       width: 20%;
+      flex-basis: 20%;
     }
   }
 }

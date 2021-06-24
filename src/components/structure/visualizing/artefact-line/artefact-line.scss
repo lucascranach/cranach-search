@@ -2,14 +2,12 @@
 
 .artefact-line {
   display: grid;
-
+  height: 100%;
   border-bottom: solid $border-stroke-weight-s $accent;
   background-color: $darker;
-
-  height: 100%;
+  grid-template-columns: $tile-xxs 1fr;
 
   $self: &;
-  grid-template-columns: $tile-xxs 1fr;
 
   &:hover {
     #{$self}__content {
@@ -17,7 +15,7 @@
     }
   }
 
-  &__image{
+  &__image {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -27,22 +25,18 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-
     padding: $m;
     padding-bottom: $l;
-
-    transition: background-color $tr-fast;
-
-    color: $lighter;
     background-color: $dark;
-
+    color: $lighter;
+    transition: background-color $tr-fast;
   }
 
   &__title {
-    font-weight: $fw-semibold;
-    line-height: $lh-headlines;
     margin-bottom: $xxs;
     color: $lightest;
+    font-weight: $fw-semibold;
+    line-height: $lh-headlines;
   }
 
   &__subtitle {
@@ -50,8 +44,8 @@
     color: $lighter;
   }
 
-  &__master-data{
-    line-height: $lh-loose;
+  &__master-data {
     color: $light;
+    line-height: $lh-loose;
   }
 }
