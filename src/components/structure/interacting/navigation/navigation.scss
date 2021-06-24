@@ -2,40 +2,40 @@
 
 .main-navigation {
   position: sticky;
-  top: 0;
   z-index: $level-overall-nav;
+  top: 0;
   display: flex;
+  min-height: $xl + $s;
   padding: $m;
   padding-bottom: 0;
   background-color: $darkest;
-  min-height: $xl + $s;
 
   .menu {
     &__item {
-     // display: none;
+      // display: none;
       a {
         display: block;
         padding: $s $m;
-        color: $lighter;
         border-bottom: solid $border-stroke-weight transparent;
+        color: $lighter;
       }
     }
+
     &__item a.is-active {
       border-bottom: solid $border-stroke-weight $accent;
     }
 
-    &:hover{
+    &:hover {
       cursor: pointer;
     }
   }
 
   .sidebar-menu {
-    display: flex;
-    align-items: center;
     position: absolute;
-    width: 20%;
     right: $xs;
-
+    display: flex;
+    width: 20%;
+    align-items: center;
 
     .lang-switcher {
       margin-left: $l;
@@ -53,9 +53,10 @@
       display: flex;
       flex-direction: row;
     }
+
     .menu .menu-item {
-      align-items: flex-end;
       display: flex;
+      align-items: flex-end;
     }
   }
 }
