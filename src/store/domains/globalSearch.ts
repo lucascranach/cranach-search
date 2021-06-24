@@ -93,7 +93,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   setDatingFrom(from: string) {
     this.filters.dating.from = from;
-
     this.triggerFilterRequest();
   }
 
@@ -132,9 +131,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
     this.debounceHandler = window.setTimeout(async () => {
       const { lang } = this.uiStore;
-
       this.setSearchLoading(true);
-
       try {
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
           this.filters,
@@ -150,6 +147,24 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     }, this.debounceWaitInMSecs);
   }
 
+  triggerUserCollectionRequest(id: string) {
+
+    (async () => {
+      const { lang } = this.uiStore;
+      this.setSearchLoading(true);
+      try {
+        const result = await this.globalSearchAPI.retrieveUserCollection(
+          id,
+          lang,
+        );
+        this.setSearchResult(result);
+      } catch(err) {
+        this.setSearchFailed(err.toString());
+      } finally {
+        this.setSearchLoading(false);
+      }
+    })();
+  }
 }
 
 
@@ -194,6 +209,8 @@ export interface GlobalSearchStoreInterface {
   toggleFilterInfoActiveStatus(filterId: string): void;
 
   triggerFilterRequest(): void;
+
+  triggerUserCollectionRequest(id: string): void;
 
   resetEntityType(): void;
 

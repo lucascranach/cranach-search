@@ -34,6 +34,8 @@ const toArtefact = (item: any): GlobalSearchArtifact => ({
   entityTypeShortcut: item.entity_type.substr(0,1),
 });
 
+
+
 const searchByFiltersAndTerm = async (
   filters: APIFilterType,
   searchTerm: string,
@@ -78,16 +80,51 @@ const searchByFiltersAndTerm = async (
     // params['term:eq'] = cleanSearchTerm;
   }
 
+  const queryParams = querify(params);
+
+  try {
+    return await executeQuery(queryParams);
+  } catch(err) {
+    console.error(err);
+  }
+
+  return null;
+};
+
+const retrieveUserCollection = async (
+  id: string,
+  langCode: string
+): Promise<GlobalSearchResult | null> => {
+
+  const params: Record<string, string | number> = {
+    language: langCode,
+    'inventory_number:eq': id
+  };
+
+  const queryParams = querify(params);
+
+  try {
+    return await executeQuery(queryParams);
+  } catch(err) {
+    console.error(err);
+  }
+
+  return null;
+};
+
+const executeQuery = async (
+  queryParams: string
+): Promise<GlobalSearchResult | null> => {
+
   const authString = btoa(`${authUser}:${authPass}`);
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
 
-  const queryParams = querify(params);
   setHistory(queryParams);
 
   try {
     const resp = await fetch(
-      `${host}/?${querify(params)}`,
+      `${host}/?${queryParams}`,
       { method: 'GET', headers: headers },
     );
     const bodyJSON = await resp.json();
@@ -99,6 +136,7 @@ const searchByFiltersAndTerm = async (
   return null;
 };
 
+
 export default {
   async searchByFiltersAndTerm(
     filters: APIFilterType,
@@ -106,6 +144,12 @@ export default {
     lang: string,
   ): Promise<GlobalSearchResult | null> {
     return await searchByFiltersAndTerm(filters, searchTerm, lang);
+  },
+  async retrieveUserCollection(
+    id: string,
+    lang: string,
+  ): Promise<GlobalSearchResult | null> {
+    return await retrieveUserCollection(id, lang);
   }
 };
 
@@ -122,8 +166,6 @@ export enum EntityTypeShortcuts {
   DOCUMENTS = 'D',
   UNKNOWN = 'U'
 }
-
-
 
 export type APIFilterType = {
   dating: {
