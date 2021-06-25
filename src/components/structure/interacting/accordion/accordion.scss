@@ -1,41 +1,40 @@
 @import "../../../../style//000-abstracts/__abstracts-dir";
 
 .accordion {
-  .content {
-    overflow: hidden;
-    height: 0;
-    box-sizing: content-box;
+  &-entry {
+    .content {
+      overflow: hidden;
+      height: 0;
+      box-sizing: content-box;
 
-    .box {
-      padding: $s 0;
-      color: $light;
-    }
-  }
-
-  > .head {
-    display: flex;
-    align-items: center;
-    border-top: 1px solid rgba($lightest, 0.3);
-
-    > .entry-title {
-      flex: 1 0 auto;
-      color: $lighter;
-      font-size: $bfs;
-      font-weight: $fw-semibold;
-    }
-
-    > .toggle-control {
-      flex: 0 1 auto;
-      color: $accent;
-      cursor: pointer;
-
-      > .icon {
-        transition: 0.15s transform;
+      .box {
+        padding: $s 0;
+        color: $light;
       }
     }
-  }
 
-  &-entry {
+    > .head {
+      display: flex;
+      align-items: center;
+      border-top: 1px solid rgba($lightest, 0.3);
+
+      > .entry-title {
+        flex-grow: 1;
+        color: $lighter;
+        font-size: $bfs;
+        font-weight: $fw-semibold;
+      }
+
+      > .toggle-control {
+        color: $accent;
+        cursor: pointer;
+
+        > .icon {
+          transition: 0.15s transform;
+        }
+      }
+    }
+
     &.-open {
       > .head {
         > .toggle-control {

@@ -1,1 +1,38 @@
 @import "../../../../style/000-abstracts/__abstracts-dir";
+
+.checkbox {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.checkbox > span {
+  padding-right: $xxxs;
+  color: $medium;
+}
+
+.checkbox > input {
+  position: relative;
+  width: $bfs/1.4;
+  height: $bfs/1.4;
+  border: $border-stroke-weight-s solid $lighter;
+  margin-top: $bfs/3;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  cursor: pointer;
+  outline: none;
+  transition-duration: $tr-fast;
+}
+
+.checkbox > input:checked {
+  border: solid $border-stroke-weight $darkest;
+  background-color: $accent;
+  border-radius: 50%;
+}
+
+.checkbox > input:active {
+  border: $border-stroke-weight solid $lighter;
+}

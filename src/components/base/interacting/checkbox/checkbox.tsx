@@ -30,6 +30,7 @@ const Checkbox: FC<Props> = ({
       checked={ checked }
       onChange={ (evt) => onChange(evt.target.checked) }
     />
+    <span className="checkbox__control"></span>
     { children }
   </label>
 );
