@@ -1,6 +1,10 @@
 @import "../../../../style//000-abstracts/__abstracts-dir";
 
 .tree-list {
+  .tree-list {
+    margin-left: $s;
+  }
+
   &__item {
     position: relative;
     margin: $xs 0;

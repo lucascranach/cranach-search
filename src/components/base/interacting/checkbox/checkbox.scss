@@ -3,6 +3,7 @@
 .checkbox {
   position: relative;
   display: inline-flex;
+  margin-right: $xxs;
   cursor: pointer;
 }
 
@@ -28,7 +29,7 @@
 }
 
 .checkbox > input:checked {
-  border: solid $border-stroke-weight $darkest;
+  border: solid 4px $darkest;
   background-color: $accent;
   border-radius: 50%;
 }
