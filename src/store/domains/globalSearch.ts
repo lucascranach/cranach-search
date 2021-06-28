@@ -147,14 +147,14 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     }, this.debounceWaitInMSecs);
   }
 
-  triggerUserCollectionRequest(id: string) {
+  triggerUserCollectionRequest(ids: string[]) {
 
     (async () => {
       const { lang } = this.uiStore;
       this.setSearchLoading(true);
       try {
         const result = await this.globalSearchAPI.retrieveUserCollection(
-          id,
+          ids,
           lang,
         );
         this.setSearchResult(result);
@@ -210,7 +210,7 @@ export interface GlobalSearchStoreInterface {
 
   triggerFilterRequest(): void;
 
-  triggerUserCollectionRequest(id: string): void;
+  triggerUserCollectionRequest(ids: string[]): void;
 
   resetEntityType(): void;
 

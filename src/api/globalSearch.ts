@@ -92,13 +92,13 @@ const searchByFiltersAndTerm = async (
 };
 
 const retrieveUserCollection = async (
-  id: string,
+  ids: string[],
   langCode: string
 ): Promise<GlobalSearchResult | null> => {
 
   const params: Record<string, string | number> = {
     language: langCode,
-    'inventory_number:eq': id
+    'inventory_number:eq': ids.join(','),
   };
 
   const queryParams = querify(params);
@@ -146,10 +146,10 @@ export default {
     return await searchByFiltersAndTerm(filters, searchTerm, lang);
   },
   async retrieveUserCollection(
-    id: string,
+    ids: string[],
     lang: string,
   ): Promise<GlobalSearchResult | null> {
-    return await retrieveUserCollection(id, lang);
+    return await retrieveUserCollection(ids, lang);
   }
 };
 

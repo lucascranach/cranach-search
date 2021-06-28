@@ -3,6 +3,7 @@ import { makeAutoObservable } from 'mobx';
 import GlobalSearch from './globalSearch';
 
 const cranachCompareURL = import.meta.env.VITE_CRANACH_COMPARE_URL;
+
 export default class Collection implements CollectionStoreInterface {
   artefacts: string[] = [];
   globalSearchStore: GlobalSearch;
@@ -44,9 +45,9 @@ export default class Collection implements CollectionStoreInterface {
 
   showCollection() {
     this.readCollectionFromLocalStorage();
-    this.globalSearchStore?.resetEntityType();
+    this.globalSearchStore.resetEntityType();
     const artefactInventoryNumbers = this.artefacts.map(artefact => artefact.replace(/:.*/, ''));
-    this.globalSearchStore.triggerUserCollectionRequest(artefactInventoryNumbers.join(','));
+    this.globalSearchStore.triggerUserCollectionRequest(artefactInventoryNumbers);
     return true;
   }
 
