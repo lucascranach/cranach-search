@@ -1,7 +1,6 @@
 import React, { FC, useState, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import Size from '../../../base/visualizing/size';
 import Btn from '../../../base/interacting/btn';
 import TextInput from '../../../base/interacting/text-input';
 import Accordion from '../accordion';
