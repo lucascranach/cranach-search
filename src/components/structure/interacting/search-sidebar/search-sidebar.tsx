@@ -111,8 +111,9 @@ const SearchSidebar: FC = () => {
                         />
                         <span
                           className="filter-info-item__name"
+                          data-count={ item.data?.count }
                           onClick={ toggle }
-                        >{item.name}<Size size={item.data?.count} /></span>
+                        >{ item.name }<Size size={item.data?.count}/></span>
                       </span>)
                     }
                   ></TreeList>
