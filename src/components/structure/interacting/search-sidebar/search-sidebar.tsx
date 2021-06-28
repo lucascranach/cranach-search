@@ -1,7 +1,6 @@
 import React, { FC, useState, useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 
-
 import Btn from '../../../base/interacting/btn';
 import TextInput from '../../../base/interacting/text-input';
 import Accordion from '../accordion';
@@ -49,10 +48,7 @@ const SearchSidebar: FC = () => {
       data-component="structure/interacting/search-sidebar"
     >
       <div className="search-result-info">
-        <h2>
-          {hits === 1 && `${hits} ${t('work found')}`}
-          {(hits >= 2 || hits === 0) && `${hits} ${t('works found')}`}
-        </h2>
+        <h2>{t('Search')}<Size size={hits} /></h2>
       </div>
       <fieldset className="block">
         <TextInput

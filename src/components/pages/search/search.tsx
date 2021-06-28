@@ -23,7 +23,7 @@ const Search: FC = () => {
     const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
     const graphicsBaseUrl = import.meta.env.VITE_CDA_GRAPHICS_BASE_URL;
 
-    switch(entityType) {
+    switch (entityType) {
       case GlobalSearchEntityType.GRAPHICS:
         return `${graphicsBaseUrl}/${ui.lang}/${id}?back=${window.encodeURIComponent(window.location.href)}`;
         break;
@@ -54,19 +54,22 @@ const Search: FC = () => {
     >
       <div className="search__results-area">
         <SearchResultNavigation></SearchResultNavigation>
-      { globalSearch.loading && 'Loading...' }
-      { !globalSearch.loading
-        && <ArtefactOverview
-          items={ overviewItems }
-        />
-      }
+        {globalSearch.loading && 'Loading...'}
+        {!globalSearch.loading
+          && <ArtefactOverview
+            items={overviewItems}
+          />
+        }
       </div>
+
       <div className={`search__filter ${isActiveFilter}`}>
         <SearchSidebar />
       </div>
+
       <div className={`search__my-cranach ${isActiveMyCranach}`}>
         <MyCranach />
       </div>
+
     </div>
   );
 };

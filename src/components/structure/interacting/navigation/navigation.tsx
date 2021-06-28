@@ -12,7 +12,7 @@ import StoreContext, { GlobalSearchEntityType, UISidebarType } from '../../../..
 
 
 const Navigation = () => {
-  const { globalSearch, ui } = useContext(StoreContext);
+  const { globalSearch, collection , ui } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Navigation', translations);
 
@@ -43,6 +43,8 @@ const Navigation = () => {
 
   const toggleSidebar = () => {
     ui.toggleSidebar();
+    if (ui.sidebar === UISidebarType.FILTER) { globalSearch.triggerFilterRequest(); }
+    if (ui.sidebar === UISidebarType.MY_CRANACH) { collection.showCollection(); }
   }
 
   const isVisibleMyCranach = ui.sidebar === UISidebarType.FILTER ? 'btn--is-visible' : 'btn--is-hidden';
@@ -81,7 +83,7 @@ const Navigation = () => {
             onClick={()=> toggleSidebar()}
           >
             <i className="icon icon--is-inline">list</i>
-            { t('goto My Cranach') }
+            { t('goto My Collection') }
           </button>
           <button
             className={`btn btn--is-reduced ${isVisibleFilter}`}
