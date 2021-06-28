@@ -5,15 +5,15 @@
   width: 100%;
 
   .input-field {
-    border: 0;
-    background-color: transparent;
-    color: $light;
-    border-bottom: 1px solid $light;
     display: block;
-    margin-bottom: 2px;
-    font: inherit;
     width: 100%;
     padding: 0;
+    border: 0;
+    border-bottom: 1px solid $light;
+    margin-bottom: 2px;
+    background-color: transparent;
+    color: $light;
+    font: inherit;
   }
 
   .label-text {

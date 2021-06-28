@@ -1,29 +1,25 @@
 @import '../../../../style/000-abstracts/__abstracts-dir';
 
 .switcher {
-
   &.artefact-overview-switcher {
     display: none;
   }
 
   &-item {
     display: inline-block;
-
     margin: $s $xxs;
     margin-right: 0;
-
     justify-self: flex-end;
+
     a {
       display: block;
-
-      color: $lighter;
       border-bottom: solid $border-stroke-weight transparent;
+      color: $lighter;
     }
   }
 
   &-item + &-item {
     padding-left: $xxs;
-
     border-left: solid $border-stroke-weight-s $accent;
   }
 

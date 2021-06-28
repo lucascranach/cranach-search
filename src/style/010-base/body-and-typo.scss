@@ -3,11 +3,11 @@
 }
 
 body {
+  background-color: $darkest;
+  color: $lightest;
   font-family: $font-sans-serif;
   font-size: $bfs;
   font-weight: $fw-light;
-  color: $lightest;
-  background-color: $darkest;
 }
 
 a {
@@ -16,39 +16,23 @@ a {
 }
 
 /* Templates
------------------------------------------------------------------------------*/
+----------------------------------------------------------------------------- */
 
 .template {
-  color: $darkest;
   background-color: $darkest;
+  color: $darkest;
 }
 
 /* Title & Subtitle
------------------------------------------------------------------------------*/
+----------------------------------------------------------------------------- */
 
 .title,
 .subtitle,
 .chapter {
-  font-size: $m;
-  margin-bottom: $l;
-  line-height: $lh-headlines;
   position: relative;
-}
-
-.title+.subtitle {
-  margin-top: -$l + $xs;
-}
-
-.title {
-  font-weight: $fw-bold;
-  &:after {
-    content: " ";
-    display: block;
-    width: $xl;
-    margin-top: $xs;
-    margin-bottom: $xs;
-    border-top: solid $border-stroke-weight $accent;
-  }
+  margin-bottom: $l;
+  font-size: $m;
+  line-height: $lh-headlines;
 }
 
 .subtitle,
@@ -56,16 +40,31 @@ a {
   font-weight: $fw-regular;
 }
 
-.headline {
-  font-size: $bfs;
-  font-weight: $fw-semibold;
-  margin-bottom: $m;
+.title + .subtitle {
+  margin-top: -$l + $xs;
 }
 
+.title {
+  font-weight: $fw-bold;
+
+  &::after {
+    display: block;
+    width: $xl;
+    border-top: solid $border-stroke-weight $accent;
+    margin-top: $xs;
+    margin-bottom: $xs;
+    content: " ";
+  }
+}
+
+.headline {
+  margin-bottom: $m;
+  font-size: $bfs;
+  font-weight: $fw-semibold;
+}
 
 /* Text
------------------------------------------------------------------------------*/
-
+----------------------------------------------------------------------------- */
 
 p,
 th,

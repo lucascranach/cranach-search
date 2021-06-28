@@ -3,7 +3,7 @@ import React , { FC } from 'react';
 import './size.scss';
 
 type Props = {
-  size?: number
+  size?: string | number | undefined
 }
 
 const Size: FC<Props> = ({
