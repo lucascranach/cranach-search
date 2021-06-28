@@ -9,15 +9,15 @@ import StoreContext from '../../../../store/StoreContext';
 const MyCranach = () => {
   const { collection, ui } = useContext(StoreContext);
   const { t } = ui.useTranslation('SearchSidebar', translations);
-  const triggerComparism = () => collection?.startComparism();
-  const compareIsActive = collection?.size && collection?.size > 1 ? 'btn--is-active' : 'btn--is-disabled';
+  const triggerComparism = () => collection.startComparism();
+  const compareIsActive = collection.size && collection.size > 1 ? 'btn--is-active' : 'btn--is-disabled';
 
   return (
     <div
       className="my-cranach"
       data-component="structure/interacting/my-cranach"
     >
-      <h2 className="my-cranach__title">{t('Show My Collection')}<Size size={collection?.size} /></h2>
+      <h2 className="my-cranach__title">{t('Show My Collection')}<Size size={collection.size} /></h2>
 
       <ul>
 
