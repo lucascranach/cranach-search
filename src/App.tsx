@@ -9,18 +9,18 @@ import Navigation from './components/structure/interacting/navigation';
 function App() {
   const { ui } = useContext(StoreContext);
   const history = useHistory();
-  const match = useRouteMatch<{ lang: string }>('/:lang');
+  const match = useRouteMatch<{ lang: string }>(`${import.meta.env.BASE_URL}:lang`);
 
   useEffect(() => {
     if(match && ui.allowedLangs.includes(match.params.lang)) {
       ui.setLanguage(match.params.lang);
     } else {
-      history.replace(`/${ui.lang}`);
+      history.replace(`${import.meta.env.BASE_URL}${ui.lang}/`);
     }
   }, [ui.allowedLangs, match, history]);
 
   useEffect(() => {
-    history.replace(`/${ui.lang}/`);
+    history.replace(`${import.meta.env.BASE_URL}${ui.lang}/`);
   }, [ui.lang, history]);
 
   return (
