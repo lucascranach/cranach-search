@@ -6,8 +6,8 @@
   font-style: normal;
   font-weight: 500;
   src:
-    url("src/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.woff2") format('woff2'),
-    url("src/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.ttf") format('truetype');
+    url('/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.woff2') format('woff2'),
+    url('/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.ttf') format('truetype');
 }
 
 @font-face {
@@ -15,8 +15,8 @@
   font-style: normal;
   font-weight: 500;
   src:
-    url("src/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.woff2") format('woff2'),
-    url("src/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.truetype") format('truetype');
+    url('/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.woff2') format('woff2'),
+    url('/assets/fonts/IBMPlex-Mono/IBMPlexMono-Medium.truetype') format('truetype');
 }
 
 /*
@@ -27,8 +27,8 @@
   font-style: normal;
   font-weight: 200;
   src:
-    url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Light.woff2') format('woff2'),
-    url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Light.ttf') format('truetype');
+    url('/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Light.woff2') format('woff2'),
+    url('/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Light.ttf') format('truetype');
 }
 
 @font-face {
@@ -36,8 +36,8 @@
   font-style: normal;
   font-weight: 300;
   src:
-    url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Regular.woff2') format('woff2'),
-    url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Regular.ttf') format('truetype');
+    url('/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Regular.woff2') format('woff2'),
+    url('/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Regular.ttf') format('truetype');
 }
 
 @font-face {
@@ -45,8 +45,8 @@
   font-style: normal;
   font-weight: 400;
   src:
-    url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Medium.woff2') format('woff2'),
-    url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Medium.ttf') format('truetype');
+    url('/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Medium.woff2') format('woff2'),
+    url('/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Medium.ttf') format('truetype');
 }
 
 @font-face {
@@ -54,8 +54,8 @@
   font-style: normal;
   font-weight: 500;
   src:
-    url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-SemiBold.woff2') format('woff2'),
-    url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-SemiBold.ttf') format('truetype');
+    url('/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-SemiBold.woff2') format('woff2'),
+    url('/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-SemiBold.ttf') format('truetype');
 }
 
 @font-face {
@@ -63,6 +63,6 @@
   font-style: normal;
   font-weight: 600;
   src:
-    url('src/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Bold.woff2') format('woff2'),
-    url('src/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Bold.ttf') format('truetype');
+    url('/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Bold.woff2') format('woff2'),
+    url('/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Bold.ttf') format('truetype');
 }
