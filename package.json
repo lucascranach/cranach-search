@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:prod": "tsc && vite build --base=/search/",
     "serve": "vite preview",
     "lint": "stylelint **/*.scss",
     "lint:fix": "stylelint **/*.scss --fix"
