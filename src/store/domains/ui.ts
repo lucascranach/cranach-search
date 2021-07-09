@@ -11,6 +11,7 @@ import {
 export default class UI implements UIStoreInterface {
   lang: string = 'de';
   sidebar: UISidebarType = UISidebarType.MY_CRANACH;
+  allowedLangs: string[] = ['de', 'en'];
 
   constructor() {
     makeAutoObservable(this);
@@ -64,6 +65,7 @@ export enum UISidebarType {
 export interface UIStoreInterface {
   lang: string;
   sidebar: UISidebarType;
+  allowedLangs: string[];
   setLanguage(lang: string): void;
   toggleSidebar(): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
