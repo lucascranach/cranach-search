@@ -10,7 +10,7 @@ import {
 
 export default class UI implements UIStoreInterface {
   lang: string = 'de';
-  sidebar: UISidebarType = UISidebarType.MY_CRANACH;
+  sidebar: UISidebarType = UISidebarType.FILTER;
   allowedLangs: string[] = ['de', 'en'];
 
   constructor() {
