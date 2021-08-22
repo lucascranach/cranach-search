@@ -82,7 +82,10 @@ const SearchSidebar: FC = () => {
           onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
         ></TextInput>
 
-        <Btn className="search-button">{ t('find') }</Btn>
+        <Btn
+          className="search-button"
+          click={ () => globalSearch.triggerSearch() }
+        >{ t('find') }</Btn>
       </fieldset>
 
 

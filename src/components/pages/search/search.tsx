@@ -16,7 +16,7 @@ const Search: FC = () => {
   const isActiveMyCranach = ui.sidebar === UISidebarType.MY_CRANACH ? 'search__my-cranach--is-active' : '';
 
   useEffect(() => {
-    globalSearch.triggerFilterRequest();
+    globalSearch.triggerSearch();
   }, [])
 
   const getToUrlForArtifact = (entityType: GlobalSearchEntityType, id: string): string => {

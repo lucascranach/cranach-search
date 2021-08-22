@@ -43,7 +43,7 @@ const Navigation = () => {
 
   const toggleSidebar = () => {
     ui.toggleSidebar();
-    if (ui.sidebar === UISidebarType.FILTER) { globalSearch.triggerFilterRequest(); }
+    if (ui.sidebar === UISidebarType.FILTER) { globalSearch.triggerSearch(); }
     if (ui.sidebar === UISidebarType.MY_CRANACH) { collection.showCollection(); }
   }
 

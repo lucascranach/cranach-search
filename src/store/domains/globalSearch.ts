@@ -74,7 +74,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       ...this.freetextFields,
       ...fields,
     };
-    this.triggerFilterRequest();
   }
 
   setSearchLoading(loading: boolean) {
@@ -95,17 +94,17 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   setDatingFrom(from: string) {
     this.filters.dating.from = from;
-    this.triggerFilterRequest();
+    this.triggerSearch();
   }
 
   setDatingTo(to: string) {
     this.filters.dating.to = to;
-    this.triggerFilterRequest();
+    this.triggerSearch();
   }
 
   setFrom(from: number) {
     this.filters.from = from;
-    this.triggerFilterRequest();
+    this.triggerSearch();
   }
 
   toggleFilterInfoActiveStatus(filterInfoId: string) {
@@ -115,19 +114,19 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       this.filters.filterInfos.add(filterInfoId);
     }
 
-    this.triggerFilterRequest();
+    this.triggerSearch();
   }
 
   setEntityType(entityType: EntityType) {
     this.filters.entityType = entityType;
-    this.triggerFilterRequest();
+    this.triggerSearch();
   }
 
   resetEntityType() {
     this.filters.entityType = EntityType.UNKNOWN;
   }
 
-  triggerFilterRequest() {
+  triggerSearch() {
 
     clearTimeout(this.debounceHandler);
 
@@ -214,7 +213,7 @@ export interface GlobalSearchStoreInterface {
 
   toggleFilterInfoActiveStatus(filterId: string): void;
 
-  triggerFilterRequest(): void;
+  triggerSearch(): void;
 
   triggerUserCollectionRequest(ids: string[]): void;
 
