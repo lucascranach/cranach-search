@@ -99,7 +99,7 @@ const SearchSidebar: FC = () => {
                   <TreeList
                     items={ item.children ?? [] }
                     wrapComponent={
-                      (item, toggle) => (<span className="filter-info-item">
+                      (item, toggle) => (<span className={ `filter-info-item ${ (item.data?.count ?? 0) === 0 ? 'filter-info-item__inactive' : '' }` }>
                         <Checkbox
                           className="filter-info-item__checkbox"
                           checked={ globalSearch.filters.filterInfos.has(item.id) }
