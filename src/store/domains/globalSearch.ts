@@ -18,7 +18,6 @@ export type FilterType = {
   size: number,
   from: number,
   entityType: EntityType,
-  id: string,
   filterInfos: Set<string>,
 };
 
@@ -27,7 +26,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   globalSearchAPI: GlobalSearchAPI;
 
-  allFieldsTerm: string = '';
+  freetextFields = {
+    allFieldsTerm: '',
+    title: '',
+    location: '',
+    inventoryNumber: '',
+  }
 
   loading: boolean = false;
 
@@ -43,7 +47,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     size: 50,
     from: 0,
     entityType: EntityType.UNKNOWN,
-    id: '',
     filterInfos: new Set(),
   };
 
@@ -66,8 +69,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   /* Actions */
 
-  setAllFieldsTerm(allFieldsTerm: string) {
-    this.allFieldsTerm = allFieldsTerm;
+  setFreetextFields(fields: Partial<FreeTextFields>) {
+    this.freetextFields = {
+      ...this.freetextFields,
+      ...fields,
+    };
+    this.triggerFilterRequest();
   }
 
   setSearchLoading(loading: boolean) {
@@ -84,11 +91,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   setSearchFailed(error: string | null) {
     this.error = error;
-  }
-
-  searchForAllFieldsTerm(allFieldsTerm: string) {
-    this.setAllFieldsTerm(allFieldsTerm);
-    this.triggerFilterRequest();
   }
 
   setDatingFrom(from: string) {
@@ -135,7 +137,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       try {
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
           this.filters,
-          this.allFieldsTerm,
+          this.freetextFields,
           lang,
         );
         this.setSearchResult(result);
@@ -167,10 +169,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   }
 }
 
+export interface FreeTextFields {
+  allFieldsTerm: string;
+  title: string;
+  location: string;
+  inventoryNumber: string;
+}
 
 
 export interface GlobalSearchStoreInterface {
-  allFieldsTerm: string;
+  freetextFields: FreeTextFields;
 
   loading: boolean;
 
@@ -186,7 +194,7 @@ export interface GlobalSearchStoreInterface {
 
   flattenedSearchResultItems: GlobalSearchArtifact[];
 
-  setAllFieldsTerm(allFieldsTerm: string): void;
+  setFreetextFields(fields: Partial<FreeTextFields>): void;
 
   setSearchLoading(loading: boolean): void;
 
@@ -195,8 +203,6 @@ export interface GlobalSearchStoreInterface {
   resetSearchResult(): void;
 
   setSearchFailed(error: string | null): void;
-
-  searchForAllFieldsTerm(allFieldsTerm: string): void;
 
   setDatingFrom(from: string): void;
 

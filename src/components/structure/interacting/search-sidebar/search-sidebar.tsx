@@ -19,10 +19,7 @@ const SearchSidebar: FC = () => {
   const { t } = ui.useTranslation('SearchSidebar', translations);
 
   const hits = globalSearch.result?.meta.hits ?? 0;
-  const title = useState('*');
   const catalogWorkReferenceNumber = useState('*');
-  const location = useState('*');
-  const cdaIDInventorynumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
   const filterInfos = globalSearch.result?.filters ?? [];
@@ -54,15 +51,15 @@ const SearchSidebar: FC = () => {
         <TextInput
           className="search-input"
           label={ t('all Fields') }
-          value={ globalSearch.allFieldsTerm }
-          onChange={ term => globalSearch.searchForAllFieldsTerm(term) }
+          value={ globalSearch.freetextFields.allFieldsTerm }
+          onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
         ></TextInput>
 
         <TextInput
           className="search-input"
           label={ t('Title') }
-          value={ title[0] }
-          onChange={ title[1] }
+          value={ globalSearch.freetextFields.title }
+          onChange={ title => globalSearch.setFreetextFields({ title }) }
         ></TextInput>
 
         <TextInput
@@ -74,15 +71,15 @@ const SearchSidebar: FC = () => {
         <TextInput
           className="search-input"
           label={ t('Location') }
-          value={ location[0] }
-          onChange={ location[1] }
+          value={ globalSearch.freetextFields.location }
+          onChange={ location => globalSearch.setFreetextFields({ location }) }
         ></TextInput>
 
         <TextInput
           className="search-input"
           label={ t('CDA ID / Inventorynumber') }
-          value={ cdaIDInventorynumber[0] }
-          onChange={ cdaIDInventorynumber[1] }
+          value={ globalSearch.freetextFields.inventoryNumber }
+          onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
         ></TextInput>
 
         <Btn className="search-button">{ t('find') }</Btn>

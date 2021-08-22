@@ -38,7 +38,7 @@ const toArtefact = (item: any): GlobalSearchArtifact => ({
 
 const searchByFiltersAndTerm = async (
   filters: APIFilterType,
-  searchTerm: string,
+  freetextFields: APIFreetextFieldsType,
   langCode: string
 ): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
@@ -62,10 +62,6 @@ const searchByFiltersAndTerm = async (
     params['dating_end:lte'] = filters.dating.to;
   }
 
-  if (filters.id) {
-    params['inventory_number:eq'] = filters.id;
-  }
-
   if (filters.entityType !== EntityType.UNKNOWN) {
     params['entity_type:eq'] = filters.entityType;
   }
@@ -74,10 +70,25 @@ const searchByFiltersAndTerm = async (
     params['filterInfos:eq'] = Array.from(filters.filterInfos).join(',');
   }
 
-  const cleanSearchTerm = searchTerm.trim();
-  if (cleanSearchTerm !== '') {
-    /* Commented out until the free-text search is usable */
-    // params['term:eq'] = cleanSearchTerm;
+  const cleanAllFieldsTerm = freetextFields.allFieldsTerm.trim();
+  if (cleanAllFieldsTerm !== '') {
+    params['searchterm:eq'] = cleanAllFieldsTerm;
+  }
+
+  const cleanTitle = freetextFields.title.trim();
+  if (cleanTitle) {
+    // re-activate when title-parameter is useable again
+    // params['title:eq'] = cleanTitle;
+  }
+
+  const cleanLocation = freetextFields.location.trim();
+  if (cleanLocation) {
+    params['location:eq'] = cleanLocation;
+  }
+
+  const cleanInventoryNumber = freetextFields.inventoryNumber.trim();
+  if (cleanInventoryNumber) {
+    params['inventory_number:eq'] = cleanInventoryNumber;
   }
 
   const queryParams = querify(params);
@@ -140,10 +151,10 @@ const executeQuery = async (
 export default {
   async searchByFiltersAndTerm(
     filters: APIFilterType,
-    searchTerm: string,
+    freetextFields: APIFreetextFieldsType,
     lang: string,
   ): Promise<GlobalSearchResult | null> {
-    return await searchByFiltersAndTerm(filters, searchTerm, lang);
+    return await searchByFiltersAndTerm(filters, freetextFields, lang);
   },
   async retrieveUserCollection(
     ids: string[],
@@ -175,8 +186,14 @@ export type APIFilterType = {
   size: number,
   from: number,
   entityType: EntityType,
-  id: string
   filterInfos: Set<string>,
+};
+
+export type APIFreetextFieldsType = {
+  allFieldsTerm: string,
+  title: string,
+  location: string,
+  inventoryNumber: string,
 };
 
 export type GlobalSearchArtifact = {
