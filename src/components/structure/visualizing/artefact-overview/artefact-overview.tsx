@@ -22,49 +22,29 @@ export type ArtefactOverviewItem = {
   openInNewWindow: boolean;
 };
 
-type View = {
-  type: string,
-  icon: string,
-};
+export enum ArtefactOverviewType {
+  CARD = 'card',
+  CARD_SMALL = 'card_small',
+  LIST = 'list',
+}
 
 type OverviewProps = {
   items?: ArtefactOverviewItem[],
-  view?: View,
+  viewType?: ArtefactOverviewType,
 }
 
 type SwitcherProps = {
-  view?: View,
-  handleChange?: (view: View) => void,
+  viewType?: ArtefactOverviewType,
+  handleChange?: (view: ArtefactOverviewType) => void,
+  className?: string,
 }
 
-const CardView: View = {
-  type: 'card',
-  icon: 'view_column',
-};
 
-const CardSmallView: View = {
-  type: 'card-small',
-  icon: 'view_module',
-};
+const DefaultViewType = ArtefactOverviewType.CARD;
 
-const ListView: View = {
-  type: 'list',
-  icon: 'view_list',
-};
-
-const SupportedViews = [
-  CardView,
-  CardSmallView,
-  ListView,
-];
-
-
-
-const DefaultView = CardView;
-
-const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, DefaultView: View } = ({
+const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   items = [],
-  view = DefaultView,
+  viewType = DefaultViewType,
 }) => {
   const shortenTitle = (title: string) => {
     const splitTitle = title.split(' ');
@@ -74,14 +54,14 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
   return (<div
       className="artefact-overview"
       data-component="structure/visualizing/artefact-overview"
-      data-active-view={ view.type }
+      data-active-view={ viewType }
     >
       {
           items.map(item => (<div
             key={ item.id }
             className="overview-item"
           >
-            { CardView === view && <ArtefactCard
+            { ArtefactOverviewType.CARD === viewType && <ArtefactCard
               id={item.id}
               storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
               title={ shortenTitle(item.title) }
@@ -94,14 +74,14 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
             />
           }
 
-            { CardSmallView === view && <ArtefactCard
+            { ArtefactOverviewType.CARD_SMALL === viewType && <ArtefactCard
               to={ item.to }
               storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
               imgSrc={ item.imgSrc || '' }
             />
             }
 
-            { ListView === view && <ArtefactLine
+            { ArtefactOverviewType.LIST === viewType && <ArtefactLine
               title={ shortenTitle(item.title) }
               subtitle={ item.subtitle }
               date={ item.date }
@@ -118,23 +98,38 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
 };
 
 ArtefactOverview.Switcher = ({
-  view = DefaultView,
+  viewType = DefaultViewType,
   handleChange = () => {},
-}) => (
-  <Switcher className="artefact-overview-switcher" >
-    { SupportedViews.map(currentView => (
+  className = '',
+}) => {
+
+  const allViewEntries = [
+    {
+      type: ArtefactOverviewType.CARD,
+      icon: 'view_column',
+    },
+    {
+      type: ArtefactOverviewType.CARD_SMALL,
+      icon: 'view_module',
+    },
+    {
+      type: ArtefactOverviewType.LIST,
+      icon: 'view_list',
+    },
+  ];
+
+  return (<Switcher className={`artefact-overview-switcher ${className}`} >
+    { allViewEntries.map(({ type, icon }) => (
       <Switcher.Item
-        key={ currentView.type }
+        key={ type }
       >
         <i
-          className={ `material-icons artefact-overview-switcher-item-icon ${(currentView === view) ? 'is-active' : ''}` }
-          onClick={ () => handleChange(currentView) }
-        >{ currentView.icon }</i>
+          className={ `material-icons artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}` }
+          onClick={ () => handleChange(type) }
+        >{ icon }</i>
       </Switcher.Item>
     )) }
-  </Switcher>
-);
-
-ArtefactOverview.DefaultView = DefaultView;
+  </Switcher>);
+};
 
 export default ArtefactOverview;
