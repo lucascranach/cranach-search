@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "../../../../style//000-abstracts/__abstracts-dir";
 
 .search-sidebar {
@@ -17,7 +18,7 @@
     }
 
     > .search-button {
-      margin-top: $xl / 2;
+      margin-top: math.div($xl, 2);
     }
 
     .dating-field {

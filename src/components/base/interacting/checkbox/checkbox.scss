@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "../../../../style/000-abstracts/__abstracts-dir";
 
 .checkbox {
@@ -14,10 +15,10 @@
 
 .checkbox > input {
   position: relative;
-  width: $bfs/1.4;
-  height: $bfs/1.4;
+  width: math.div($bfs, 1.4);
+  height: math.div($bfs, 1.4);
   border: $border-stroke-weight-s solid $lighter;
-  margin-top: $bfs/3;
+  margin-top: math.div($bfs, 3);
   -webkit-appearance: none;
   -moz-appearance: none;
   -o-appearance: none;
