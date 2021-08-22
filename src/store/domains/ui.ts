@@ -11,6 +11,7 @@ import {
 export default class UI implements UIStoreInterface {
   lang: string = 'de';
   sidebar: UISidebarType = UISidebarType.FILTER;
+  overviewViewType: UIOverviewViewType = UIOverviewViewType.CARD;
   allowedLangs: string[] = ['de', 'en'];
 
   constructor() {
@@ -56,17 +57,28 @@ export default class UI implements UIStoreInterface {
       ? UISidebarType.MY_CRANACH
       : UISidebarType.FILTER;
   }
+
+  setOverviewViewType(type: UIOverviewViewType) {
+    this.overviewViewType = type;
+  }
 }
 
 export enum UISidebarType {
   MY_CRANACH = 'myCranach',
   FILTER = 'filter',
 }
+export enum UIOverviewViewType {
+  CARD = 'card',
+  CARD_SMALL = 'card_small',
+  LIST = 'list',
+}
 export interface UIStoreInterface {
   lang: string;
   sidebar: UISidebarType;
+  overviewViewType: UIOverviewViewType;
   allowedLangs: string[];
   setLanguage(lang: string): void;
   toggleSidebar(): void;
+  setOverviewViewType(type: UIOverviewViewType): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
 }

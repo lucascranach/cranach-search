@@ -3,12 +3,12 @@ import { observer } from 'mobx-react-lite';
 
 import Logo from '../../../base/visualizing/logo';
 import CategoryFilter from '../../../base/interacting/category-filter';
-// import Switcher from '~/components/atoms/switcher';
+import ArtefactOverview, { ArtefactOverviewType } from '../../../structure/visualizing/artefact-overview';
 
 import translations from './translations.json';
 import './navigation.scss';
 
-import StoreContext, { GlobalSearchEntityType, UISidebarType } from '../../../../store/StoreContext';
+import StoreContext, { GlobalSearchEntityType, UISidebarType, UIOverviewViewType } from '../../../../store/StoreContext';
 
 
 const Navigation = () => {
@@ -47,6 +47,18 @@ const Navigation = () => {
     if (ui.sidebar === UISidebarType.MY_CRANACH) { collection.showCollection(); }
   }
 
+  const overviewViewTypeMap: Record<UIOverviewViewType, ArtefactOverviewType> = {
+    [UIOverviewViewType.CARD]: ArtefactOverviewType.CARD,
+    [UIOverviewViewType.CARD_SMALL]: ArtefactOverviewType.CARD_SMALL,
+    [UIOverviewViewType.LIST]: ArtefactOverviewType.LIST,
+  };
+
+  const reverseOverviewViewTypeMap: Record<ArtefactOverviewType, UIOverviewViewType> = {
+    [ArtefactOverviewType.CARD]: UIOverviewViewType.CARD,
+    [ArtefactOverviewType.CARD_SMALL]: UIOverviewViewType.CARD_SMALL,
+    [ArtefactOverviewType.LIST]: UIOverviewViewType.LIST,
+  }
+
   const isVisibleMyCranach = ui.sidebar === UISidebarType.FILTER ? 'btn--is-visible' : 'btn--is-hidden';
   const isVisibleFilter = ui.sidebar === UISidebarType.MY_CRANACH ? 'btn--is-visible' : 'btn--is-hidden';
 
@@ -76,6 +88,12 @@ const Navigation = () => {
         }
       </ul>
 
+      <ArtefactOverview.Switcher
+        viewType={overviewViewTypeMap[ui.overviewViewType]}
+        className="overview-switcher"
+        handleChange={ (type) => ui.setOverviewViewType(reverseOverviewViewTypeMap[type]) }
+      ></ArtefactOverview.Switcher>
+
       <ul className="sidebar-menu">
         <li>
         <button
@@ -94,7 +112,6 @@ const Navigation = () => {
           </button>
         </li>
       </ul>
-
     </nav>
   );
 };
