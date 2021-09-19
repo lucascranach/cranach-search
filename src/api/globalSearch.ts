@@ -30,7 +30,7 @@ const toArtefact = (item: any): GlobalSearchArtifact => ({
   additionalInfoList: [],
   classification: '',
   objectName: item.object_name,
-  imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+  imgSrc: item.images ? item.images.overall.images[0].sizes.small.src : '',
   entityTypeShortcut: item.entity_type.substr(0,1),
 });
 
@@ -72,7 +72,7 @@ const searchByFiltersAndTerm = async (
 
   const cleanAllFieldsTerm = freetextFields.allFieldsTerm.trim();
   if (cleanAllFieldsTerm !== '') {
-    params['searchterm:eq'] = cleanAllFieldsTerm;
+    params['searchterm'] = cleanAllFieldsTerm;
   }
 
   const cleanTitle = freetextFields.title.trim();
