@@ -73,7 +73,7 @@ const ArtefactCard: FC<Props> = ({
               target={ openInNewWindow ? '_blank' : '' }
               rel={ 'noopener noreferrer' }
             >
-              <h2 className="artefact-card__title">{title}, {date}</h2>
+              <h2 className="artefact-card__title" dangerouslySetInnerHTML={{__html: `${title}, ${date}`}}></h2>
               <p className="artefact-card__subtitle">{classification}</p>
               <p className="artefact-card__subtitle">{subtitle}</p>
             <p className="artefact-card__smalltext">{storageSlug}</p>

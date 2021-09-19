@@ -32,6 +32,7 @@ const toArtefact = (item: any): GlobalSearchArtifact => ({
   objectName: item.object_name,
   imgSrc: item.images ? item.images.overall.images[0].sizes.small.src : '',
   entityTypeShortcut: item.entity_type.substr(0,1),
+  _highlight: item._highlight,
 });
 
 
@@ -207,6 +208,7 @@ export type GlobalSearchArtifact = {
   classification: string;
   imgSrc: string;
   entityTypeShortcut: string;
+  _highlight?: Record<string, Array<string>>;
 }
 
 export type GlobalSearchFilterInfoItem = {

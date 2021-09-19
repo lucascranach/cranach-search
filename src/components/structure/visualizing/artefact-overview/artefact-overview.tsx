@@ -20,6 +20,7 @@ export type ArtefactOverviewItem = {
   entityTypeShortcut: string;
   to: string;
   openInNewWindow: boolean;
+  _highlight?: Record<string, Array<string>>;
 };
 
 type View = {
@@ -66,6 +67,13 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
   items = [],
   view = DefaultView,
 }) => {
+  const getAvailableHighlightText = (item: ArtefactOverviewItem, prop: keyof ArtefactOverviewItem) => {
+    if (item._highlight && item._highlight[prop]) {
+      return item._highlight[prop][0];
+    }
+
+    return item[prop];
+  };
   const shortenTitle = (title: string) => {
     const splitTitle = title.split(' ');
     return splitTitle.length < 25 ? title : `${splitTitle.slice(0, 24).join(' ')} ...`;
@@ -84,7 +92,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
             { CardView === view && <ArtefactCard
               id={item.id}
               storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
-              title={ shortenTitle(item.title) }
+              title={ shortenTitle(getAvailableHighlightText(item, 'title') as string) }
               subtitle={ item.subtitle }
               date={item.date}
               to={ item.to }
@@ -102,7 +110,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps>, Defau
             }
 
             { ListView === view && <ArtefactLine
-              title={ shortenTitle(item.title) }
+              title={ shortenTitle(getAvailableHighlightText(item, 'title') as string) }
               subtitle={ item.subtitle }
               date={ item.date }
               additionalInfoList={ item.additionalInfoList }
