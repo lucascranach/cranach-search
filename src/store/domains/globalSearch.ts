@@ -139,7 +139,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
           lang,
         );
         this.setSearchResult(result);
-      } catch(err) {
+      } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
         this.setSearchLoading(false);
@@ -158,7 +158,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
           lang,
         );
         this.setSearchResult(result);
-      } catch(err) {
+      } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
         this.setSearchLoading(false);
