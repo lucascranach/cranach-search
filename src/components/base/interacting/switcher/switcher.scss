@@ -1,10 +1,6 @@
 @import '../../../../style/000-abstracts/__abstracts-dir';
 
 .switcher {
-  &.artefact-overview-switcher {
-    display: none;
-  }
-
   &-item {
     display: inline-block;
     margin: $s $xxs;
@@ -21,12 +17,6 @@
   &-item + &-item {
     padding-left: $xxs;
     border-left: solid $border-stroke-weight-s $accent;
-  }
-
-  @media only screen and (min-width: $vp-medium) {
-    &.artefact-overview-switcher {
-      display: block;
-    }
   }
 
   @media only screen and (min-width: $vp-large) {

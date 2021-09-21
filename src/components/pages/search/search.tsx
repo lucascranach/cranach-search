@@ -2,11 +2,11 @@ import React, { FC, useContext, useEffect } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import ArtefactOverview, { ArtefactOverviewItem } from '../../structure/visualizing/artefact-overview';
+import ArtefactOverview, { ArtefactOverviewItem, ArtefactOverviewType } from '../../structure/visualizing/artefact-overview';
 import SearchSidebar from '../../structure/interacting/search-sidebar';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
 import MyCranach from '../../structure/interacting/my-cranach';
-import StoreContext, { UISidebarType, GlobalSearchEntityType } from '../../../store/StoreContext';
+import StoreContext, { UISidebarType, GlobalSearchEntityType, UIOverviewViewType } from '../../../store/StoreContext';
 
 import './search.scss';
 
@@ -47,6 +47,12 @@ const Search: FC = () => {
     }),
   );
 
+  const mapSelectedOverviewViewType = (type: UIOverviewViewType): ArtefactOverviewType => ({
+    [UIOverviewViewType.CARD]: ArtefactOverviewType.CARD,
+    [UIOverviewViewType.CARD_SMALL]: ArtefactOverviewType.CARD_SMALL,
+    [UIOverviewViewType.LIST]: ArtefactOverviewType.LIST,
+  })[type];
+
   return (
     <div
       className="search"
@@ -57,6 +63,7 @@ const Search: FC = () => {
         {globalSearch.loading && 'Loading...'}
         {!globalSearch.loading
           && <ArtefactOverview
+            viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
             items={overviewItems}
           />
         }

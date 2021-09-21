@@ -30,6 +30,11 @@
     }
   }
 
+  .overview-switcher {
+    position: absolute;
+    right: calc(20% + #{$xs});
+  }
+
   .sidebar-menu {
     position: absolute;
     right: $xs;
