@@ -47,12 +47,14 @@ const Navigation = () => {
     if (ui.sidebar === UISidebarType.MY_CRANACH) { collection.showCollection(); }
   }
 
+  /* Building a map for mapping UIOverviewViewType enum values to matching ArtefactOverviewType enum values */
   const overviewViewTypeMap: Record<UIOverviewViewType, ArtefactOverviewType> = {
     [UIOverviewViewType.CARD]: ArtefactOverviewType.CARD,
     [UIOverviewViewType.CARD_SMALL]: ArtefactOverviewType.CARD_SMALL,
     [UIOverviewViewType.LIST]: ArtefactOverviewType.LIST,
   };
 
+  /* We also need a map to map back from ArtefactOverview enum values to UIOverviewViewType enum values */
   const reverseOverviewViewTypeMap: Record<ArtefactOverviewType, UIOverviewViewType> = {
     [ArtefactOverviewType.CARD]: UIOverviewViewType.CARD,
     [ArtefactOverviewType.CARD_SMALL]: UIOverviewViewType.CARD_SMALL,
