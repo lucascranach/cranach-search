@@ -5,12 +5,26 @@ const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
+const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
+  return [
+    'attribution',
+    'collection_repository',
+    'examination_analysis',
+    'subject',
+    'form',
+    'function',
+  ].map((filterGroupKey) => ({
+    key: filterGroupKey,
+    text: filters[filterGroupKey].display_value,
+    children: filters[filterGroupKey].values,
+  }));
+}
 
 const assembleResultData = (resultset: any): GlobalSearchResult => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
-  const filters = resultset.data.filters.filterInfos;
+  const filterGroups = mapFilterGroups(resultset.data.filters);
   const meta = resultset.data.meta;
-  return { items, filters, meta };
+  return { items, filterGroups, meta };
 }
 
 const setHistory = (queryParams: string) => {
@@ -70,9 +84,9 @@ const searchByFiltersAndTerm = async (
     params['entity_type:eq'] = filters.entityType;
   }
 
-  if (filters.filterInfos.size > 0) {
-    params['filterInfos:eq'] = Array.from(filters.filterInfos).join(',');
-  }
+  filters.filterGroups.forEach((filterIds: Set<string>, groupKey: string) => {
+    params[`${groupKey}:eq`] = Array.from(filterIds).join(',');
+  });
 
   const cleanSearchTerm = searchTerm.trim();
   if (cleanSearchTerm !== '') {
@@ -176,7 +190,7 @@ export type APIFilterType = {
   from: number,
   entityType: EntityType,
   id: string
-  filterInfos: Set<string>,
+  filterGroups: Map<string, Set<string>>,
 };
 
 export type GlobalSearchArtifact = {
@@ -192,17 +206,23 @@ export type GlobalSearchArtifact = {
   entityTypeShortcut: string;
 }
 
-export type GlobalSearchFilterInfoItem = {
+export type GlobalSearchFilterItem = {
   id: string;
   text: string;
   doc_count: number;
   is_available: boolean;
-  children: GlobalSearchFilterInfoItem[];
+  children: GlobalSearchFilterItem[];
+}
+
+export type GlobalSearchFilterGroupItem = {
+  key: string,
+  text: string;
+  children: GlobalSearchFilterItem[];
 }
 
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
-  filters: GlobalSearchFilterInfoItem[];
+  filterGroups: GlobalSearchFilterGroupItem[];
   meta: {
     hits: number;
   };

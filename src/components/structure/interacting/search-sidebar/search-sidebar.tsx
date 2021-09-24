@@ -11,7 +11,10 @@ import Size from '../../../base/visualizing/size';
 import translations from './translations.json';
 import './search-sidebar.scss';
 
-import StoreContext from '../../../../store/StoreContext';
+import StoreContext, {
+  GlobalSearchFilterGroupItem,
+  GlobalSearchFilterItem,
+} from '../../../../store/StoreContext';
 
 const SearchSidebar: FC = () => {
   const { globalSearch, ui } = useContext(StoreContext);
@@ -25,21 +28,28 @@ const SearchSidebar: FC = () => {
   const cdaIDInventorynumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
-  const filterInfos = globalSearch.result?.filters ?? [];
+  const filterGroups = globalSearch.result?.filterGroups ?? [];
 
-  const mapFilterInfosToTreeList = (filters: typeof filterInfos): TreeListItem[] => filters.map((filter) => ({
+  const mapFilterGroupItemsToTreeList = (filters: GlobalSearchFilterGroupItem[]): TreeListItem[] => filters.map((filter) => ({
+    id: filter.key,
+    name: filter.text,
+    children: mapFilterItemToTreeList(filter.children, filter.key),
+  }));
+
+  const mapFilterItemToTreeList = (filters: GlobalSearchFilterItem[], groupKey: string): TreeListItem[] => filters.map((filter) => ({
     id: filter.id,
     name: filter.text,
-    children: mapFilterInfosToTreeList(filter.children),
+    children: mapFilterItemToTreeList(filter.children, groupKey),
     data: {
       count: filter.doc_count,
+      groupKey,
     },
   }));
 
-  const mappedFiltersInfos = mapFilterInfosToTreeList(filterInfos);
+  const mappedFiltersInfos = mapFilterGroupItemsToTreeList(filterGroups);
 
-  const toggleFilterInfoActiveStatus = (filterInfoId: string) => {
-     globalSearch.toggleFilterInfoActiveStatus(filterInfoId);
+  const toggleFilterItemActiveStatus = (groupKey: string, filterInfoId: string) => {
+     globalSearch.toggleFilterItemActiveStatus(groupKey, filterInfoId);
   };
 
   return (
@@ -102,8 +112,8 @@ const SearchSidebar: FC = () => {
                       (item, toggle) => (<span className={ `filter-info-item ${ (item.data?.count ?? 0) === 0 ? 'filter-info-item__inactive' : '' }` }>
                         <Checkbox
                           className="filter-info-item__checkbox"
-                          checked={ globalSearch.filters.filterInfos.has(item.id) }
-                          onChange={ () => toggleFilterInfoActiveStatus(item.id) }
+                          checked={ globalSearch.filters.filterGroups.get(item.data?.groupKey as string)?.has(item.id) }
+                          onChange={ () => toggleFilterItemActiveStatus(item.data?.groupKey as string , item.id) }
                         />
                         <span
                           className="filter-info-item__name"
