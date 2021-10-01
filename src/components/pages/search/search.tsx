@@ -12,6 +12,7 @@ import './search.scss';
 
 const Search: FC = () => {
   const { globalSearch, ui } = useContext(StoreContext);
+  const isActiveSidebar = 'search__sidebar--is-active';
   const isActiveFilter = ui.sidebar === UISidebarType.FILTER ? 'search__filter--is-active' : '';
   const isActiveMyCranach = ui.sidebar === UISidebarType.MY_CRANACH ? 'search__my-cranach--is-active' : '';
 
@@ -69,6 +70,7 @@ const Search: FC = () => {
         }
       </div>
 
+      <aside className={`search__sidebar ${isActiveSidebar}`}>
       <div className={`search__filter ${isActiveFilter}`}>
         <SearchSidebar />
       </div>
@@ -76,6 +78,7 @@ const Search: FC = () => {
       <div className={`search__my-cranach ${isActiveMyCranach}`}>
         <MyCranach />
       </div>
+      </aside>
 
     </div>
   );
