@@ -9,14 +9,14 @@ import TreeList, { TreeListItem } from '../tree-list';
 import Size from '../../../base/visualizing/size';
 
 import translations from './translations.json';
-import './search-sidebar.scss';
+import './search.scss';
 
-import StoreContext from '../../../../store/StoreContext';
+import StoreContext, { UISidebarType } from '../../../../store/StoreContext';
 
-const SearchSidebar: FC = () => {
+const Search: FC = () => {
   const { globalSearch, ui } = useContext(StoreContext);
 
-  const { t } = ui.useTranslation('SearchSidebar', translations);
+  const { t } = ui.useTranslation('Search', translations);
 
   const hits = globalSearch.result?.meta.hits ?? 0;
   const title = useState('*');
@@ -42,10 +42,12 @@ const SearchSidebar: FC = () => {
      globalSearch.toggleFilterInfoActiveStatus(filterInfoId);
   };
 
+  const isActiveFilter = ui.sidebar === UISidebarType.FILTER ? 'search--is-active' : '';
+
   return (
     <div
-      className="search-sidebar"
-      data-component="structure/interacting/search-sidebar"
+      className={`search ${isActiveFilter}`}
+      data-component="structure/interacting/search"
     >
       <div className="search-result-info">
         <h2>{t('Search')}<Size size={hits} /></h2>
@@ -123,4 +125,4 @@ const SearchSidebar: FC = () => {
   );
 };
 
-export default observer(SearchSidebar);
+export default observer(Search);

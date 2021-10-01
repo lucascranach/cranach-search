@@ -1,19 +1,20 @@
 @import "../../../style/000-abstracts/__abstracts-dir";
 
-.search {
+.dashboard {
   display: flex;
 
   &__results-area {
+    position: relative;
     flex-basis: 0;
     flex-grow: 999;
   }
 
   &__sidebar {
+    position: relative;
     overflow: hidden;
-    width: 0;
 
     &--is-active {
-      flex-basis: 20rem;
+      flex-basis: $sidebar-width;
       flex-grow: 1;
     }
   }

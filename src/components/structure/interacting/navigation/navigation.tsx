@@ -3,16 +3,17 @@ import { observer } from 'mobx-react-lite';
 
 import Logo from '../../../base/visualizing/logo';
 import CategoryFilter from '../../../base/interacting/category-filter';
-import ArtefactOverview, { ArtefactOverviewType } from '../../../structure/visualizing/artefact-overview';
+import SecondaryNavigation from '../../../structure/interacting/secondary-navigation';
+
 
 import translations from './translations.json';
 import './navigation.scss';
 
-import StoreContext, { GlobalSearchEntityType, UISidebarType, UIOverviewViewType } from '../../../../store/StoreContext';
+import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
 
 
 const Navigation = () => {
-  const { globalSearch, collection , ui } = useContext(StoreContext);
+  const { globalSearch, ui } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Navigation', translations);
 
@@ -41,29 +42,6 @@ const Navigation = () => {
     globalSearch.setEntityType(filterValue);
   }
 
-  const toggleSidebar = () => {
-    ui.toggleSidebar();
-    if (ui.sidebar === UISidebarType.FILTER) { globalSearch.triggerFilterRequest(); }
-    if (ui.sidebar === UISidebarType.MY_CRANACH) { collection.showCollection(); }
-  }
-
-  /* Building a map for mapping UIOverviewViewType enum values to matching ArtefactOverviewType enum values */
-  const overviewViewTypeMap: Record<UIOverviewViewType, ArtefactOverviewType> = {
-    [UIOverviewViewType.CARD]: ArtefactOverviewType.CARD,
-    [UIOverviewViewType.CARD_SMALL]: ArtefactOverviewType.CARD_SMALL,
-    [UIOverviewViewType.LIST]: ArtefactOverviewType.LIST,
-  };
-
-  /* We also need a map to map back from ArtefactOverview enum values to UIOverviewViewType enum values */
-  const reverseOverviewViewTypeMap: Record<ArtefactOverviewType, UIOverviewViewType> = {
-    [ArtefactOverviewType.CARD]: UIOverviewViewType.CARD,
-    [ArtefactOverviewType.CARD_SMALL]: UIOverviewViewType.CARD_SMALL,
-    [ArtefactOverviewType.LIST]: UIOverviewViewType.LIST,
-  }
-
-  const isVisibleMyCranach = ui.sidebar === UISidebarType.FILTER ? 'btn--is-visible' : 'btn--is-hidden';
-  const isVisibleFilter = ui.sidebar === UISidebarType.MY_CRANACH ? 'btn--is-visible' : 'btn--is-hidden';
-
   return (
     <nav
       className="main-navigation"
@@ -90,30 +68,9 @@ const Navigation = () => {
         }
       </ul>
 
-      <ArtefactOverview.Switcher
-        viewType={overviewViewTypeMap[ui.overviewViewType]}
-        className="overview-switcher"
-        handleChange={ (type) => ui.setOverviewViewType(reverseOverviewViewTypeMap[type]) }
-      ></ArtefactOverview.Switcher>
 
-      <ul className="sidebar-menu">
-        <li>
-        <button
-            className={`btn btn--is-reduced ${isVisibleMyCranach}`}
-            onClick={()=> toggleSidebar()}
-          >
-            <i className="icon icon--is-inline">list</i>
-            { t('goto My Collection') }
-          </button>
-          <button
-            className={`btn btn--is-reduced ${isVisibleFilter}`}
-            onClick={()=> toggleSidebar()}
-          >
-            <i className="icon icon--is-inline">manage_search</i>
-            { t('goto search') }
-          </button>
-        </li>
-      </ul>
+      <SecondaryNavigation/>
+
     </nav>
   );
 };

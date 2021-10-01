@@ -78,6 +78,7 @@ $lh-headlines: $lh-tight;
 $tr-slow: 0.8s;
 $tr-medium: 0.5s;
 $tr-fast: 0.2s;
+$tr-faster: 0.1s;
 
 /* Kacheln
 ----------------------------------------------------------------------------- */
@@ -115,3 +116,4 @@ $inner-shadow: inset 0 0 $s rgba(0, 0, 0, 10);
 $op-full: 1;
 $op-medium: 0.6;
 $op-low: 0.3;
+$sidebar-width: $bfs * 20;
