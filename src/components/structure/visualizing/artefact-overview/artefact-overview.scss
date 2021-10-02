@@ -6,16 +6,10 @@
   height: 100vh;
   align-content: flex-start;
   gap: $s;
-  grid-template-columns: repeat(auto-fill, minmax($tile-xs, 1fr));
+
+  @include grid-auto-columns();
 
   &[data-active-view="card-small"] {
-    @include grid-even-columns($vp-medium, 4);
-    @include grid-even-columns($vp-large, 6);
-    @include grid-even-columns($vp-xlarge, 7);
-    @include grid-even-columns($vp-xxlarge, 8);
-    @include grid-even-columns($vp-3xlarge, 9);
-    @include grid-even-columns($vp-4xlarge, 10);
-
     column-gap: $xxs !important;
     row-gap: $xxs !important;
   }
