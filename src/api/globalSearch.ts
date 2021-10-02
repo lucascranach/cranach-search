@@ -15,26 +15,26 @@ const assembleResultData = (resultset: any): GlobalSearchResult => {
 
 const setHistory = (queryParams: string) => {
   const baseurl = location.protocol + '//' + location.host + location.pathname;
-  const nextState = {searchParams: queryParams};
+  const nextState = { searchParams: queryParams };
   const nextTitle = "cda_ // Search ";
   const nextURL = `${baseurl}?${queryParams}`;
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any): GlobalSearchArtifact => ({
-  id: item.inventory_number,
-  entityType: item.entity_type,
-  title: item.title,
-  subtitle: item.owner,
-  date: '',
-  additionalInfoList: [],
-  classification: '',
-  objectName: item.object_name,
-  imgSrc: item.images ? item.images.overall.images[0].small.src : '',
-  entityTypeShortcut: item.entity_type.substr(0,1),
-});
-
-
+const toArtefact = (item: any): GlobalSearchArtifact => {
+  return {
+    id: item.inventory_number,
+    entityType: item.entity_type,
+    title: item.title,
+    date: item.dating,
+    owner: item.owner,
+    additionalInfoList: [],
+    classification: item.classification,
+    objectName: item.object_name,
+    imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+    entityTypeShortcut: item.entity_type.substr(0, 1),
+  }
+};
 
 const searchByFiltersAndTerm = async (
   filters: APIFilterType,
@@ -84,7 +84,7 @@ const searchByFiltersAndTerm = async (
 
   try {
     return await executeQuery(queryParams);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -105,7 +105,7 @@ const retrieveUserCollection = async (
 
   try {
     return await executeQuery(queryParams);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -129,7 +129,7 @@ const executeQuery = async (
     );
     const bodyJSON = await resp.json();
     return assembleResultData(bodyJSON);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -184,7 +184,7 @@ export type GlobalSearchArtifact = {
   objectName: string;
   entityType: EntityType,
   title: string;
-  subtitle: string;
+  owner: string;
   date: string;
   additionalInfoList: string[];
   classification: string;

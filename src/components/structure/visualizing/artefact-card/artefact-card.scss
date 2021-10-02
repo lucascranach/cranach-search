@@ -27,14 +27,14 @@
   }
 
   &__subtitle {
-    margin-bottom: $xxs;
-    color: $light;
-    font-weight: $fw-regular;
+    color: $lighter;
+    font-weight: $fw-light;
     line-height: $lh-headlines;
   }
 
   &__text {
     margin-bottom: $xs;
+    color: $light;
     font-weight: $fw-light;
     line-height: $lh-normal;
   }

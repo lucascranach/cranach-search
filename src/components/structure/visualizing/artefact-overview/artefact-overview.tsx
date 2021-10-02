@@ -1,9 +1,10 @@
-import React, { FC } from 'react';
+import React, { useContext, FC } from 'react';
 
 import Switcher from '../../../base/interacting/switcher';
 import ArtefactCard from '../artefact-card';
 import ArtefactLine from '../artefact-line';
 
+import { GlobalSearchEntityType } from '../../../../store/StoreContext';
 
 import './artefact-overview.scss';
 
@@ -12,7 +13,7 @@ export type ArtefactOverviewItem = {
   entityType: string;
   objectName: string;
   title: string;
-  subtitle: string;
+  owner: string;
   date: string;
   additionalInfoList: string[];
   classification: string;
@@ -39,13 +40,13 @@ type SwitcherProps = {
   className?: string,
 }
 
-
 const DefaultViewType = ArtefactOverviewType.CARD;
 
 const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   items = [],
   viewType = DefaultViewType,
 }) => {
+
   const shortenTitle = (title: string) => {
     const splitTitle = title.split(' ');
     return splitTitle.length < 25 ? title : `${splitTitle.slice(0, 24).join(' ')} ...`;
@@ -65,8 +66,8 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
               id={item.id}
               storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
               title={ shortenTitle(item.title) }
-              subtitle={ item.subtitle }
-              date={item.date}
+              subtitle={ item.date }
+              text={ item.entityType === GlobalSearchEntityType.PAINTINGS ? item.owner : item.classification }
               to={ item.to }
               classification={ item.classification }
               imgSrc={ item.imgSrc || '' }
@@ -83,8 +84,8 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
             { ArtefactOverviewType.LIST === viewType && <ArtefactLine
               title={ shortenTitle(item.title) }
-              subtitle={ item.subtitle }
-              date={ item.date }
+              subtitle={ item.date }
+              text={ item.entityType === GlobalSearchEntityType.PAINTINGS ? item.owner : item.classification }
               additionalInfoList={ item.additionalInfoList }
               to={ item.to }
               imgSrc={ item.imgSrc || '' }

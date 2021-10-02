@@ -40,6 +40,11 @@
   }
 
   &__subtitle {
+    margin-bottom: $xxs;
+    color: $lighter;
+  }
+
+  &__text {
     margin-bottom: $s;
     color: $lighter;
   }

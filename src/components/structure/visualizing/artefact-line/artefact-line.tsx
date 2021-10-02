@@ -9,6 +9,7 @@ type Props = {
   subtitle?: string,
   date?: string,
   to?: string,
+  text?: string,
   additionalInfoList?: string[],
   imgSrc?: string,
   imgAlt?: string,
@@ -19,6 +20,7 @@ const ArtefactLine: FC<Props> = ({
   subtitle = '',
   date = '',
   to = '',
+  text = '',
   additionalInfoList = [],
   imgSrc = '',
   imgAlt = '',
@@ -39,8 +41,9 @@ const ArtefactLine: FC<Props> = ({
 
       <div className="artefact-line__content">
         <a href={to}>
-          <h2 className="artefact-line__title">{title}, {date}</h2>
-          <h3 className="artefact-line__subtitle">{subtitle}</h3>
+          <h2 className="artefact-line__title">{title}</h2>
+        <h3 className="artefact-line__subtitle">{subtitle}</h3>
+        <h3 className="artefact-line__text">{text}</h3>
           <ul className="artefact-line__master-data">
             {
               additionalInfoList.map((datalistItem, i) => (<li key={ i }>{ datalistItem }</li>))

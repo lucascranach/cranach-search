@@ -25,9 +25,10 @@
     // @include base-grid();
     padding: $xs;
     column-gap: $xs !important;
+    grid-template-columns: 1fr;
     row-gap: $xs !important;
 
-    @include grid-even-columns($vp-large, 2);
+    @include grid-even-columns($vp-xlarge, 2);
     @include grid-even-columns($vp-xxlarge, 3);
     @include grid-even-columns($vp-4xlarge, 4);
   }
