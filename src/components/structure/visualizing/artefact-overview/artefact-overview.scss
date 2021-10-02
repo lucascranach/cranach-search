@@ -8,7 +8,7 @@
   gap: $s;
   grid-template-columns: repeat(auto-fill, minmax($tile-xs, 1fr));
 
-  &[data-active-view='card-small'] {
+  &[data-active-view="card-small"] {
     @include grid-even-columns($vp-medium, 4);
     @include grid-even-columns($vp-large, 6);
     @include grid-even-columns($vp-xlarge, 7);
@@ -20,7 +20,7 @@
     row-gap: $xxs !important;
   }
 
-  &[data-active-view='list'] {
+  &[data-active-view="list"] {
     display: grid;
     // @include base-grid();
     padding: $xs;

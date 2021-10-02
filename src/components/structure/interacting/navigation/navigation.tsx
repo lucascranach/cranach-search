@@ -60,7 +60,7 @@ const Navigation = () => {
               <CategoryFilter
                 className={isActive(globalSearch.filters.entityType, item.filterValue)}
                 filterText={t(item.title)}
-                onClick={() => triggerAction(item.filterValue) }
+                onClick={() => triggerAction(item.filterValue)}
               >
               </CategoryFilter>
             </li>
@@ -69,7 +69,7 @@ const Navigation = () => {
       </ul>
 
 
-      <SecondaryNavigation/>
+      <SecondaryNavigation />
 
     </nav>
   );

@@ -53,54 +53,54 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   };
 
   return (<div
-      className="artefact-overview"
-      data-component="structure/visualizing/artefact-overview"
-      data-active-view={ viewType }
-    >
-      {
-          items.map(item => (<div
-            key={ item.id }
-            className="overview-item"
-          >
-            { ArtefactOverviewType.CARD === viewType && <ArtefactCard
-              id={item.id}
-              storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
-              title={ shortenTitle(item.title) }
-              subtitle={ item.date }
-              text={ item.entityType === GlobalSearchEntityType.PAINTINGS ? item.owner : item.classification }
-              to={ item.to }
-              classification={ item.classification }
-              imgSrc={ item.imgSrc || '' }
-              openInNewWindow={ item.openInNewWindow }
-            />
-          }
+    className="artefact-overview"
+    data-component="structure/visualizing/artefact-overview"
+    data-active-view={viewType}
+  >
+    {
+      items.map(item => (<div
+        key={item.id}
+        className="overview-item"
+      >
+        {ArtefactOverviewType.CARD === viewType && <ArtefactCard
+          id={item.id}
+          storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
+          title={shortenTitle(item.title)}
+          subtitle={item.date}
+          text={item.entityType === GlobalSearchEntityType.PAINTINGS ? item.owner : item.classification}
+          to={item.to}
+          classification={item.classification}
+          imgSrc={item.imgSrc || ''}
+          openInNewWindow={item.openInNewWindow}
+        />
+        }
 
-            { ArtefactOverviewType.CARD_SMALL === viewType && <ArtefactCard
-              to={ item.to }
-              storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
-              imgSrc={ item.imgSrc || '' }
-            />
-            }
+        {ArtefactOverviewType.CARD_SMALL === viewType && <ArtefactCard
+          to={item.to}
+          storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
+          imgSrc={item.imgSrc || ''}
+        />
+        }
 
-            { ArtefactOverviewType.LIST === viewType && <ArtefactLine
-              title={ shortenTitle(item.title) }
-              subtitle={ item.date }
-              text={ item.entityType === GlobalSearchEntityType.PAINTINGS ? item.owner : item.classification }
-              additionalInfoList={ item.additionalInfoList }
-              to={ item.to }
-              imgSrc={ item.imgSrc || '' }
-            />
-          }
-          </div>
-          ))
-      }
-    </div>
+        {ArtefactOverviewType.LIST === viewType && <ArtefactLine
+          title={shortenTitle(item.title)}
+          subtitle={item.date}
+          text={item.entityType === GlobalSearchEntityType.PAINTINGS ? item.owner : item.classification}
+          additionalInfoList={item.additionalInfoList}
+          to={item.to}
+          imgSrc={item.imgSrc || ''}
+        />
+        }
+      </div>
+      ))
+    }
+  </div>
   );
 };
 
 ArtefactOverview.Switcher = ({
   viewType = DefaultViewType,
-  handleChange = () => {},
+  handleChange = () => { },
   className = '',
 }) => {
 
@@ -120,16 +120,16 @@ ArtefactOverview.Switcher = ({
   ];
 
   return (<Switcher className={`artefact-overview-switcher ${className}`} >
-    { allViewEntries.map(({ type, icon }) => (
+    {allViewEntries.map(({ type, icon }) => (
       <Switcher.Item
-        key={ type }
+        key={type}
       >
         <i
-          className={ `material-icons artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}` }
-          onClick={ () => handleChange(type) }
-        >{ icon }</i>
+          className={`material-icons artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}`}
+          onClick={() => handleChange(type)}
+        >{icon}</i>
       </Switcher.Item>
-    )) }
+    ))}
   </Switcher>);
 };
 
