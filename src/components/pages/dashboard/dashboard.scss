@@ -1,0 +1,21 @@
+@import "../../../style/000-abstracts/__abstracts-dir";
+
+.dashboard {
+  display: flex;
+
+  &__results-area {
+    position: relative;
+    flex-basis: 0;
+    flex-grow: 999;
+  }
+
+  &__sidebar {
+    position: relative;
+    overflow: hidden;
+
+    &--is-active {
+      flex-basis: $sidebar-width;
+      flex-grow: 1;
+    }
+  }
+}

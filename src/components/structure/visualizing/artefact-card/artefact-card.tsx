@@ -9,9 +9,10 @@ import './artefact-card.scss';
 
 type Props = {
   id?: string,
-  storageSlug?:string,
+  storageSlug?: string,
   title?: string,
   subtitle?: string,
+  text?: string,
   date?: string,
   to?: string,
   imgSrc?: string,
@@ -23,9 +24,10 @@ type Props = {
 
 const ArtefactCard: FC<Props> = ({
   id = '',
-  storageSlug='',
+  storageSlug = '',
   title = '',
   subtitle = '',
+  text = '',
   date = '',
   to = '',
   imgSrc = '',
@@ -33,6 +35,7 @@ const ArtefactCard: FC<Props> = ({
   classification = '',
   openInNewWindow = false,
 }) => {
+
   const { collection } = useContext(StoreContext);
 
   let isStoredFavorite = !!(collection.artefacts.includes(storageSlug));
@@ -47,7 +50,7 @@ const ArtefactCard: FC<Props> = ({
 
   const bookmarkIcon = isStoredFavorite ? 'bookmark_remove' : 'bookmark_add';
 
-  return(
+  return (
     <div
       className="artefact-card"
       data-component="structure/visualizing/artefact-card"
@@ -56,7 +59,7 @@ const ArtefactCard: FC<Props> = ({
         <a
           href={to}
           target={openInNewWindow ? '_blank' : ''}
-          rel={ 'noopener noreferrer' }
+          rel={'noopener noreferrer'}
         >
           <Image
             src={imgSrc}
@@ -70,18 +73,17 @@ const ArtefactCard: FC<Props> = ({
           <div className="artefact-card__content">
             <a
               href={to}
-              target={ openInNewWindow ? '_blank' : '' }
-              rel={ 'noopener noreferrer' }
+              target={openInNewWindow ? '_blank' : ''}
+              rel={'noopener noreferrer'}
             >
-              <h2 className="artefact-card__title">{title}, {date}</h2>
-              <p className="artefact-card__subtitle">{classification}</p>
+              <h2 className="artefact-card__title">{title}</h2>
               <p className="artefact-card__subtitle">{subtitle}</p>
-            <p className="artefact-card__smalltext">{storageSlug}</p>
+              <p className="artefact-card__text">{text}</p>
             </a>
             <a
-              className={`artefact-card__favorite icon ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}` }
+              className={`artefact-card__favorite icon ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}`}
               onClick={toggleFav}
-          >{bookmarkIcon}</a>
+            >{bookmarkIcon}</a>
           </div>
         )
       }

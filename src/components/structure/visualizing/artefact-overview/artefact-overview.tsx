@@ -4,6 +4,7 @@ import Switcher from '../../../base/interacting/switcher';
 import ArtefactCard from '../artefact-card';
 import ArtefactLine from '../artefact-line';
 
+import { GlobalSearchEntityType } from '../../../../store/StoreContext';
 
 import './artefact-overview.scss';
 
@@ -12,7 +13,7 @@ export type ArtefactOverviewItem = {
   entityType: string;
   objectName: string;
   title: string;
-  subtitle: string;
+  owner: string;
   date: string;
   additionalInfoList: string[];
   classification: string;
@@ -39,67 +40,67 @@ type SwitcherProps = {
   className?: string,
 }
 
-
 const DefaultViewType = ArtefactOverviewType.CARD;
 
 const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   items = [],
   viewType = DefaultViewType,
 }) => {
+
   const shortenTitle = (title: string) => {
     const splitTitle = title.split(' ');
     return splitTitle.length < 25 ? title : `${splitTitle.slice(0, 24).join(' ')} ...`;
   };
 
   return (<div
-      className="artefact-overview"
-      data-component="structure/visualizing/artefact-overview"
-      data-active-view={ viewType }
-    >
-      {
-          items.map(item => (<div
-            key={ item.id }
-            className="overview-item"
-          >
-            { ArtefactOverviewType.CARD === viewType && <ArtefactCard
-              id={item.id}
-              storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
-              title={ shortenTitle(item.title) }
-              subtitle={ item.subtitle }
-              date={item.date}
-              to={ item.to }
-              classification={ item.classification }
-              imgSrc={ item.imgSrc || '' }
-              openInNewWindow={ item.openInNewWindow }
-            />
-          }
+    className="artefact-overview"
+    data-component="structure/visualizing/artefact-overview"
+    data-active-view={viewType}
+  >
+    {
+      items.map(item => (<div
+        key={item.id}
+        className="overview-item"
+      >
+        {ArtefactOverviewType.CARD === viewType && <ArtefactCard
+          id={item.id}
+          storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
+          title={shortenTitle(item.title)}
+          subtitle={item.date}
+          text={item.entityType === GlobalSearchEntityType.PAINTINGS ? item.owner : item.classification}
+          to={item.to}
+          classification={item.classification}
+          imgSrc={item.imgSrc || ''}
+          openInNewWindow={item.openInNewWindow}
+        />
+        }
 
-            { ArtefactOverviewType.CARD_SMALL === viewType && <ArtefactCard
-              to={ item.to }
-              storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
-              imgSrc={ item.imgSrc || '' }
-            />
-            }
+        {ArtefactOverviewType.CARD_SMALL === viewType && <ArtefactCard
+          to={item.to}
+          storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
+          imgSrc={item.imgSrc || ''}
+        />
+        }
 
-            { ArtefactOverviewType.LIST === viewType && <ArtefactLine
-              title={ shortenTitle(item.title) }
-              subtitle={ item.subtitle }
-              date={ item.date }
-              additionalInfoList={ item.additionalInfoList }
-              to={ item.to }
-              imgSrc={ item.imgSrc || '' }
-            />
-          }
-          </div>
-          ))
-      }
-    </div>
+        {ArtefactOverviewType.LIST === viewType && <ArtefactLine
+          title={shortenTitle(item.title)}
+          subtitle={item.date}
+          text={item.entityType === GlobalSearchEntityType.PAINTINGS ? item.owner : item.classification}
+          additionalInfoList={item.additionalInfoList}
+          to={item.to}
+          imgSrc={item.imgSrc || ''}
+        />
+        }
+      </div>
+      ))
+    }
+  </div>
   );
 };
 
 ArtefactOverview.Switcher = ({
   viewType = DefaultViewType,
-  handleChange = () => {},
+  handleChange = () => { },
   className = '',
 }) => {
 
@@ -119,16 +120,16 @@ ArtefactOverview.Switcher = ({
   ];
 
   return (<Switcher className={`artefact-overview-switcher ${className}`} >
-    { allViewEntries.map(({ type, icon }) => (
+    {allViewEntries.map(({ type, icon }) => (
       <Switcher.Item
-        key={ type }
+        key={type}
       >
         <i
-          className={ `material-icons artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}` }
-          onClick={ () => handleChange(type) }
-        >{ icon }</i>
+          className={`material-icons artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}`}
+          onClick={() => handleChange(type)}
+        >{icon}</i>
       </Switcher.Item>
-    )) }
+    ))}
   </Switcher>);
 };
 

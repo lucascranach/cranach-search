@@ -1,0 +1,34 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+
+.secondary-navigation {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: $s $l $m $m;
+  background-color: $darkest;
+  border-radius: $border-radius;
+  box-shadow: 1px 1px $l rgba(0, 0, 0, 1);
+  transition: background-color $tr-faster;
+
+  &__trigger {
+    position: absolute;
+    top: $m;
+    right: $xs;
+  }
+
+  &__options {
+    display: none;
+  }
+
+  &.is-active {
+    background-color: $darker;
+
+    .secondary-navigation__options {
+      display: block;
+    }
+  }
+
+  .btn {
+    padding: $xxs;
+  }
+}
