@@ -22,7 +22,7 @@ const setHistory = (queryParams: string) => {
 }
 
 const toArtefact = (item: any): GlobalSearchArtifact => {
-  console.log(item.images);
+
   return {
     id: item.inventory_number,
     entityType: item.entity_type,

@@ -20,12 +20,6 @@ const SecondaryNavigation = () => {
   };
   const secondaryMenuStatus = isActive ? "is-active" : "";
 
-  const toggleSidebar = () => {
-    ui.toggleSidebar();
-    if (ui.sidebar === UISidebarType.FILTER) { globalSearch.triggerFilterRequest(); }
-    if (ui.sidebar === UISidebarType.MY_CRANACH) { collection.showCollection(); }
-  }
-
   const showMyCranach = () => {
     ui.setSideBarContent(UISidebarType.MY_CRANACH);
     collection.showCollection();
