@@ -13,11 +13,9 @@ type Props = {
   title?: string,
   subtitle?: string,
   text?: string,
-  date?: string,
   to?: string,
   imgSrc?: string,
   imgAlt?: string,
-  classification?: string,
   openInNewWindow?: boolean,
 }
 
@@ -28,11 +26,9 @@ const ArtefactCard: FC<Props> = ({
   title = '',
   subtitle = '',
   text = '',
-  date = '',
   to = '',
   imgSrc = '',
   imgAlt = '',
-  classification = '',
   openInNewWindow = false,
 }) => {
 

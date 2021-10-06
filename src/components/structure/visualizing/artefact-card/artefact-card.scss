@@ -27,16 +27,17 @@
   }
 
   &__subtitle {
+    margin-bottom: $xxs;
     color: $lighter;
     font-weight: $fw-light;
     line-height: $lh-headlines;
   }
 
   &__text {
-    margin-bottom: $xs;
+    margin-bottom: $xxs;
     color: $light;
     font-weight: $fw-light;
-    line-height: $lh-normal;
+    line-height: $lh-headlines;
   }
 
   &__favorite {

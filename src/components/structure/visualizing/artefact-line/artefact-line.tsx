@@ -21,7 +21,7 @@ const ArtefactLine: FC<Props> = ({
   date = '',
   to = '',
   text = '',
-  additionalInfoList = [],
+  additionalText = '',
   imgSrc = '',
   imgAlt = '',
 }) => (
@@ -43,12 +43,8 @@ const ArtefactLine: FC<Props> = ({
       <a href={to}>
         <h2 className="artefact-line__title">{title}</h2>
         <h3 className="artefact-line__subtitle">{subtitle}</h3>
-        <h3 className="artefact-line__text">{text}</h3>
-        <ul className="artefact-line__master-data">
-          {
-            additionalInfoList.map((datalistItem, i) => (<li key={i}>{datalistItem}</li>))
-          }
-        </ul>
+        <p className="artefact-line__text">{text}</p>
+        <p className="artefact-line__text">{additionalText}</p>
       </a>
     </div>
 

@@ -21,6 +21,16 @@ const setHistory = (queryParams: string) => {
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
+const getInventor = (item: any):string => {
+  const inventor = item.data_all.involvedPersons.find((person: any) => person.role === 'Inventor');
+  return inventor ? `${inventor.name}${inventor.suffix}` : '';
+}
+
+const getArtist = (item: any):string => {
+  const artist = item.data_all.involvedPersons.find((person: any) => person.role === 'Künstler');
+  return artist ? artist.name : '';
+}
+
 const toArtefact = (item: any): GlobalSearchArtifact => {
 
   return {
@@ -29,8 +39,11 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     title: item.title,
     date: item.dating,
     owner: item.owner,
-    additionalInfoList: [],
     classification: item.classification,
+    printProcess: item.data_all.classification.printProcess ? item.data_all.classification.printProcess : '',
+    inventor: getInventor(item),
+    artist: getArtist(item),
+    dimensions: item.data_all.dimensions,
     objectName: item.object_name,
     imgSrc: item.images ? item.images.overall.images[0].small.src : '',
     entityTypeShortcut: item.entity_type.substr(0, 1),
@@ -158,6 +171,7 @@ export enum EntityType {
   GRAPHICS = 'GRAPHIC',
   PAINTINGS = 'PAINTING',
   DOCUMENTS = 'DOCUMENT',
+  ARCHIVALS = 'ARCHIVAL',
   UNKNOWN = 'UNKNOWN'
 }
 
@@ -165,6 +179,7 @@ export enum EntityTypeShortcuts {
   GRAPHICS = 'G',
   PAINTINGS = 'P',
   DOCUMENTS = 'D',
+  ARCHIVALS = 'A',
   UNKNOWN = 'U'
 }
 
@@ -185,10 +200,13 @@ export type GlobalSearchArtifact = {
   objectName: string;
   entityType: EntityType,
   title: string;
+  inventor: string;
+  artist: string;
   owner: string;
   date: string;
-  additionalInfoList: string[];
+  dimensions: string;
   classification: string;
+  printProcess: string;
   imgSrc: string;
   entityTypeShortcut: string;
 }
