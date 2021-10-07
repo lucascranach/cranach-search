@@ -42,11 +42,13 @@
   &__subtitle {
     margin-bottom: $xxs;
     color: $lighter;
+    line-height: $lh-headlines;
   }
 
   &__text {
-    margin-bottom: $s;
+    margin-bottom: $xxs;
     color: $lighter;
+    line-height: $lh-headlines;
   }
 
   &__master-data {
