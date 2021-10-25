@@ -46,7 +46,6 @@ const getArtist = (item: any):string => {
 }
 
 const toArtefact = (item: any): GlobalSearchArtifact => {
-
   return {
     id: item.inventory_number,
     entityType: item.entity_type,
@@ -57,9 +56,9 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     printProcess: item.data_all.classification.printProcess ? item.data_all.classification.printProcess : '',
     inventor: getInventor(item),
     artist: getArtist(item),
-    dimensions: item.data_all.dimensions,
+    dimensions: item.dimensions,
     objectName: item.object_name,
-    imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+    imgSrc: item.img_src,
     entityTypeShortcut: item.entity_type.substr(0, 1),
   }
 };
@@ -71,6 +70,7 @@ const searchByFiltersAndTerm = async (
 ): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
     language: langCode,
+    sort_by: 'sorting_number.desc',
     'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
 
