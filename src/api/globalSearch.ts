@@ -5,12 +5,26 @@ const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
+const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
+  return [
+    'attribution',
+    'collection_repository',
+    'examination_analysis',
+    'subject',
+    'form',
+    'function',
+  ].map((filterGroupKey) => ({
+    key: filterGroupKey,
+    text: filters[filterGroupKey].display_value,
+    children: filters[filterGroupKey].values,
+  }));
+}
 
 const assembleResultData = (resultset: any): GlobalSearchResult => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
-  const filters = resultset.data.filters.filterInfos;
+  const filterGroups = mapFilterGroups(resultset.data.filters);
   const meta = resultset.data.meta;
-  return { items, filters, meta };
+  return { items, filterGroups, meta };
 }
 
 const setHistory = (queryParams: string) => {
@@ -32,7 +46,6 @@ const getArtist = (item: any):string => {
 }
 
 const toArtefact = (item: any): GlobalSearchArtifact => {
-
   return {
     id: item.inventory_number,
     entityType: item.entity_type,
@@ -43,9 +56,9 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     printProcess: item.data_all.classification.printProcess ? item.data_all.classification.printProcess : '',
     inventor: getInventor(item),
     artist: getArtist(item),
-    dimensions: item.data_all.dimensions,
+    dimensions: item.dimensions,
     objectName: item.object_name,
-    imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+    imgSrc: item.img_src,
     entityTypeShortcut: item.entity_type.substr(0, 1),
   }
 };
@@ -57,6 +70,7 @@ const searchByFiltersAndTerm = async (
 ): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
     language: langCode,
+    sort_by: 'sorting_number.desc',
     'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
 
@@ -84,9 +98,9 @@ const searchByFiltersAndTerm = async (
     params['entity_type:eq'] = filters.entityType;
   }
 
-  if (filters.filterInfos.size > 0) {
-    params['filterInfos:eq'] = Array.from(filters.filterInfos).join(',');
-  }
+  filters.filterGroups.forEach((filterIds: Set<string>, groupKey: string) => {
+    params[`${groupKey}:eq`] = Array.from(filterIds).join(',');
+  });
 
   const cleanSearchTerm = searchTerm.trim();
   if (cleanSearchTerm !== '') {
@@ -192,7 +206,7 @@ export type APIFilterType = {
   from: number,
   entityType: EntityType,
   id: string
-  filterInfos: Set<string>,
+  filterGroups: Map<string, Set<string>>,
 };
 
 export type GlobalSearchArtifact = {
@@ -211,17 +225,23 @@ export type GlobalSearchArtifact = {
   entityTypeShortcut: string;
 }
 
-export type GlobalSearchFilterInfoItem = {
+export type GlobalSearchFilterItem = {
   id: string;
   text: string;
   doc_count: number;
   is_available: boolean;
-  children: GlobalSearchFilterInfoItem[];
+  children: GlobalSearchFilterItem[];
+}
+
+export type GlobalSearchFilterGroupItem = {
+  key: string,
+  text: string;
+  children: GlobalSearchFilterItem[];
 }
 
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
-  filters: GlobalSearchFilterInfoItem[];
+  filterGroups: GlobalSearchFilterGroupItem[];
   meta: {
     hits: number;
   };

@@ -7,6 +7,11 @@ import GlobalSearchAPI_, {
   EntityType,
 } from '../../api/globalSearch';
 export { EntityType as GlobalSearchEntityType } from '../../api/globalSearch';
+export type {
+  GlobalSearchFilterGroupItem,
+  GlobalSearchFilterItem,
+} from '../../api/globalSearch';
+
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
@@ -19,7 +24,7 @@ export type FilterType = {
   from: number,
   entityType: EntityType,
   id: string,
-  filterInfos: Set<string>,
+  filterGroups: Map<string, Set<string>>,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
@@ -44,7 +49,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     from: 0,
     entityType: EntityType.UNKNOWN,
     id: '',
-    filterInfos: new Set(),
+    filterGroups: new Map(),
   };
 
   debounceWaitInMSecs: number = 500;
@@ -106,11 +111,21 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.triggerFilterRequest();
   }
 
-  toggleFilterInfoActiveStatus(filterInfoId: string) {
-    if (this.filters.filterInfos.has(filterInfoId)) {
-      this.filters.filterInfos.delete(filterInfoId);
+  toggleFilterItemActiveStatus(groupKey: string, filterItemId: string) {
+    const groupSet = this.filters.filterGroups.get(groupKey);
+
+    if (groupSet) {
+      if (groupSet.has(filterItemId)) {
+        groupSet.delete(filterItemId);
+      } else {
+        groupSet.add(filterItemId);
+      }
+
+      if (groupSet.size === 0) {
+        this.filters.filterGroups.delete(groupKey);
+      }
     } else {
-      this.filters.filterInfos.add(filterInfoId);
+      this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
     this.triggerFilterRequest();
@@ -206,7 +221,7 @@ export interface GlobalSearchStoreInterface {
 
   setFrom(from: number): void;
 
-  toggleFilterInfoActiveStatus(filterId: string): void;
+  toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
 
   triggerFilterRequest(): void;
 
