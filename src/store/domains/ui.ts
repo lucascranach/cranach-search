@@ -58,6 +58,10 @@ export default class UI implements UIStoreInterface {
       : UISidebarType.FILTER;
   }
 
+  setSideBarContent(type: UISidebarType) {
+    this.sidebar = type;
+  }
+
   setOverviewViewType(type: UIOverviewViewType) {
     this.overviewViewType = type;
   }
@@ -79,6 +83,7 @@ export interface UIStoreInterface {
   allowedLangs: string[];
   setLanguage(lang: string): void;
   toggleSidebar(): void;
+  setSideBarContent(type: UISidebarType): void;
   setOverviewViewType(type: UIOverviewViewType): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
 }

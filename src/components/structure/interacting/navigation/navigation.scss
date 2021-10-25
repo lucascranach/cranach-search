@@ -30,29 +30,6 @@
     }
   }
 
-  .overview-switcher {
-    position: absolute;
-    right: calc(20% + #{$xs});
-  }
-
-  .sidebar-menu {
-    position: absolute;
-    right: $xs;
-    display: flex;
-    width: 20%;
-    align-items: center;
-
-    .lang-switcher {
-      margin-left: $l;
-
-      &-item {
-        a.is-active {
-          border-bottom: solid $border-stroke-weight $accent;
-        }
-      }
-    }
-  }
-
   @media only screen and (min-width: $vp-large) {
     .menu {
       display: flex;

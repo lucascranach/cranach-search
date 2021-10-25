@@ -1,8 +1,15 @@
 @use "sass:math";
-@import "../../../../style//000-abstracts/__abstracts-dir";
 
-.search-sidebar {
+@import "../../../../style/000-abstracts/__abstracts-dir";
+
+.search {
+  position: fixed;
+  display: none;
   padding: 0 $m $m;
+
+  &--is-active {
+    display: block;
+  }
 
   & > .block {
     padding: 0;

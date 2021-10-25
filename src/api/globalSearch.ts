@@ -29,26 +29,40 @@ const assembleResultData = (resultset: any): GlobalSearchResult => {
 
 const setHistory = (queryParams: string) => {
   const baseurl = location.protocol + '//' + location.host + location.pathname;
-  const nextState = {searchParams: queryParams};
+  const nextState = { searchParams: queryParams };
   const nextTitle = "cda_ // Search ";
   const nextURL = `${baseurl}?${queryParams}`;
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any): GlobalSearchArtifact => ({
-  id: item.inventory_number,
-  entityType: item.entity_type,
-  title: item.title,
-  subtitle: item.owner,
-  date: '',
-  additionalInfoList: [],
-  classification: '',
-  objectName: item.object_name,
-  imgSrc: item.images ? item.images.overall.images[0].small.src : '',
-  entityTypeShortcut: item.entity_type.substr(0,1),
-});
+const getInventor = (item: any):string => {
+  const inventor = item.data_all.involvedPersons.find((person: any) => person.role === 'Inventor');
+  return inventor ? `${inventor.name}${inventor.suffix}` : '';
+}
 
+const getArtist = (item: any):string => {
+  const artist = item.data_all.involvedPersons.find((person: any) => person.role === 'Künstler');
+  return artist ? artist.name : '';
+}
 
+const toArtefact = (item: any): GlobalSearchArtifact => {
+
+  return {
+    id: item.inventory_number,
+    entityType: item.entity_type,
+    title: item.title,
+    date: item.dating,
+    owner: item.owner,
+    classification: item.classification,
+    printProcess: item.data_all.classification.printProcess ? item.data_all.classification.printProcess : '',
+    inventor: getInventor(item),
+    artist: getArtist(item),
+    dimensions: item.data_all.dimensions,
+    objectName: item.object_name,
+    imgSrc: item.images ? item.images.overall.images[0].small.src : '',
+    entityTypeShortcut: item.entity_type.substr(0, 1),
+  }
+};
 
 const searchByFiltersAndTerm = async (
   filters: APIFilterType,
@@ -98,7 +112,7 @@ const searchByFiltersAndTerm = async (
 
   try {
     return await executeQuery(queryParams);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -119,7 +133,7 @@ const retrieveUserCollection = async (
 
   try {
     return await executeQuery(queryParams);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -143,7 +157,7 @@ const executeQuery = async (
     );
     const bodyJSON = await resp.json();
     return assembleResultData(bodyJSON);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -171,6 +185,7 @@ export enum EntityType {
   GRAPHICS = 'GRAPHIC',
   PAINTINGS = 'PAINTING',
   DOCUMENTS = 'DOCUMENT',
+  ARCHIVALS = 'ARCHIVAL',
   UNKNOWN = 'UNKNOWN'
 }
 
@@ -178,6 +193,7 @@ export enum EntityTypeShortcuts {
   GRAPHICS = 'G',
   PAINTINGS = 'P',
   DOCUMENTS = 'D',
+  ARCHIVALS = 'A',
   UNKNOWN = 'U'
 }
 
@@ -198,10 +214,13 @@ export type GlobalSearchArtifact = {
   objectName: string;
   entityType: EntityType,
   title: string;
-  subtitle: string;
+  inventor: string;
+  artist: string;
+  owner: string;
   date: string;
-  additionalInfoList: string[];
+  dimensions: string;
   classification: string;
+  printProcess: string;
   imgSrc: string;
   entityTypeShortcut: string;
 }
