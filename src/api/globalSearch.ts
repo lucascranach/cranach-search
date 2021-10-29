@@ -36,12 +36,12 @@ const setHistory = (queryParams: string) => {
 }
 
 const getInventor = (item: any):string => {
-  const inventor = item.data_all.involvedPersons.find((person: any) => person.role === 'Inventor');
+  const inventor = item.involved_persons.find((person: any) => person.role === 'Inventor');
   return inventor ? `${inventor.name}${inventor.suffix}` : '';
 }
 
 const getArtist = (item: any):string => {
-  const artist = item.data_all.involvedPersons.find((person: any) => person.role === 'Künstler');
+  const artist = item.involved_persons.find((person: any) => person.role === 'Künstler');
   return artist ? artist.name : '';
 }
 
@@ -53,7 +53,7 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     date: item.dating,
     owner: item.owner,
     classification: item.classification,
-    printProcess: item.data_all.classification.printProcess ? item.data_all.classification.printProcess : '',
+    printProcess: item.print_process,
     inventor: getInventor(item),
     artist: getArtist(item),
     dimensions: item.dimensions,
