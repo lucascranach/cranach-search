@@ -5,37 +5,64 @@ const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
 const authPass = import.meta.env.VITE_AUTH_PASS;
 
+const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
+  return [
+    'attribution',
+    'collection_repository',
+    'examination_analysis',
+    'subject',
+    'form',
+    'function',
+  ].map((filterGroupKey) => ({
+    key: filterGroupKey,
+    text: filters[filterGroupKey].display_value,
+    children: filters[filterGroupKey].values,
+  }));
+}
 
 const assembleResultData = (resultset: any): GlobalSearchResult => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
-  const filters = resultset.data.filters.filterInfos;
+  const filterGroups = mapFilterGroups(resultset.data.filters);
   const meta = resultset.data.meta;
-  return { items, filters, meta };
+  return { items, filterGroups, meta };
 }
 
 const setHistory = (queryParams: string) => {
   const baseurl = location.protocol + '//' + location.host + location.pathname;
-  const nextState = {searchParams: queryParams};
+  const nextState = { searchParams: queryParams };
   const nextTitle = "cda_ // Search ";
   const nextURL = `${baseurl}?${queryParams}`;
   window.history.pushState(nextState, nextTitle, nextURL);
 }
 
-const toArtefact = (item: any): GlobalSearchArtifact => ({
-  id: item.inventory_number,
-  entityType: item.entity_type,
-  title: item.title,
-  subtitle: item.owner,
-  date: '',
-  additionalInfoList: [],
-  classification: '',
-  objectName: item.object_name,
-  imgSrc: item.images ? item.images.overall.images[0].sizes.small.src : '',
-  entityTypeShortcut: item.entity_type.substr(0,1),
-  _highlight: item._highlight,
-});
+const getInventor = (item: any):string => {
+  const inventor = item.data_all.involvedPersons.find((person: any) => person.role === 'Inventor');
+  return inventor ? `${inventor.name}${inventor.suffix}` : '';
+}
 
+const getArtist = (item: any):string => {
+  const artist = item.data_all.involvedPersons.find((person: any) => person.role === 'Künstler');
+  return artist ? artist.name : '';
+}
 
+const toArtefact = (item: any): GlobalSearchArtifact => {
+  return {
+    id: item.inventory_number,
+    entityType: item.entity_type,
+    title: item.title,
+    date: item.dating,
+    owner: item.owner,
+    classification: item.classification,
+    printProcess: item.data_all.classification.printProcess ? item.data_all.classification.printProcess : '',
+    inventor: getInventor(item),
+    artist: getArtist(item),
+    dimensions: item.dimensions,
+    objectName: item.object_name,
+    imgSrc: item.img_src,
+    entityTypeShortcut: item.entity_type.substr(0, 1),
+    _highlight: item._highlight,
+  }
+};
 
 const searchByFiltersAndTerm = async (
   filters: APIFilterType,
@@ -44,6 +71,7 @@ const searchByFiltersAndTerm = async (
 ): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
     language: langCode,
+    sort_by: 'sorting_number.desc',
     'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
 
@@ -67,9 +95,9 @@ const searchByFiltersAndTerm = async (
     params['entity_type:eq'] = filters.entityType;
   }
 
-  if (filters.filterInfos.size > 0) {
-    params['filterInfos:eq'] = Array.from(filters.filterInfos).join(',');
-  }
+  filters.filterGroups.forEach((filterIds: Set<string>, groupKey: string) => {
+    params[`${groupKey}:eq`] = Array.from(filterIds).join(',');
+  });
 
   const cleanAllFieldsTerm = freetextFields.allFieldsTerm.trim();
   if (cleanAllFieldsTerm !== '') {
@@ -96,7 +124,7 @@ const searchByFiltersAndTerm = async (
 
   try {
     return await executeQuery(queryParams);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -117,7 +145,7 @@ const retrieveUserCollection = async (
 
   try {
     return await executeQuery(queryParams);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -141,7 +169,7 @@ const executeQuery = async (
     );
     const bodyJSON = await resp.json();
     return assembleResultData(bodyJSON);
-  } catch(err) {
+  } catch (err) {
     console.error(err);
   }
 
@@ -169,6 +197,7 @@ export enum EntityType {
   GRAPHICS = 'GRAPHIC',
   PAINTINGS = 'PAINTING',
   DOCUMENTS = 'DOCUMENT',
+  ARCHIVALS = 'ARCHIVAL',
   UNKNOWN = 'UNKNOWN'
 }
 
@@ -176,6 +205,7 @@ export enum EntityTypeShortcuts {
   GRAPHICS = 'G',
   PAINTINGS = 'P',
   DOCUMENTS = 'D',
+  ARCHIVALS = 'A',
   UNKNOWN = 'U'
 }
 
@@ -187,7 +217,8 @@ export type APIFilterType = {
   size: number,
   from: number,
   entityType: EntityType,
-  filterInfos: Set<string>,
+  id: string
+  filterGroups: Map<string, Set<string>>,
 };
 
 export type APIFreetextFieldsType = {
@@ -202,26 +233,35 @@ export type GlobalSearchArtifact = {
   objectName: string;
   entityType: EntityType,
   title: string;
-  subtitle: string;
+  inventor: string;
+  artist: string;
+  owner: string;
   date: string;
-  additionalInfoList: string[];
+  dimensions: string;
   classification: string;
+  printProcess: string;
   imgSrc: string;
   entityTypeShortcut: string;
   _highlight?: Record<string, Array<string>>;
 }
 
-export type GlobalSearchFilterInfoItem = {
+export type GlobalSearchFilterItem = {
   id: string;
   text: string;
   doc_count: number;
   is_available: boolean;
-  children: GlobalSearchFilterInfoItem[];
+  children: GlobalSearchFilterItem[];
+}
+
+export type GlobalSearchFilterGroupItem = {
+  key: string,
+  text: string;
+  children: GlobalSearchFilterItem[];
 }
 
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
-  filters: GlobalSearchFilterInfoItem[];
+  filterGroups: GlobalSearchFilterGroupItem[];
   meta: {
     hits: number;
   };

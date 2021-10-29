@@ -3,16 +3,17 @@ import { observer } from 'mobx-react-lite';
 
 import Logo from '../../../base/visualizing/logo';
 import CategoryFilter from '../../../base/interacting/category-filter';
-// import Switcher from '~/components/atoms/switcher';
+import SecondaryNavigation from '../../../structure/interacting/secondary-navigation';
+
 
 import translations from './translations.json';
 import './navigation.scss';
 
-import StoreContext, { GlobalSearchEntityType, UISidebarType } from '../../../../store/StoreContext';
+import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
 
 
 const Navigation = () => {
-  const { globalSearch, collection , ui } = useContext(StoreContext);
+  const { globalSearch, ui } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Navigation', translations);
 
@@ -41,15 +42,6 @@ const Navigation = () => {
     globalSearch.setEntityType(filterValue);
   }
 
-  const toggleSidebar = () => {
-    ui.toggleSidebar();
-    if (ui.sidebar === UISidebarType.FILTER) { globalSearch.triggerSearch(); }
-    if (ui.sidebar === UISidebarType.MY_CRANACH) { collection.showCollection(); }
-  }
-
-  const isVisibleMyCranach = ui.sidebar === UISidebarType.FILTER ? 'btn--is-visible' : 'btn--is-hidden';
-  const isVisibleFilter = ui.sidebar === UISidebarType.MY_CRANACH ? 'btn--is-visible' : 'btn--is-hidden';
-
   return (
     <nav
       className="main-navigation"
@@ -68,7 +60,7 @@ const Navigation = () => {
               <CategoryFilter
                 className={isActive(globalSearch.filters.entityType, item.filterValue)}
                 filterText={t(item.title)}
-                onClick={() => triggerAction(item.filterValue) }
+                onClick={() => triggerAction(item.filterValue)}
               >
               </CategoryFilter>
             </li>
@@ -76,24 +68,8 @@ const Navigation = () => {
         }
       </ul>
 
-      <ul className="sidebar-menu">
-        <li>
-        <button
-            className={`btn btn--is-reduced ${isVisibleMyCranach}`}
-            onClick={()=> toggleSidebar()}
-          >
-            <i className="icon icon--is-inline">list</i>
-            { t('goto My Collection') }
-          </button>
-          <button
-            className={`btn btn--is-reduced ${isVisibleFilter}`}
-            onClick={()=> toggleSidebar()}
-          >
-            <i className="icon icon--is-inline">manage_search</i>
-            { t('goto search') }
-          </button>
-        </li>
-      </ul>
+
+      <SecondaryNavigation />
 
     </nav>
   );

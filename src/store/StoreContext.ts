@@ -5,8 +5,12 @@ import { UIStoreInterface } from './domains/ui';
 import { CollectionStoreInterface } from './domains/collection';
 import { GlobalSearchStoreInterface } from './domains/globalSearch';
 
-export { GlobalSearchEntityType as GlobalSearchEntityType } from './domains/globalSearch';
-export { UISidebarType } from './domains/ui';
+export { GlobalSearchEntityType } from './domains/globalSearch';
+export type {
+  GlobalSearchFilterGroupItem,
+  GlobalSearchFilterItem,
+} from './domains/globalSearch';
+export { UISidebarType, UIOverviewViewType } from './domains/ui';
 
 configure({
   useProxies: 'never',

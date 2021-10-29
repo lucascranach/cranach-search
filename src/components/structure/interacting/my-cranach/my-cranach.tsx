@@ -4,23 +4,24 @@ import Size from '../../../base/visualizing/size';
 import translations from './translations.json';
 import './my-cranach.scss';
 
-import StoreContext from '../../../../store/StoreContext';
+
+import StoreContext, { UISidebarType } from '../../../../store/StoreContext';
 
 const MyCranach = () => {
   const { collection, ui } = useContext(StoreContext);
-  const { t } = ui.useTranslation('SearchSidebar', translations);
+  const { t } = ui.useTranslation('Search', translations);
   const triggerComparism = () => collection.startComparism();
   const compareIsActive = collection.size && collection.size > 1 ? 'btn--is-active' : 'btn--is-disabled';
+  const isActiveMyCranach = ui.sidebar === UISidebarType.MY_CRANACH ? 'my-cranach--is-active' : '';
 
   return (
     <div
-      className="my-cranach"
+    className={`my-cranach ${isActiveMyCranach}`}
       data-component="structure/interacting/my-cranach"
     >
       <h2 className="my-cranach__title">{t('Show My Collection')}<Size size={collection.size} /></h2>
 
       <ul>
-
         <li
           className={`btn btn--is-reduced btn--is-stacked ${compareIsActive}`}
           onClick={() => triggerComparism()}

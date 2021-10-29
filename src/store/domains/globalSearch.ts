@@ -7,6 +7,11 @@ import GlobalSearchAPI_, {
   EntityType,
 } from '../../api/globalSearch';
 export { EntityType as GlobalSearchEntityType } from '../../api/globalSearch';
+export type {
+  GlobalSearchFilterGroupItem,
+  GlobalSearchFilterItem,
+} from '../../api/globalSearch';
+
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
@@ -18,7 +23,8 @@ export type FilterType = {
   size: number,
   from: number,
   entityType: EntityType,
-  filterInfos: Set<string>,
+  id: string,
+  filterGroups: Map<string, Set<string>>,
 };
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
@@ -47,7 +53,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     size: 50,
     from: 0,
     entityType: EntityType.UNKNOWN,
-    filterInfos: new Set(),
+    id: '',
+    filterGroups: new Map(),
   };
 
   debounceWaitInMSecs: number = 500;
@@ -107,11 +114,21 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.triggerSearch();
   }
 
-  toggleFilterInfoActiveStatus(filterInfoId: string) {
-    if (this.filters.filterInfos.has(filterInfoId)) {
-      this.filters.filterInfos.delete(filterInfoId);
+  toggleFilterItemActiveStatus(groupKey: string, filterItemId: string) {
+    const groupSet = this.filters.filterGroups.get(groupKey);
+
+    if (groupSet) {
+      if (groupSet.has(filterItemId)) {
+        groupSet.delete(filterItemId);
+      } else {
+        groupSet.add(filterItemId);
+      }
+
+      if (groupSet.size === 0) {
+        this.filters.filterGroups.delete(groupKey);
+      }
     } else {
-      this.filters.filterInfos.add(filterInfoId);
+      this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
     this.triggerSearch();
@@ -140,7 +157,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
           lang,
         );
         this.setSearchResult(result);
-      } catch(err) {
+      } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
         this.setSearchLoading(false);
@@ -159,7 +176,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
           lang,
         );
         this.setSearchResult(result);
-      } catch(err) {
+      } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
         this.setSearchLoading(false);
@@ -211,7 +228,7 @@ export interface GlobalSearchStoreInterface {
 
   setFrom(from: number): void;
 
-  toggleFilterInfoActiveStatus(filterId: string): void;
+  toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
 
   triggerSearch(): void;
 

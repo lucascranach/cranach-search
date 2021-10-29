@@ -1,4 +1,4 @@
-@import '../../../../style//000-abstracts/__abstracts-dir';
+@import "../../../../style//000-abstracts/__abstracts-dir";
 
 .artefact-line {
   display: grid;
@@ -40,8 +40,15 @@
   }
 
   &__subtitle {
-    margin-bottom: $s;
+    margin-bottom: $xxs;
     color: $lighter;
+    line-height: $lh-headlines;
+  }
+
+  &__text {
+    margin-bottom: $xxs;
+    color: $lighter;
+    line-height: $lh-headlines;
   }
 
   &__master-data {

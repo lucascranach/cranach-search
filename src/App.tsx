@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect } from 'react'
 import { useRouteMatch, useHistory } from 'react-router-dom'
 
 import StoreContext from './store/StoreContext';
-import Search from './components/pages/search';
+import Dashboard from './components/pages/dashboard';
 import Navigation from './components/structure/interacting/navigation';
 
 
@@ -28,7 +28,7 @@ function App() {
       <Navigation></Navigation>
       <div className="app page">
         <div className="main-content">
-          <Search></Search>
+          <Dashboard></Dashboard>
         </div>
       </div>
     </Fragment>

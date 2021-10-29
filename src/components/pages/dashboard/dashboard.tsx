@@ -2,37 +2,36 @@ import React, { FC, useContext, useEffect } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
-import ArtefactOverview, { ArtefactOverviewItem } from '../../structure/visualizing/artefact-overview';
-import SearchSidebar from '../../structure/interacting/search-sidebar';
+import ArtefactOverview, { ArtefactOverviewItem, ArtefactOverviewType } from '../../structure/visualizing/artefact-overview';
+import Search from '../../structure/interacting/search';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
 import MyCranach from '../../structure/interacting/my-cranach';
-import StoreContext, { UISidebarType, GlobalSearchEntityType } from '../../../store/StoreContext';
+import StoreContext, { GlobalSearchEntityType, UIOverviewViewType } from '../../../store/StoreContext';
 
-import './search.scss';
+import './dashboard.scss';
 
-const Search: FC = () => {
+const Dashboard: FC = () => {
   const { globalSearch, ui } = useContext(StoreContext);
-  const isActiveFilter = ui.sidebar === UISidebarType.FILTER ? 'search__filter--is-active' : '';
-  const isActiveMyCranach = ui.sidebar === UISidebarType.MY_CRANACH ? 'search__my-cranach--is-active' : '';
+  const isActiveSidebar = 'dashboard__sidebar--is-active';
 
   useEffect(() => {
     globalSearch.triggerSearch();
   }, [])
 
   const getToUrlForArtifact = (entityType: GlobalSearchEntityType, id: string): string => {
-    const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
+    const paintingsBaseUrl = import.meta.env.VITE_CDA_PAINTINGS_BASE_URL;
     const graphicsBaseUrl = import.meta.env.VITE_CDA_GRAPHICS_BASE_URL;
+    const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
 
     switch (entityType) {
       case GlobalSearchEntityType.GRAPHICS:
         return `${graphicsBaseUrl}/${ui.lang}/${id}?back=${window.encodeURIComponent(window.location.href)}`;
-        break;
+
       case GlobalSearchEntityType.PAINTINGS:
-        return `${cdaBaseUrl}/${id}`;
-        break;
+        return `${paintingsBaseUrl}/${ui.lang}/${id}`;
+
       case GlobalSearchEntityType.DOCUMENTS:
         return `${cdaBaseUrl}/archival-documents/${id}`;
-        break;
 
       default:
         return `$/{ui.lang}/${id}`;
@@ -47,31 +46,35 @@ const Search: FC = () => {
     }),
   );
 
+  const mapSelectedOverviewViewType = (type: UIOverviewViewType): ArtefactOverviewType => ({
+    [UIOverviewViewType.CARD]: ArtefactOverviewType.CARD,
+    [UIOverviewViewType.CARD_SMALL]: ArtefactOverviewType.CARD_SMALL,
+    [UIOverviewViewType.LIST]: ArtefactOverviewType.LIST,
+  })[type];
+
   return (
     <div
-      className="search"
+      className="dashboard"
       data-component="page/search"
     >
-      <div className="search__results-area">
+      <div className="dashboard__results-area">
         <SearchResultNavigation></SearchResultNavigation>
         {globalSearch.loading && 'Loading...'}
         {!globalSearch.loading
           && <ArtefactOverview
+            viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
             items={overviewItems}
           />
         }
       </div>
 
-      <div className={`search__filter ${isActiveFilter}`}>
-        <SearchSidebar />
-      </div>
-
-      <div className={`search__my-cranach ${isActiveMyCranach}`}>
+      <aside className={`dashboard__sidebar ${isActiveSidebar}`}>
+        <Search />
         <MyCranach />
-      </div>
+      </aside>
 
     </div>
   );
 };
 
-export default observer(Search);
+export default observer(Dashboard);
