@@ -10,7 +10,7 @@ type Props = {
   date?: string,
   to?: string,
   text?: string,
-  additionalInfoList?: string[],
+  additionalText?: string,
   imgSrc?: string,
   imgAlt?: string,
 }
