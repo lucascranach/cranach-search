@@ -28,7 +28,7 @@ export type ArtefactOverviewItem = {
 
 export enum ArtefactOverviewType {
   CARD = 'card',
-  CARD_SMALL = 'card_small',
+  CARD_SMALL = 'card-small',
   LIST = 'list',
 }
 
@@ -44,6 +44,7 @@ type SwitcherProps = {
 }
 
 const DefaultViewType = ArtefactOverviewType.CARD;
+const maximumTitleLengthInWords = 16;
 
 const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   items = [],
@@ -91,7 +92,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
   const shortenTitle = (title: string): string => {
     const splitTitle = title.split(' ');
-    return splitTitle.length < 25 ? title : `${splitTitle.slice(0, 24).join(' ')} ...`;
+    return splitTitle.length <= maximumTitleLengthInWords ? title : `${splitTitle.slice(0, maximumTitleLengthInWords).join(' ')} ...`;
   };
 
   return (<div

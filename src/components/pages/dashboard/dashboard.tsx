@@ -28,7 +28,7 @@ const Dashboard: FC = () => {
         return `${graphicsBaseUrl}/${ui.lang}/${id}?back=${window.encodeURIComponent(window.location.href)}`;
 
       case GlobalSearchEntityType.PAINTINGS:
-        return `${paintingsBaseUrl}/${ui.lang}/${id}`;
+        return `${paintingsBaseUrl}/${ui.lang}/paintings/${id}`;
 
       case GlobalSearchEntityType.DOCUMENTS:
         return `${cdaBaseUrl}/archival-documents/${id}`;
@@ -42,7 +42,7 @@ const Dashboard: FC = () => {
     (item) => ({
       ...item,
       to: getToUrlForArtifact(item.entityType, item.id),
-      openInNewWindow: true,
+      openInNewWindow: false,
     }),
   );
 
@@ -58,7 +58,6 @@ const Dashboard: FC = () => {
       data-component="page/search"
     >
       <div className="dashboard__results-area">
-        <SearchResultNavigation></SearchResultNavigation>
         {globalSearch.loading && 'Loading...'}
         {!globalSearch.loading
           && <ArtefactOverview
@@ -66,6 +65,7 @@ const Dashboard: FC = () => {
             items={overviewItems}
           />
         }
+        <SearchResultNavigation></SearchResultNavigation>
       </div>
 
       <aside className={`dashboard__sidebar ${isActiveSidebar}`}>
