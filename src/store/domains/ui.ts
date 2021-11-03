@@ -73,7 +73,7 @@ export enum UISidebarType {
 }
 export enum UIOverviewViewType {
   CARD = 'card',
-  CARD_SMALL = 'card_small',
+  CARD_SMALL = 'card-small',
   LIST = 'list',
 }
 export interface UIStoreInterface {

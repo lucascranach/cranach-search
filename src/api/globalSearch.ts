@@ -70,7 +70,8 @@ const searchByFiltersAndTerm = async (
 ): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
     language: langCode,
-    sort_by: 'sorting_number.desc',
+    sort_by: 'sorting_number.asc',
+    'entity_type:neq': EntityType.DOCUMENTS,
     'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
 

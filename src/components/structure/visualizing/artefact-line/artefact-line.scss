@@ -11,7 +11,7 @@
 
   &:hover {
     #{$self}__content {
-      background-color: $darker;
+      background-color: $dark;
     }
   }
 
@@ -27,8 +27,8 @@
     flex-grow: 1;
     padding: $m;
     padding-bottom: $l;
-    background-color: $dark;
-    color: $lighter;
+    background-color: $darker;
+    color: $light;
     transition: background-color $tr-fast;
   }
 
@@ -47,7 +47,7 @@
 
   &__text {
     margin-bottom: $xxs;
-    color: $lighter;
+    color: $light;
     line-height: $lh-headlines;
   }
 

@@ -3,8 +3,8 @@
 
 .artefact-overview {
   display: grid;
-  height: 100vh;
   align-content: flex-start;
+  padding-bottom: $xxl;
   gap: $s;
 
   @include grid-auto-columns();
@@ -12,6 +12,7 @@
   &[data-active-view="card-small"] {
     column-gap: $xxs !important;
     row-gap: $xxs !important;
+    @include grid-auto-columns-small();
   }
 
   &[data-active-view="list"] {
