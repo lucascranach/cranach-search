@@ -36,12 +36,12 @@ const setHistory = (queryParams: string) => {
 }
 
 const getInventor = (item: any):string => {
-  const inventor = item.involved_persons.find((person: any) => person.role === 'Inventor');
+  const inventor = item.involved_persons.find((person: any) => person.roleType === 'INVENTOR');
   return inventor ? `${inventor.name}${inventor.suffix}` : '';
 }
 
 const getArtist = (item: any):string => {
-  const artist = item.involved_persons.find((person: any) => person.role === 'Künstler');
+  const artist = item.involved_persons.find((person: any) => person.roleType === 'ARTIST');
   return artist ? artist.name : '';
 }
 
