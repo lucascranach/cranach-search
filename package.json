@@ -10,6 +10,7 @@
     "lint:fix": "stylelint **/*.scss --fix"
   },
   "dependencies": {
+    "history": "^5.1.0",
     "i18next": "^20.4.0",
     "mobx": "^6.3.2",
     "mobx-react-lite": "^3.2.0",
