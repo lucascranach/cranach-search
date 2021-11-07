@@ -27,14 +27,6 @@ const assembleResultData = (resultset: any): GlobalSearchResult => {
   return { items, filterGroups, meta };
 }
 
-const setHistory = (queryParams: string) => {
-  const baseurl = location.protocol + '//' + location.host + location.pathname;
-  const nextState = { searchParams: queryParams };
-  const nextTitle = "cda_ // Search ";
-  const nextURL = `${baseurl}?${queryParams}`;
-  window.history.pushState(nextState, nextTitle, nextURL);
-}
-
 const getInventor = (item: any):string => {
   const inventor = item.involved_persons.find((person: any) => person.roleType === 'INVENTOR');
   return inventor ? `${inventor.name}${inventor.suffix}` : '';
@@ -148,8 +140,6 @@ const executeQuery = async (
   const authString = btoa(`${authUser}:${authPass}`);
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
-
-  setHistory(queryParams);
 
   try {
     const resp = await fetch(
