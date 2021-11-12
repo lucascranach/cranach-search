@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router } from 'react-router-dom'
-import { createBrowserHistory } from 'history';
 import StoreProvider from './providers/StoreProvider';
+import { createBrowserHistory } from 'history';
 import './style/main.scss'
 import App from './App'
 
@@ -11,7 +11,7 @@ const history = createBrowserHistory();
 
 ReactDOM.render(
   <React.StrictMode>
-    <StoreProvider>
+    <StoreProvider history={history}>
       <Router history={history}>
         <App />
       </Router>

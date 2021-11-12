@@ -1,11 +1,20 @@
 
 import { makeAutoObservable } from 'mobx';
-import UI from './ui';
+import type { RootStoreInterface } from '../rootStore';
 import GlobalSearchAPI_, {
   GlobalSearchArtifact,
   GlobalSearchResult,
   EntityType,
 } from '../../api/globalSearch';
+import type {
+  ObserverInterface as RoutingObservableInterface,
+  NotificationInterface as RoutingNotificationInterface,
+} from './routing';
+import {
+  NotificationType as RoutingNotificationType,
+  ChangeAction as RoutingChangeAction,
+  SearchQueryParamChange as RoutingSearchQueryParamChange,
+} from './routing';
 export { EntityType as GlobalSearchEntityType } from '../../api/globalSearch';
 export type {
   GlobalSearchFilterGroupItem,
@@ -17,8 +26,8 @@ type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
 export type FilterType = {
   dating: {
-    from: string,
-    to: string,
+    fromYear: number,
+    toYear: number,
   },
   size: number,
   from: number,
@@ -27,8 +36,8 @@ export type FilterType = {
   filterGroups: Map<string, Set<string>>,
 };
 
-export default class GlobalSearch implements GlobalSearchStoreInterface {
-  uiStore: UI;
+export default class GlobalSearch implements GlobalSearchStoreInterface, RoutingObservableInterface {
+  rootStore: RootStoreInterface;
 
   globalSearchAPI: GlobalSearchAPI;
 
@@ -42,8 +51,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   filters: FilterType = {
     dating: {
-      from: '',
-      to: '',
+      fromYear: 0,
+      toYear: 0,
     },
     size: 50,
     from: 0,
@@ -55,11 +64,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   debounceWaitInMSecs: number = 500;
   debounceHandler: undefined | number = undefined;
 
-  constructor(uiStore: UI, globalSearchAPI: GlobalSearchAPI) {
+  constructor(rootStore: RootStoreInterface, globalSearchAPI: GlobalSearchAPI) {
     makeAutoObservable(this);
 
-    this.uiStore = uiStore;
+    this.rootStore = rootStore;
     this.globalSearchAPI = globalSearchAPI;
+
+    this.rootStore.routing.addObserver(this);
   }
 
 
@@ -96,18 +107,21 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     this.triggerFilterRequest();
   }
 
-  setDatingFrom(from: string) {
-    this.filters.dating.from = from;
+  setDatingFrom(fromYear: number) {
+    this.filters.dating.fromYear = fromYear;
+    this.setRoutingForDating();
     this.triggerFilterRequest();
   }
 
-  setDatingTo(to: string) {
-    this.filters.dating.to = to;
+  setDatingTo(toYear: number) {
+    this.filters.dating.toYear = toYear;
+    this.setRoutingForDating();
     this.triggerFilterRequest();
   }
 
   setFrom(from: number) {
     this.filters.from = from;
+    this.setRoutingForPage();
     this.triggerFilterRequest();
   }
 
@@ -128,11 +142,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
       this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
+    this.updateRoutingForFilterGroups(groupKey);
     this.triggerFilterRequest();
   }
 
   setEntityType(entityType: EntityType) {
     this.filters.entityType = entityType;
+    this.setRoutingForEntityType();
     this.triggerFilterRequest();
   }
 
@@ -145,7 +161,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     clearTimeout(this.debounceHandler);
 
     this.debounceHandler = window.setTimeout(async () => {
-      const { lang } = this.uiStore;
+      const { lang } = this.rootStore.ui;
       this.setSearchLoading(true);
       try {
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
@@ -165,7 +181,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
   triggerUserCollectionRequest(ids: string[]) {
 
     (async () => {
-      const { lang } = this.uiStore;
+      const { lang } = this.rootStore.ui;
       this.setSearchLoading(true);
       try {
         const result = await this.globalSearchAPI.retrieveUserCollection(
@@ -179,6 +195,96 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
         this.setSearchLoading(false);
       }
     })();
+  }
+
+  notify(notification: RoutingNotificationInterface) {
+    switch (notification.type) {
+      case RoutingNotificationType.SEARCH_INIT:
+      case RoutingNotificationType.SEARCH_CHANGE:
+        notification.params.forEach(([name, value]) => {
+          switch (name) {
+            case 'attribution':
+            case 'collection_repository':
+            case 'examination_analysis':
+            case 'subject':
+            case 'form':
+            case 'function':
+              this.handleRoutingNotificationForFilterGroups(name, value);
+              break;
+
+            case 'page':
+              this.handleRoutingNotificationForPage(value);
+              break;
+
+            case 'kind':
+              this.handleRoutingNotificationForEntityType(value);
+              break;
+
+            case 'fromYear':
+            case 'toYear':
+              this.handleRoutingNotificationForDating(name, value);
+              break;
+          }
+        });
+        break;
+    }
+  }
+
+  private updateRoutingForFilterGroups(groupKey: string) {
+    const groupSet = this.filters.filterGroups.get(groupKey);
+    const routingActions: RoutingSearchQueryParamChange = [];
+
+    let routingAction = !groupSet ? RoutingChangeAction.REMOVE : RoutingChangeAction.ADD;
+
+    const gs = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
+    routingActions.push([routingAction, [groupKey, gs]]);
+
+    this.rootStore.routing.updateSearchQueryParams(routingActions);
+  }
+
+  private handleRoutingNotificationForFilterGroups(name: string, value: string) {
+    this.filters.filterGroups.set(name, new Set(value.split(',')));
+  }
+
+  private setRoutingForPage() {
+    const page = (this.filters.from / this.filters.size) + 1;
+    this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['page', page.toString()]]]);
+  }
+
+  private handleRoutingNotificationForPage(value: string) {
+    this.filters.from = Math.max(0, (parseInt(value, 10) - 1) * this.filters.size);
+  }
+
+  private setRoutingForEntityType() {
+    const kind = this.filters.entityType;
+    this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['kind', kind]]]);
+  }
+
+  private handleRoutingNotificationForEntityType(value: string) {
+    if (value in Object.keys(EntityType)){
+      this.filters.entityType = value as EntityType;
+    }
+  }
+
+  private setRoutingForDating() {
+    const { fromYear, toYear } = this.filters.dating;
+
+    this.rootStore.routing.updateSearchQueryParams([
+      [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['fromYear', fromYear.toString()]],
+      [(toYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['toYear', toYear.toString()]],
+    ]);
+  }
+
+  private handleRoutingNotificationForDating(name: string, value: string) {
+    switch (name) {
+      case 'fromYear':
+        this.filters.dating.fromYear = parseInt(value, 10);
+        break;
+
+      case 'toYear':
+        this.filters.dating.toYear = parseInt(value, 10);
+        break;
+    }
   }
 }
 
@@ -213,9 +319,9 @@ export interface GlobalSearchStoreInterface {
 
   searchForAllFieldsTerm(allFieldsTerm: string): void;
 
-  setDatingFrom(from: string): void;
+  setDatingFrom(fromYear: number): void;
 
-  setDatingTo(to: string): void;
+  setDatingTo(toYear: number): void;
 
   setEntityType(entityType: EntityType): void;
 

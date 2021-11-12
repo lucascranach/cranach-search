@@ -7,7 +7,7 @@ import Navigation from './components/structure/interacting/navigation';
 
 
 function App() {
-  const { ui } = useContext(StoreContext);
+  const { root: { ui } } = useContext(StoreContext);
   const history = useHistory();
   const match = useRouteMatch<{ lang: string }>(`${import.meta.env.BASE_URL}:lang`);
 

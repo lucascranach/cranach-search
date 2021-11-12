@@ -18,7 +18,7 @@ import StoreContext, {
 } from '../../../../store/StoreContext';
 
 const Search: FC = () => {
-  const { globalSearch, ui } = useContext(StoreContext);
+  const { root: { globalSearch, ui } } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Search', translations);
 

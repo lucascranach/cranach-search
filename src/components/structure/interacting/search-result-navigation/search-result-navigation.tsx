@@ -24,7 +24,7 @@ const SearchResultNavigation: FC<Props> = ({
   const lastItemClass = `${paginationClass}--last-item`;
   const hiddenClass = `${paginationClass}--hidden`;
 
-  const { globalSearch } = useContext(StoreContext);
+  const { root: { globalSearch } } = useContext(StoreContext);
   const { size, from } = globalSearch.filters;
   const hits = globalSearch.result?.meta.hits ?? 0;
 

@@ -75,12 +75,12 @@ const searchByFiltersAndTerm = async (
     params['from'] = filters.from;
   }
 
-  if (filters.dating.from) {
-    params['dating_begin:gte'] = filters.dating.from;
+  if (filters.dating.fromYear) {
+    params['dating_begin:gte'] = filters.dating.fromYear;
   }
 
-  if (filters.dating.to) {
-    params['dating_end:lte'] = filters.dating.to;
+  if (filters.dating.toYear) {
+    params['dating_end:lte'] = filters.dating.toYear;
   }
 
   if (filters.id) {
@@ -190,8 +190,8 @@ export enum EntityTypeShortcuts {
 
 export type APIFilterType = {
   dating: {
-    from: string,
-    to: string,
+    fromYear: number,
+    toYear: number,
   },
   size: number,
   from: number,

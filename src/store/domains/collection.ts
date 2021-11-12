@@ -1,16 +1,17 @@
 
 import { makeAutoObservable } from 'mobx';
-import GlobalSearch from './globalSearch';
+import { RootStoreInterface } from '../rootStore';
 
 const cranachCompareURL = import.meta.env.VITE_CRANACH_COMPARE_URL;
 
 export default class Collection implements CollectionStoreInterface {
+  rootStore: RootStoreInterface;
   artefacts: string[] = [];
-  globalSearchStore: GlobalSearch;
 
-  constructor(globalSearchStore: GlobalSearch) {
+  constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
-    this.globalSearchStore = globalSearchStore;
+
+    this.rootStore = rootStore;
     this.readCollectionFromLocalStorage();
   }
 
@@ -45,9 +46,9 @@ export default class Collection implements CollectionStoreInterface {
 
   showCollection() {
     this.readCollectionFromLocalStorage();
-    this.globalSearchStore.resetEntityType();
+    this.rootStore.globalSearch.resetEntityType();
     const artefactInventoryNumbers = this.artefacts.map(artefact => artefact.replace(/:.*/, ''));
-    this.globalSearchStore.triggerUserCollectionRequest(artefactInventoryNumbers);
+    this.rootStore.globalSearch.triggerUserCollectionRequest(artefactInventoryNumbers);
     return true;
   }
 
