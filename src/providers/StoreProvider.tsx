@@ -1,15 +1,12 @@
 import React, { FC } from 'react';
-import { History } from 'history';
+import { createBrowserHistory } from 'history';
 
 import StoreContext from '../store/StoreContext';
 import RootStore from '../store/rootStore';
 
+const history = createBrowserHistory();
 
-type StoreProviderProps = {
-  history: History;
-};
-
-const StoreProvider: FC<StoreProviderProps> = ({ children, history }) => {
+const StoreProvider: FC = ({ children }) => {
   const root = new RootStore(history);
 
   return (
