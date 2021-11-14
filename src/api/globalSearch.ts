@@ -7,6 +7,7 @@ const authPass = import.meta.env.VITE_AUTH_PASS;
 
 const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   return [
+    'catalog',
     'attribution',
     'collection_repository',
     'examination_analysis',
@@ -20,11 +21,30 @@ const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   }));
 }
 
+const mapSingleFilters = (filters: any): GlobalSearchFilterItem[] => {
+  const singleFilters: GlobalSearchFilterItem[] = [];
+
+  if (filters['is_best_of']) {
+    const value = filters['is_best_of'].values[1];
+
+    singleFilters.push({
+      id: 'is_best_of',
+      text: value.display_value,
+      doc_count: value.doc_count,
+      is_available: value.is_available,
+      children: [],
+    });
+  }
+
+  return singleFilters;
+}
+
 const assembleResultData = (resultset: any): GlobalSearchResult => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
   const filterGroups = mapFilterGroups(resultset.data.filters);
+  const singleFilters = mapSingleFilters(resultset.data.filters);
   const meta = resultset.data.meta;
-  return { items, filterGroups, meta };
+  return { items, filterGroups, singleFilters, meta };
 }
 
 const setHistory = (queryParams: string) => {
@@ -97,6 +117,10 @@ const searchByFiltersAndTerm = async (
 
   if (filters.entityType !== EntityType.UNKNOWN) {
     params['entity_type:eq'] = filters.entityType;
+  }
+
+  if (filters.isBestOf) {
+    params['is_best_of'] = 'true';
   }
 
   filters.filterGroups.forEach((filterIds: Set<string>, groupKey: string) => {
@@ -208,6 +232,7 @@ export type APIFilterType = {
   entityType: EntityType,
   id: string
   filterGroups: Map<string, Set<string>>,
+  isBestOf: boolean,
 };
 
 export type GlobalSearchArtifact = {
@@ -243,6 +268,7 @@ export type GlobalSearchFilterGroupItem = {
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
   filterGroups: GlobalSearchFilterGroupItem[];
+  singleFilters: GlobalSearchFilterItem[];
   meta: {
     hits: number;
   };

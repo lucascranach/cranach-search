@@ -25,7 +25,14 @@ export type FilterType = {
   entityType: EntityType,
   id: string,
   filterGroups: Map<string, Set<string>>,
+  isBestOf: boolean,
 };
+
+export type SingleFilter = {
+  id: string,
+  name: string,
+  docCount: number,
+}
 
 export default class GlobalSearch implements GlobalSearchStoreInterface {
   uiStore: UI;
@@ -50,6 +57,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
     entityType: EntityType.UNKNOWN,
     id: '',
     filterGroups: new Map(),
+    isBestOf: false,
   };
 
   debounceWaitInMSecs: number = 500;
@@ -67,6 +75,18 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   get flattenedSearchResultItems(): GlobalSearchArtifact[] {
     return this.result?.items ?? [];
+  }
+
+  get bestOfFilter(): SingleFilter | null {
+    const isBestOfFilter = this.result?.singleFilters.find((item) => item.id === 'is_best_of');
+
+    if (!isBestOfFilter) { return null; }
+
+    return {
+      name: 'Best of',
+      id: isBestOfFilter.id,
+      docCount: isBestOfFilter.doc_count,
+    };
   }
 
   /* Actions */
@@ -108,6 +128,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface {
 
   setFrom(from: number) {
     this.filters.from = from;
+    this.triggerFilterRequest();
+  }
+
+  setIsBestOf(isBestOf: boolean) {
+    this.filters.isBestOf = isBestOf;
     this.triggerFilterRequest();
   }
 
@@ -201,6 +226,8 @@ export interface GlobalSearchStoreInterface {
 
   flattenedSearchResultItems: GlobalSearchArtifact[];
 
+  bestOfFilter: SingleFilter | null;
+
   setAllFieldsTerm(allFieldsTerm: string): void;
 
   setSearchLoading(loading: boolean): void;
@@ -220,6 +247,8 @@ export interface GlobalSearchStoreInterface {
   setEntityType(entityType: EntityType): void;
 
   setFrom(from: number): void;
+
+  setIsBestOf(isBestOf: boolean): void;
 
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
 
