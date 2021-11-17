@@ -33,18 +33,7 @@ export default class Routing implements RoutingStoreInterface {
     this.rootStore = rootStore;
     this.history = history;
 
-    const subscribe = (listener: Listener) => {
-      const unlisten = history.listen(listener);
-
-      listener({
-        action: history.action,
-        location: history.location,
-      });
-
-      return unlisten;
-    }
-
-    history.listen(subscribe(this.updateState.bind(this)));
+    history.listen(this.updateState.bind(this));
   }
 
   /* Computed */
@@ -58,7 +47,7 @@ export default class Routing implements RoutingStoreInterface {
 
   updateState(newState: Update) {
     if (newState.location.search !== this.state.location.search) {
-      let searchParams = Array.from((new URLSearchParams(newState.location.search)).entries());
+      const searchParams = Array.from((new URLSearchParams(newState.location.search)).entries());
 
       this.notifyAllObservers({
         type: NotificationType.SEARCH_CHANGE,
@@ -103,7 +92,7 @@ export default class Routing implements RoutingStoreInterface {
   }
 
   notifyObserverWithCurrentSearchParams(observer: ObserverInterface) {
-    let searchParams = new URLSearchParams(this.state.location.search);
+    let { searchParams } = this;
 
     observer.notify({
       type: NotificationType.SEARCH_INIT,

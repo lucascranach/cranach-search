@@ -234,7 +234,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     const groupSet = this.filters.filterGroups.get(groupKey);
     const routingActions: RoutingSearchQueryParamChange = [];
 
-    let routingAction = !groupSet ? RoutingChangeAction.REMOVE : RoutingChangeAction.ADD;
+    const routingAction = !groupSet ? RoutingChangeAction.REMOVE : RoutingChangeAction.ADD;
 
     const gs = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
     routingActions.push([routingAction, [groupKey, gs]]);
