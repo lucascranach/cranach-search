@@ -8,7 +8,6 @@ import Routing, { RoutingStoreInterface } from './domains/routing';
 import GlobalSearch, { GlobalSearchStoreInterface } from './domains/globalSearch';
 import Collection, { CollectionStoreInterface } from './domains/collection';
 
-
 export default class RootStore implements RootStoreInterface {
   public ui: UIStoreInterface;
   public routing: RoutingStoreInterface;
@@ -23,7 +22,6 @@ export default class RootStore implements RootStoreInterface {
     this.globalSearch = new GlobalSearch(this, globalSearchAPI);
     this.collection = new Collection(this);
   }
-
 }
 
 export interface RootStoreInterface {

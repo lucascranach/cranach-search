@@ -38,17 +38,11 @@ export type FilterType = {
 
 export default class GlobalSearch implements GlobalSearchStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
-
   globalSearchAPI: GlobalSearchAPI;
-
   allFieldsTerm: string = '';
-
   loading: boolean = false;
-
   result: GlobalSearchResult | null = null;
-
   error: string | null = null;
-
   filters: FilterType = {
     dating: {
       fromYear: 0,
@@ -69,10 +63,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
     this.rootStore = rootStore;
     this.globalSearchAPI = globalSearchAPI;
-
     this.rootStore.routing.addObserver(this);
   }
-
 
   /* Computed */
 
@@ -233,12 +225,10 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   private updateRoutingForFilterGroups(groupKey: string) {
     const groupSet = this.filters.filterGroups.get(groupKey);
     const routingActions: RoutingSearchQueryParamChange = [];
-
     const routingAction = !groupSet ? RoutingChangeAction.REMOVE : RoutingChangeAction.ADD;
-
     const gs = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
-    routingActions.push([routingAction, [groupKey, gs]]);
 
+    routingActions.push([routingAction, [groupKey, gs]]);
     this.rootStore.routing.updateSearchQueryParams(routingActions);
   }
 
@@ -288,51 +278,29 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 }
 
-
-
 export interface GlobalSearchStoreInterface {
   allFieldsTerm: string;
-
   loading: boolean;
-
   result: GlobalSearchResult | null;
-
   error: string | null;
-
   filters: FilterType;
-
   debounceWaitInMSecs: number;
-
   debounceHandler: undefined | number;
-
   flattenedSearchResultItems: GlobalSearchArtifact[];
 
   setAllFieldsTerm(allFieldsTerm: string): void;
-
   setSearchLoading(loading: boolean): void;
-
   setSearchResult(result: GlobalSearchResult | null): void;
-
   resetSearchResult(): void;
-
   setSearchFailed(error: string | null): void;
-
   searchForAllFieldsTerm(allFieldsTerm: string): void;
-
   setDatingFrom(fromYear: number): void;
-
   setDatingTo(toYear: number): void;
-
   setEntityType(entityType: EntityType): void;
-
   setFrom(from: number): void;
-
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
-
   triggerFilterRequest(): void;
-
   triggerUserCollectionRequest(ids: string[]): void;
-
   resetEntityType(): void;
 
 }

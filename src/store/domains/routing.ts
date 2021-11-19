@@ -4,7 +4,6 @@ import { makeObservable, observable, action, computed } from 'mobx';
 import { Action } from 'history'
 import { RootStoreInterface } from '../rootStore';
 
-
 export default class Routing implements RoutingStoreInterface {
   rootStore: RootStoreInterface;
   history: History;
@@ -42,7 +41,6 @@ export default class Routing implements RoutingStoreInterface {
     return new URLSearchParams(this.state.location.search);
   }
 
-
   /* Actions */
 
   updateState(newState: Update) {
@@ -63,7 +61,6 @@ export default class Routing implements RoutingStoreInterface {
 
   addObserver(observer: ObserverInterface) {
     this.routingObservers.push(observer);
-
     this.notifyObserverWithCurrentSearchParams(observer);
   }
 
@@ -86,7 +83,7 @@ export default class Routing implements RoutingStoreInterface {
 
     this.disableNotify = true;
     this.history.replace({
-      search: Array.from(updatedSearchParams).length ? `?${updatedSearchParams.toString()}` : '', 
+      search: Array.from(updatedSearchParams).length ? `?${updatedSearchParams.toString()}` : '',
     });
     this.disableNotify = false;
   }

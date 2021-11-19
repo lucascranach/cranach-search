@@ -1,4 +1,3 @@
-
 import { makeAutoObservable } from 'mobx';
 import i18n from 'i18next';
 import {
@@ -7,7 +6,6 @@ import {
   UseTranslationResponse,
 } from 'react-i18next';
 import { RootStoreInterface } from '../rootStore';
-
 
 export default class UI implements UIStoreInterface {
   rootStore: RootStoreInterface
