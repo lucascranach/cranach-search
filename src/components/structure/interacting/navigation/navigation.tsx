@@ -13,7 +13,7 @@ import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreCon
 
 
 const Navigation = () => {
-  const { globalSearch, ui } = useContext(StoreContext);
+  const { root: { globalSearch, ui } } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Navigation', translations);
 

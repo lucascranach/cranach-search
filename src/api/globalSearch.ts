@@ -27,14 +27,6 @@ const assembleResultData = (resultset: any): GlobalSearchResult => {
   return { items, filterGroups, meta };
 }
 
-const setHistory = (queryParams: string) => {
-  const baseurl = location.protocol + '//' + location.host + location.pathname;
-  const nextState = { searchParams: queryParams };
-  const nextTitle = "cda_ // Search ";
-  const nextURL = `${baseurl}?${queryParams}`;
-  window.history.pushState(nextState, nextTitle, nextURL);
-}
-
 const getInventor = (item: any):string => {
   const inventor = item.involved_persons.find((person: any) => person.roleType === 'INVENTOR');
   return inventor ? `${inventor.name}${inventor.suffix}` : '';
@@ -83,12 +75,12 @@ const searchByFiltersAndTerm = async (
     params['from'] = filters.from;
   }
 
-  if (filters.dating.from) {
-    params['dating_begin:gte'] = filters.dating.from;
+  if (filters.dating.fromYear) {
+    params['dating_begin:gte'] = filters.dating.fromYear;
   }
 
-  if (filters.dating.to) {
-    params['dating_end:lte'] = filters.dating.to;
+  if (filters.dating.toYear) {
+    params['dating_end:lte'] = filters.dating.toYear;
   }
 
   if (filters.id) {
@@ -149,8 +141,6 @@ const executeQuery = async (
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
 
-  setHistory(queryParams);
-
   try {
     const resp = await fetch(
       `${host}/?${queryParams}`,
@@ -200,8 +190,8 @@ export enum EntityTypeShortcuts {
 
 export type APIFilterType = {
   dating: {
-    from: string,
-    to: string,
+    fromYear: number,
+    toYear: number,
   },
   size: number,
   from: number,

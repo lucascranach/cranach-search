@@ -11,7 +11,7 @@ import StoreContext, { GlobalSearchEntityType, UIOverviewViewType } from '../../
 import './dashboard.scss';
 
 const Dashboard: FC = () => {
-  const { globalSearch, ui } = useContext(StoreContext);
+  const { root: { globalSearch, ui } } = useContext(StoreContext);
   const isActiveSidebar = 'dashboard__sidebar--is-active';
 
   useEffect(() => {

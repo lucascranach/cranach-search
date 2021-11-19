@@ -1,4 +1,3 @@
-
 import { makeAutoObservable } from 'mobx';
 import i18n from 'i18next';
 import {
@@ -6,16 +5,19 @@ import {
   useTranslation,
   UseTranslationResponse,
 } from 'react-i18next';
-
+import { RootStoreInterface } from '../rootStore';
 
 export default class UI implements UIStoreInterface {
+  rootStore: RootStoreInterface
   lang: string = 'de';
   sidebar: UISidebarType = UISidebarType.FILTER;
   overviewViewType: UIOverviewViewType = UIOverviewViewType.CARD;
   allowedLangs: string[] = ['de', 'en'];
 
-  constructor() {
+  constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
+
+    this.rootStore = rootStore;
 
     i18n
     .use(initReactI18next)

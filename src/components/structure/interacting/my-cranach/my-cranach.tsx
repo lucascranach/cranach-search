@@ -8,7 +8,7 @@ import './my-cranach.scss';
 import StoreContext, { UISidebarType } from '../../../../store/StoreContext';
 
 const MyCranach = () => {
-  const { collection, ui } = useContext(StoreContext);
+  const { root: { collection, ui } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Search', translations);
   const triggerComparism = () => collection.startComparism();
   const compareIsActive = collection.size && collection.size > 1 ? 'btn--is-active' : 'btn--is-disabled';

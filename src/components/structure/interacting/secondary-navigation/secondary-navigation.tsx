@@ -11,7 +11,7 @@ import StoreContext, { UIOverviewViewType, UISidebarType } from '../../../../sto
 
 
 const SecondaryNavigation = () => {
-  const { ui, collection, globalSearch } = useContext(StoreContext);
+  const { root: { ui, collection, globalSearch } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Navigation', translations);
 
   const [isActive, setActive] = useState(false);

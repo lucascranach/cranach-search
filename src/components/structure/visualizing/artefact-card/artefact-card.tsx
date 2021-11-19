@@ -32,7 +32,7 @@ const ArtefactCard: FC<Props> = ({
   openInNewWindow = false,
 }) => {
 
-  const { collection } = useContext(StoreContext);
+  const { root: { collection } } = useContext(StoreContext);
 
   let isStoredFavorite = !!(collection.artefacts.includes(storageSlug));
 
