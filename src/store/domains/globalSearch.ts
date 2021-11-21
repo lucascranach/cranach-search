@@ -238,12 +238,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
               this.handleRoutingNotificationForEntityType(value);
               break;
 
-            case 'fromYear':
-            case 'toYear':
+            case 'from_year':
+            case 'to_year':
               this.handleRoutingNotificationForDating(name, value);
               break;
 
-            case 'isBestOf':
+            case 'is_best_of':
               this.handleRoutingNotificationForIsBestOf(value);
               break;
           }
@@ -273,7 +273,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   private setRoutingForIsBestOf() {
     const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
-    this.rootStore.routing.updateSearchQueryParams([[action, ['isBestOf', '1']]]);
+    this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
   }
 
   private handleRoutingNotificationForPage(value: string) {
@@ -295,18 +295,18 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     const { fromYear, toYear } = this.filters.dating;
 
     this.rootStore.routing.updateSearchQueryParams([
-      [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['fromYear', fromYear.toString()]],
-      [(toYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['toYear', toYear.toString()]],
+      [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
+      [(toYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['to_year', toYear.toString()]],
     ]);
   }
 
   private handleRoutingNotificationForDating(name: string, value: string) {
     switch (name) {
-      case 'fromYear':
+      case 'from_year':
         this.filters.dating.fromYear = parseInt(value, 10);
         break;
 
-      case 'toYear':
+      case 'to_year':
         this.filters.dating.toYear = parseInt(value, 10);
         break;
     }
