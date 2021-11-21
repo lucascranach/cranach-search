@@ -139,6 +139,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   setIsBestOf(isBestOf: boolean) {
     this.filters.isBestOf = isBestOf;
+    this.setRoutingForIsBestOf();
     this.triggerFilterRequest();
   }
 
@@ -241,6 +242,10 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
             case 'toYear':
               this.handleRoutingNotificationForDating(name, value);
               break;
+
+            case 'isBestOf':
+              this.handleRoutingNotificationForIsBestOf(value);
+              break;
           }
         });
         break;
@@ -264,6 +269,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   private setRoutingForPage() {
     const page = (this.filters.from / this.filters.size) + 1;
     this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['page', page.toString()]]]);
+  }
+
+  private setRoutingForIsBestOf() {
+    const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
+    this.rootStore.routing.updateSearchQueryParams([[action, ['isBestOf', '1']]]);
   }
 
   private handleRoutingNotificationForPage(value: string) {
@@ -300,6 +310,10 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
         this.filters.dating.toYear = parseInt(value, 10);
         break;
     }
+  }
+
+  private handleRoutingNotificationForIsBestOf(value: string) {
+    this.filters.isBestOf = (value === '1');
   }
 }
 
