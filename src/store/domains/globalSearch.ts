@@ -34,7 +34,14 @@ export type FilterType = {
   entityType: EntityType,
   id: string,
   filterGroups: Map<string, Set<string>>,
+  isBestOf: boolean,
 };
+
+export type SingleFilter = {
+  id: string,
+  name: string,
+  docCount: number,
+}
 
 export default class GlobalSearch implements GlobalSearchStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
@@ -53,6 +60,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     entityType: EntityType.UNKNOWN,
     id: '',
     filterGroups: new Map(),
+    isBestOf: false,
   };
 
   debounceWaitInMSecs: number = 500;
@@ -70,6 +78,18 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   get flattenedSearchResultItems(): GlobalSearchArtifact[] {
     return this.result?.items ?? [];
+  }
+
+  get bestOfFilter(): SingleFilter | null {
+    const isBestOfFilter = this.result?.singleFilters.find((item) => item.id === 'is_best_of');
+
+    if (!isBestOfFilter) { return null; }
+
+    return {
+      name: 'Best of',
+      id: isBestOfFilter.id,
+      docCount: isBestOfFilter.doc_count,
+    };
   }
 
   /* Actions */
@@ -114,6 +134,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   setFrom(from: number) {
     this.filters.from = from;
     this.setRoutingForPage();
+    this.triggerFilterRequest();
+  }
+
+  setIsBestOf(isBestOf: boolean) {
+    this.filters.isBestOf = isBestOf;
+    this.setRoutingForIsBestOf();
     this.triggerFilterRequest();
   }
 
@@ -212,9 +238,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
               this.handleRoutingNotificationForEntityType(value);
               break;
 
-            case 'fromYear':
-            case 'toYear':
+            case 'from_year':
+            case 'to_year':
               this.handleRoutingNotificationForDating(name, value);
+              break;
+
+            case 'is_best_of':
+              this.handleRoutingNotificationForIsBestOf(value);
               break;
           }
         });
@@ -241,6 +271,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['page', page.toString()]]]);
   }
 
+  private setRoutingForIsBestOf() {
+    const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
+    this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
+  }
+
   private handleRoutingNotificationForPage(value: string) {
     this.filters.from = Math.max(0, (parseInt(value, 10) - 1) * this.filters.size);
   }
@@ -260,21 +295,25 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     const { fromYear, toYear } = this.filters.dating;
 
     this.rootStore.routing.updateSearchQueryParams([
-      [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['fromYear', fromYear.toString()]],
-      [(toYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['toYear', toYear.toString()]],
+      [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
+      [(toYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['to_year', toYear.toString()]],
     ]);
   }
 
   private handleRoutingNotificationForDating(name: string, value: string) {
     switch (name) {
-      case 'fromYear':
+      case 'from_year':
         this.filters.dating.fromYear = parseInt(value, 10);
         break;
 
-      case 'toYear':
+      case 'to_year':
         this.filters.dating.toYear = parseInt(value, 10);
         break;
     }
+  }
+
+  private handleRoutingNotificationForIsBestOf(value: string) {
+    this.filters.isBestOf = (value === '1');
   }
 }
 
@@ -288,6 +327,8 @@ export interface GlobalSearchStoreInterface {
   debounceHandler: undefined | number;
   flattenedSearchResultItems: GlobalSearchArtifact[];
 
+  bestOfFilter: SingleFilter | null;
+
   setAllFieldsTerm(allFieldsTerm: string): void;
   setSearchLoading(loading: boolean): void;
   setSearchResult(result: GlobalSearchResult | null): void;
@@ -298,6 +339,7 @@ export interface GlobalSearchStoreInterface {
   setDatingTo(toYear: number): void;
   setEntityType(entityType: EntityType): void;
   setFrom(from: number): void;
+  setIsBestOf(isBestOf: boolean): void;
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
   triggerFilterRequest(): void;
   triggerUserCollectionRequest(ids: string[]): void;

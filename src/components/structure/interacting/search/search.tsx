@@ -105,6 +105,21 @@ const Search: FC = () => {
       <fieldset className="block">
         <legend className="headline">{ t('Filter results by') }</legend>
 
+        <div className="single-filter">
+          {/* isBestOf */}
+          <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
+            <Checkbox
+              className="filter-info-item__checkbox"
+              checked={ globalSearch.filters.isBestOf }
+              onChange={ () => globalSearch.setIsBestOf(!globalSearch.filters.isBestOf) }
+            />
+            <span
+              className="filter-info-item__name"
+              data-count={ globalSearch.bestOfFilter?.docCount ?? 0 }
+            >{ t('Best works')}<Size size={ globalSearch.bestOfFilter?.docCount ?? 0 }/></span>
+          </span>
+        </div>
+
         <Accordion>
           { mappedFiltersInfos.map(
               (item) => {
