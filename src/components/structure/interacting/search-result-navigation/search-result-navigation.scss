@@ -3,7 +3,6 @@
 .pagination-wrap {
   z-index: $level-overall-nav;
   padding: $s $m $m $m;
-  border-top: solid $border-stroke-weight-s $lighten-strong;
   background-color: $darken-strongest;
   flex: 0 1 auto;
 }

@@ -13,22 +13,25 @@
   &__content {
     position: relative;
     flex-grow: 1;
-    padding: $s;
+    //padding: $s;
+    padding-top: $s;
+    padding-bottom: $s;
     border-top: solid $border-stroke-weight-s $accent;
-    background-color: $dark;
+    background-color: $darkest;
     color: $lighter;
   }
 
   &__title {
     margin-bottom: $xxs;
-    color: $lightest;
+    color: $light;
+    padding-right: $m;
     font-weight: $fw-semibold;
     line-height: $lh-headlines;
   }
 
   &__subtitle {
     margin-bottom: $xxs;
-    color: $lighter;
+    color: $light;
     font-weight: $fw-light;
     line-height: $lh-headlines;
   }
@@ -42,8 +45,8 @@
 
   &__favorite {
     position: absolute;
-    right: $s;
-    bottom: $s;
+    right: 0;
+    top: $s;
     color: $light;
     transition: transform $tr-fast, color $tr-fast;
 
