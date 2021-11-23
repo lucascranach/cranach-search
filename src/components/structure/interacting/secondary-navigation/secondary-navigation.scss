@@ -3,7 +3,6 @@
 .secondary-navigation {
 
   background-color: $darkest;
-  padding: 0 $l 0 $m;
   transition: all $tr-fast;
   z-index: $level-overall-nav;
 
@@ -33,7 +32,7 @@
 
   &.is-active {
     background-color: $darker;
-    padding: $s $l $m $m;
+    padding: $m $m $l $m;
     width: $sidebar-width;
 
     .secondary-navigation__options {
