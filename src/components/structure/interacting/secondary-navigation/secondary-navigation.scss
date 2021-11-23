@@ -4,7 +4,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  padding: $s $l $m $m;
+
   background-color: $darkest;
   border-radius: $border-radius;
   box-shadow: 1px 1px $l rgba(0, 0, 0, 1);
@@ -23,6 +23,7 @@
 
   &.is-active {
     background-color: $darker;
+    padding: $s $l $m $m;
 
     .secondary-navigation__options {
       display: block;

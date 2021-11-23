@@ -6,8 +6,9 @@
 
 .sidebar {
   position: relative;
-  overflow: hidden;
-  padding-top: $xl + $s + $m;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: $lighten-strong;
 
   &--is-active {
     flex-basis: $sidebar-width;
