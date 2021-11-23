@@ -5,6 +5,7 @@
 .search {
   display: none;
   padding:  $xl + $s + $m $m $m $m;
+  width: $sidebar-width;
 
   &--is-active {
     display: block;
