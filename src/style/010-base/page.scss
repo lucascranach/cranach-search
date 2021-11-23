@@ -1,3 +1,16 @@
 .page {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+
+.sidebar {
+  position: relative;
+  overflow: hidden;
+  padding-top: $xl + $s + $m;
+
+  &--is-active {
+    flex-basis: $sidebar-width;
+    flex-grow: 1;
+  }
 }

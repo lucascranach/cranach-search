@@ -1,15 +1,17 @@
 import React, { Fragment, useContext, useEffect } from 'react'
 import StoreContext from './store/StoreContext';
 import Dashboard from './components/pages/dashboard';
-import Navigation from './components/structure/interacting/navigation';
-
+import Search from './components/structure/interacting/search';
+import MyCranach from './components/structure/interacting/my-cranach';
+import SecondaryNavigation from './components/structure/interacting/secondary-navigation';
 
 function App() {
   const { root: { routing, ui } } = useContext(StoreContext);
+  const isActiveSidebar = 'sidebar--is-active';
 
   useEffect(() => {
     const match = routing.history.location.pathname.match(/^\/([a-z]+)\//);
-    if(match && ui.allowedLangs.includes(match[1])) {
+    if (match && ui.allowedLangs.includes(match[1])) {
       ui.setLanguage(match[1]);
     } else {
       routing.history.replace({ ...routing.history.location, pathname: `${import.meta.env.BASE_URL}${ui.lang}/` });
@@ -22,11 +24,13 @@ function App() {
 
   return (
     <Fragment>
-      <Navigation></Navigation>
       <div className="app page">
-        <div className="main-content">
-          <Dashboard></Dashboard>
-        </div>
+        <Dashboard></Dashboard>
+        <aside className={`sidebar ${isActiveSidebar}`}>
+          <SecondaryNavigation />
+          <Search />
+          <MyCranach />
+        </aside>
       </div>
     </Fragment>
   )

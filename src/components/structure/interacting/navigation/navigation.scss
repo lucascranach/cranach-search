@@ -1,14 +1,14 @@
 @import "../../../../style/000-abstracts/__abstracts-dir";
 
 .main-navigation {
-  position: sticky;
   z-index: $level-overall-nav;
-  top: 0;
   display: flex;
   min-height: $xl + $s;
   padding: $m;
   padding-bottom: 0;
   background-color: $darkest;
+
+  flex: 0 1 auto;
 
   .menu {
     &__item {

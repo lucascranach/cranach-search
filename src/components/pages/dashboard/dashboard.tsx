@@ -3,16 +3,14 @@ import React, { FC, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import ArtefactOverview, { ArtefactOverviewItem, ArtefactOverviewType } from '../../structure/visualizing/artefact-overview';
-import Search from '../../structure/interacting/search';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
-import MyCranach from '../../structure/interacting/my-cranach';
+import Navigation from '../../structure/interacting/navigation';
 import StoreContext, { GlobalSearchEntityType, UIOverviewViewType } from '../../../store/StoreContext';
 
 import './dashboard.scss';
 
 const Dashboard: FC = () => {
   const { root: { globalSearch, ui } } = useContext(StoreContext);
-  const isActiveSidebar = 'dashboard__sidebar--is-active';
 
   useEffect(() => {
     globalSearch.triggerFilterRequest();
@@ -57,7 +55,9 @@ const Dashboard: FC = () => {
       className="dashboard"
       data-component="page/search"
     >
-      <div className="dashboard__results-area">
+
+      <main className="main-content">
+        <Navigation></Navigation>
         {globalSearch.loading && 'Loading...'}
         {!globalSearch.loading
           && <ArtefactOverview
@@ -65,14 +65,8 @@ const Dashboard: FC = () => {
             items={overviewItems}
           />
         }
-        <SearchResultNavigation></SearchResultNavigation>
-      </div>
-
-      <aside className={`dashboard__sidebar ${isActiveSidebar}`}>
-        <Search />
-        <MyCranach />
-      </aside>
-
+      </main>
+      <SearchResultNavigation></SearchResultNavigation>
     </div>
   );
 };
