@@ -5,6 +5,7 @@
   height: 100%;
   flex-direction: column;
   background-color: $darker;
+  position: relative;
 
   &__image {
     padding: 1px;
@@ -24,7 +25,6 @@
   &__title {
     margin-bottom: $xxs;
     color: $light;
-    padding-right: $m;
     font-weight: $fw-semibold;
     line-height: $lh-headlines;
   }
@@ -45,13 +45,15 @@
 
   &__favorite {
     position: absolute;
-    right: 0;
-    top: $s;
+    right: $xs;
+    top: $xs;
     color: $light;
-    transition: transform $tr-fast, color $tr-fast;
+    opacity: $op-medium;
+    transition: transform $tr-fast, color $tr-fast, opacity $tr-medium;
 
     &:hover,
     &--is-active {
+      opacity: 1;
       color: $accent;
       cursor: pointer;
       transform: scale(1.4);
