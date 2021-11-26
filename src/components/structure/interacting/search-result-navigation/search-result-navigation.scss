@@ -1,14 +1,10 @@
 @import "../../../../style/000-abstracts/__abstracts-dir";
 
 .pagination-wrap {
-  position: fixed;
   z-index: $level-overall-nav;
-  right: 0;
-  bottom: 0;
-  left: 0;
   padding: $s $m $m $m;
-  border-top: solid $border-stroke-weight-s $lighten-strong;
   background-color: $darken-strongest;
+  flex: 0 1 auto;
 }
 
 .pagination {

@@ -1,9 +1,9 @@
 @import "../../../../style//000-abstracts/__abstracts-dir";
 
 .my-cranach {
-  position: fixed;
   display: none;
-  padding: 0 $m $m;
+  padding:  $xl + $s + $m $m $m $m;
+  width: $sidebar-width;
 
   &--is-active {
     display: block;

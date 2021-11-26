@@ -57,6 +57,12 @@ const getArtist = (item: any):string => {
   return artist ? artist.name : '';
 }
 
+const getMedium = (item: any):string => {
+  const medium = item.medium;
+  const mediumList = medium.split(/\n/);
+  return medium ? mediumList[0] : '';
+}
+
 const toArtefact = (item: any): GlobalSearchArtifact => {
   return {
     id: item.inventory_number,
@@ -71,6 +77,7 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     dimensions: item.dimensions,
     objectName: item.object_name,
     imgSrc: item.img_src,
+    medium: getMedium(item),
     entityTypeShortcut: item.entity_type.substr(0, 1),
   }
 };
@@ -239,6 +246,7 @@ export type GlobalSearchArtifact = {
   printProcess: string;
   imgSrc: string;
   entityTypeShortcut: string;
+  medium: string;
 }
 
 export type GlobalSearchFilterItem = {

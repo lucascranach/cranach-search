@@ -1,19 +1,29 @@
 @import "../../../../style/000-abstracts/__abstracts-dir";
 
 .secondary-navigation {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: $s $l $m $m;
-  background-color: $darkest;
-  border-radius: $border-radius;
-  box-shadow: 1px 1px $l rgba(0, 0, 0, 1);
-  transition: background-color $tr-faster;
 
-  &__trigger {
+  background-color: $darkest;
+  transition: all $tr-fast;
+  z-index: $level-overall-nav;
+
+  $trigger: "#{&}__trigger";
+
+  #{$trigger}{
     position: absolute;
     top: $m;
     right: $xs;
+    transition: transform $tr-faster;
+
+    &::after{
+      content: "more_vert";
+      font-family: $font-icons;
+      font-size: $l;
+      color: $accent;
+    }
+
+    &:hover{
+      transform: rotate(180deg);
+    }
   }
 
   &__options {
@@ -22,9 +32,15 @@
 
   &.is-active {
     background-color: $darker;
+    padding: $m $m $l $m;
+    width: $sidebar-width;
 
     .secondary-navigation__options {
       display: block;
+    }
+
+    #{$trigger}::after{
+      content: "close";
     }
   }
 

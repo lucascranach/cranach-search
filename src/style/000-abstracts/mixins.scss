@@ -50,10 +50,10 @@
 }
 
 @mixin grid-auto-columns() {
-  grid-template-columns: repeat(auto-fit, minmax($tile-s, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax($tile-s, 1fr));
 }
 
 @mixin grid-auto-columns-small() {
-  grid-template-columns: repeat(auto-fit, minmax($tile-xs, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax($tile-xs, 1fr));
 }
 

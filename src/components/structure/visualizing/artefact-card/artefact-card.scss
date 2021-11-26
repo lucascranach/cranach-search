@@ -5,6 +5,7 @@
   height: 100%;
   flex-direction: column;
   background-color: $darker;
+  position: relative;
 
   &__image {
     padding: 1px;
@@ -13,22 +14,24 @@
   &__content {
     position: relative;
     flex-grow: 1;
-    padding: $s;
+    //padding: $s;
+    padding-top: $s;
+    padding-bottom: $s;
     border-top: solid $border-stroke-weight-s $accent;
-    background-color: $dark;
+    background-color: $darkest;
     color: $lighter;
   }
 
   &__title {
     margin-bottom: $xxs;
-    color: $lightest;
+    color: $light;
     font-weight: $fw-semibold;
     line-height: $lh-headlines;
   }
 
   &__subtitle {
     margin-bottom: $xxs;
-    color: $lighter;
+    color: $light;
     font-weight: $fw-light;
     line-height: $lh-headlines;
   }
@@ -42,13 +45,15 @@
 
   &__favorite {
     position: absolute;
-    right: $s;
-    bottom: $s;
+    right: $xs;
+    top: $xs;
     color: $light;
-    transition: transform $tr-fast, color $tr-fast;
+    opacity: $op-medium;
+    transition: transform $tr-fast, color $tr-fast, opacity $tr-medium;
 
     &:hover,
     &--is-active {
+      opacity: 1;
       color: $accent;
       cursor: pointer;
       transform: scale(1.4);

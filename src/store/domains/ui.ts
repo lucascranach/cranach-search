@@ -72,6 +72,7 @@ export default class UI implements UIStoreInterface {
 export enum UISidebarType {
   MY_CRANACH = 'myCranach',
   FILTER = 'filter',
+  NONE = '',
 }
 export enum UIOverviewViewType {
   CARD = 'card',

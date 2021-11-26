@@ -6,12 +6,10 @@
   background-color: $accent;
   border-radius: $border-radius;
   color: $darkest;
-  opacity: $op-medium;
   transition: opacity $op-full;
 
   &:hover {
     cursor: pointer;
-    opacity: $op-full;
   }
 
   &:active {

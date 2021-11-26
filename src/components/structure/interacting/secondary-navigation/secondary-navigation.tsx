@@ -25,6 +25,11 @@ const SecondaryNavigation = () => {
     collection.showCollection();
   }
 
+  const hideSidebar = () => {
+    ui.setSideBarContent(UISidebarType.NONE);
+    toggleSecondaryMenu();
+  }
+
   const showFilter = () => {
     ui.setSideBarContent(UISidebarType.FILTER);
     globalSearch.triggerFilterRequest();
@@ -55,7 +60,7 @@ const SecondaryNavigation = () => {
         className={`btn btn--is-stacked btn--is-reduced secondary-navigation__trigger`}
         onClick={() => toggleSecondaryMenu()}
       >
-        <i className="icon icon--is-inline">more_vert</i>
+
       </button>
 
       <ul className="secondary-navigation__options">
@@ -85,6 +90,16 @@ const SecondaryNavigation = () => {
           >
             <i className="icon icon--is-inline">list</i>
             {t('goto My Collection')}
+          </button>
+        </li>
+
+        <li>
+          <button
+            className={`btn btn--is-reduced`}
+            onClick={() => hideSidebar()}
+          >
+            <i className="icon icon--is-inline">minimize</i>
+            {t('hide sidebar')}
           </button>
         </li>
 

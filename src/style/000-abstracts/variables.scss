@@ -1,3 +1,5 @@
+@use "sass:math";
+
 /* Farben
 ----------------------------------------------------------------------------- */
 
@@ -8,10 +10,10 @@ $darkest: #000;
 $light: #b4b4b4;
 $lighter: #f2f2f2;
 $lightest:#fff;
-$lighten: rgba(255, 255, 255, 0.04);
+$lighten: rgba(255, 255, 255, 0.1);
 $lighten-strong: rgba(255, 255, 255, 0.2);
 $accent: #fc0;
-$decoration:#00a4b3;
+$decoration:#cc5800;
 $error: #c00;
 $darken: rgba(0, 0, 0, 0.04);
 $darken-medium: rgba(0, 0, 0, 0.1);
@@ -31,7 +33,7 @@ $vp-4xlarge: 2300px;
 /* Größen und Abstände
 ----------------------------------------------------------------------------- */
 
-$bfs: 1rem;
+$bfs: 0.9rem;
 
 /* Entlang der Fibonacci Reihe */
 
@@ -43,6 +45,8 @@ $m: $bfs * 1.3;
 $l: $bfs * 2.1;
 $xl: $bfs * 3.4;
 $xxl: $bfs * 5.5;
+$half: math.div($bfs, 2);
+$quad: math.div($bfs, 4);
 
 /* Schriften
 ----------------------------------------------------------------------------- */
@@ -116,4 +120,4 @@ $inner-shadow: inset 0 0 $s rgba(0, 0, 0, 10);
 $op-full: 1;
 $op-medium: 0.6;
 $op-low: 0.3;
-$sidebar-width: $bfs * 20;
+$sidebar-width: $bfs * 28;
