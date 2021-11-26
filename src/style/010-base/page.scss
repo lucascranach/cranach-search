@@ -1,3 +1,15 @@
 .page {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+
+.sidebar {
+
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: $lighten;
+  flex: 1 1 auto;
+
 }

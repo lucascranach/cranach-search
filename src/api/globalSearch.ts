@@ -7,6 +7,7 @@ const authPass = import.meta.env.VITE_AUTH_PASS;
 
 const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   return [
+    'catalog',
     'attribution',
     'collection_repository',
     'examination_analysis',
@@ -20,29 +21,46 @@ const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   }));
 }
 
+const mapSingleFilters = (filters: any): GlobalSearchFilterItem[] => {
+  const singleFilters: GlobalSearchFilterItem[] = [];
+
+  if (filters['is_best_of']) {
+    const value = filters['is_best_of'].values[1];
+
+    singleFilters.push({
+      id: 'is_best_of',
+      text: value.display_value,
+      doc_count: value.doc_count,
+      is_available: value.is_available,
+      children: [],
+    });
+  }
+
+  return singleFilters;
+}
+
 const assembleResultData = (resultset: any): GlobalSearchResult => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
   const filterGroups = mapFilterGroups(resultset.data.filters);
+  const singleFilters = mapSingleFilters(resultset.data.filters);
   const meta = resultset.data.meta;
-  return { items, filterGroups, meta };
-}
-
-const setHistory = (queryParams: string) => {
-  const baseurl = location.protocol + '//' + location.host + location.pathname;
-  const nextState = { searchParams: queryParams };
-  const nextTitle = "cda_ // Search ";
-  const nextURL = `${baseurl}?${queryParams}`;
-  window.history.pushState(nextState, nextTitle, nextURL);
+  return { items, filterGroups, singleFilters, meta };
 }
 
 const getInventor = (item: any):string => {
-  const inventor = item.data_all.involvedPersons.find((person: any) => person.role === 'Inventor');
+  const inventor = item.involved_persons.find((person: any) => person.roleType === 'INVENTOR');
   return inventor ? `${inventor.name}${inventor.suffix}` : '';
 }
 
 const getArtist = (item: any):string => {
-  const artist = item.data_all.involvedPersons.find((person: any) => person.role === 'Künstler');
+  const artist = item.involved_persons.find((person: any) => person.roleType === 'ARTIST');
   return artist ? artist.name : '';
+}
+
+const getMedium = (item: any):string => {
+  const medium = item.medium;
+  const mediumList = medium.split(/\n/);
+  return medium ? mediumList[0] : '';
 }
 
 const toArtefact = (item: any): GlobalSearchArtifact => {
@@ -53,12 +71,13 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     date: item.dating,
     owner: item.owner,
     classification: item.classification,
-    printProcess: item.data_all.classification.printProcess ? item.data_all.classification.printProcess : '',
+    printProcess: item.print_process,
     inventor: getInventor(item),
     artist: getArtist(item),
     dimensions: item.dimensions,
     objectName: item.object_name,
     imgSrc: item.img_src,
+    medium: getMedium(item),
     entityTypeShortcut: item.entity_type.substr(0, 1),
     _highlight: item._highlight,
   }
@@ -71,7 +90,8 @@ const searchByFiltersAndTerm = async (
 ): Promise<GlobalSearchResult | null> => {
   const params: Record<string, string | number> = {
     language: langCode,
-    sort_by: 'sorting_number.desc',
+    sort_by: 'sorting_number.asc',
+    'entity_type:neq': EntityType.DOCUMENTS,
     'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
 
@@ -83,16 +103,20 @@ const searchByFiltersAndTerm = async (
     params['from'] = filters.from;
   }
 
-  if (filters.dating.from) {
-    params['dating_begin:gte'] = filters.dating.from;
+  if (filters.dating.fromYear) {
+    params['dating_begin:gte'] = filters.dating.fromYear;
   }
 
-  if (filters.dating.to) {
-    params['dating_end:lte'] = filters.dating.to;
+  if (filters.dating.toYear) {
+    params['dating_end:lte'] = filters.dating.toYear;
   }
 
   if (filters.entityType !== EntityType.UNKNOWN) {
     params['entity_type:eq'] = filters.entityType;
+  }
+
+  if (filters.isBestOf) {
+    params['is_best_of'] = 'true';
   }
 
   filters.filterGroups.forEach((filterIds: Set<string>, groupKey: string) => {
@@ -160,8 +184,6 @@ const executeQuery = async (
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
 
-  setHistory(queryParams);
-
   try {
     const resp = await fetch(
       `${host}/?${queryParams}`,
@@ -211,14 +233,15 @@ export enum EntityTypeShortcuts {
 
 export type APIFilterType = {
   dating: {
-    from: string,
-    to: string,
+    fromYear: number,
+    toYear: number,
   },
   size: number,
   from: number,
   entityType: EntityType,
   id: string
   filterGroups: Map<string, Set<string>>,
+  isBestOf: boolean,
 };
 
 export type APIFreetextFieldsType = {
@@ -242,6 +265,7 @@ export type GlobalSearchArtifact = {
   printProcess: string;
   imgSrc: string;
   entityTypeShortcut: string;
+  medium: string;
   _highlight?: Record<string, Array<string>>;
 }
 
@@ -262,6 +286,7 @@ export type GlobalSearchFilterGroupItem = {
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
   filterGroups: GlobalSearchFilterGroupItem[];
+  singleFilters: GlobalSearchFilterItem[];
   meta: {
     hits: number;
   };

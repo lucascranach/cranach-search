@@ -24,12 +24,13 @@ export type ArtefactOverviewItem = {
   entityTypeShortcut: string;
   to: string;
   openInNewWindow: boolean;
+  medium: string;
   _highlight?: Record<string, Array<string>>;
 };
 
 export enum ArtefactOverviewType {
   CARD = 'card',
-  CARD_SMALL = 'card_small',
+  CARD_SMALL = 'card-small',
   LIST = 'list',
 }
 
@@ -45,6 +46,7 @@ type SwitcherProps = {
 }
 
 const DefaultViewType = ArtefactOverviewType.CARD;
+const maximumTitleLengthInWords = 10;
 
 const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   items = [],
@@ -57,9 +59,9 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
     return item[prop];
   };
-  const shortenTitle = (title: string) => {
+  const shortenTitle = (title: string): string => {
     const splitTitle = title.split(' ');
-    return splitTitle.length < 25 ? title : `${splitTitle.slice(0, 24).join(' ')} ...`;
+    return splitTitle.length <= maximumTitleLengthInWords ? title : `${splitTitle.slice(0, maximumTitleLengthInWords).join(' ')} ...`;
   };
 
   const assembleTitleForCardView = (item: ArtefactOverviewItem): string => {
@@ -71,34 +73,44 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
     return `${item.title}, ${item.date}`;
   }
 
-  const assembleSubTitle= (item: ArtefactOverviewItem): string => {
+  const assembleSubTitleForCardView = (item: ArtefactOverviewItem): string => {
     switch (item.entityType) {
       case GlobalSearchEntityType.ARCHIVALS:
         return 'tbd';
       case GlobalSearchEntityType.GRAPHICS:
         return `${item.classification}, ${item.printProcess}`;
     }
-    return `${item.classification}`;
+    return item.classification;
   }
 
-  const assembleText = (item: ArtefactOverviewItem): string => {
+  const assembleSubTitleForListView = (item: ArtefactOverviewItem): string => {
+    switch (item.entityType) {
+      case GlobalSearchEntityType.ARCHIVALS:
+        return 'tbd';
+      case GlobalSearchEntityType.GRAPHICS:
+        return `${item.classification}, ${item.printProcess}`;
+    }
+    return item.medium;
+  }
+
+  const assembleTextForCardView = (item: ArtefactOverviewItem): string => {
     switch (item.entityType) {
       case GlobalSearchEntityType.ARCHIVALS:
         return 'tbd';
       case GlobalSearchEntityType.GRAPHICS:
         return `${item.inventor}`;
     }
+    return `${item.owner}`;
+  }
+
+  const assembleTextForListView = (item: ArtefactOverviewItem): string => {
     return `${item.artist}`;
   }
 
   const assembleAdditionalText = (item: ArtefactOverviewItem): string => {
     const dimensions = item.dimensions ? item.dimensions : '';
-    return replaceSource(dimensions);
-  }
-
-  const replaceSource = (src: string): string =>{
-    src = src.replace(/\[.*?\]|\(http.*?\)/g, "");
-    return src;
+    const dimensionList = dimensions.split(/\n/);
+    return dimensionList[0];
   }
 
   return (<div
@@ -115,8 +127,8 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
           id={item.id}
           storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
           title={assembleTitleForCardView(item)}
-          subtitle={assembleSubTitle(item)}
-          text={assembleText(item)}
+          subtitle={assembleSubTitleForCardView(item)}
+          text={assembleTextForCardView(item)}
           to={item.to}
           imgSrc={item.imgSrc || ''}
           openInNewWindow={item.openInNewWindow}
@@ -132,8 +144,8 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
         {ArtefactOverviewType.LIST === viewType && <ArtefactLine
           title={assembleTitleForListView(item)}
-          subtitle={assembleSubTitle(item)}
-          text={assembleText(item)}
+          subtitle={assembleSubTitleForListView(item)}
+          text={assembleTextForListView(item)}
           additionalText={assembleAdditionalText(item)}
           to={item.to}
           imgSrc={item.imgSrc || ''}

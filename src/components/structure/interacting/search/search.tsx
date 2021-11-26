@@ -18,7 +18,7 @@ import StoreContext, {
 } from '../../../../store/StoreContext';
 
 const Search: FC = () => {
-  const { globalSearch, ui } = useContext(StoreContext);
+  const { root: { globalSearch, ui } } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Search', translations);
 
@@ -97,13 +97,28 @@ const Search: FC = () => {
 
         <Btn
           className="search-button"
-          click={ () => globalSearch.triggerSearch() }
+          click={ () => globalSearch.triggerFilterRequest() }
         >{ t('find') }</Btn>
       </fieldset>
 
 
       <fieldset className="block">
         <legend className="headline">{ t('Filter results by') }</legend>
+
+        <div className="single-filter">
+          {/* isBestOf */}
+          <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
+            <Checkbox
+              className="filter-info-item__checkbox"
+              checked={ globalSearch.filters.isBestOf }
+              onChange={ () => globalSearch.setIsBestOf(!globalSearch.filters.isBestOf) }
+            />
+            <span
+              className="filter-info-item__name"
+              data-count={ globalSearch.bestOfFilter?.docCount ?? 0 }
+            >{ t('Best works')}<Size size={ globalSearch.bestOfFilter?.docCount ?? 0 }/></span>
+          </span>
+        </div>
 
         <Accordion>
           { mappedFiltersInfos.map(

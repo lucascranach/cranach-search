@@ -1,35 +1,36 @@
 import React, { Fragment, useContext, useEffect } from 'react'
-import { useRouteMatch, useHistory } from 'react-router-dom'
-
 import StoreContext from './store/StoreContext';
 import Dashboard from './components/pages/dashboard';
-import Navigation from './components/structure/interacting/navigation';
-
+import Search from './components/structure/interacting/search';
+import MyCranach from './components/structure/interacting/my-cranach';
+import SecondaryNavigation from './components/structure/interacting/secondary-navigation';
 
 function App() {
-  const { ui } = useContext(StoreContext);
-  const history = useHistory();
-  const match = useRouteMatch<{ lang: string }>(`${import.meta.env.BASE_URL}:lang`);
+  const { root: { routing, ui } } = useContext(StoreContext);
+  const isActiveSidebar = 'sidebar--is-active';
 
   useEffect(() => {
-    if(match && ui.allowedLangs.includes(match.params.lang)) {
-      ui.setLanguage(match.params.lang);
+    const match = routing.history.location.pathname.match(/^\/([a-z]+)\//);
+    if (match && ui.allowedLangs.includes(match[1])) {
+      ui.setLanguage(match[1]);
     } else {
-      history.replace(`${import.meta.env.BASE_URL}${ui.lang}/`);
+      routing.history.replace({ ...routing.history.location, pathname: `${import.meta.env.BASE_URL}${ui.lang}/` });
     }
-  }, [ui.allowedLangs, match, history]);
+  }, [ui.allowedLangs, routing.history]);
 
   useEffect(() => {
-    history.replace(`${import.meta.env.BASE_URL}${ui.lang}/`);
-  }, [ui.lang, history]);
+    routing.history.replace({ ...routing.history.location, pathname: `${import.meta.env.BASE_URL}${ui.lang}/` });
+  }, [ui.lang, routing.history]);
 
   return (
     <Fragment>
-      <Navigation></Navigation>
       <div className="app page">
-        <div className="main-content">
-          <Dashboard></Dashboard>
-        </div>
+        <Dashboard></Dashboard>
+        <aside className={`sidebar ${isActiveSidebar}`}>
+          <SecondaryNavigation />
+          <Search />
+          <MyCranach />
+        </aside>
       </div>
     </Fragment>
   )

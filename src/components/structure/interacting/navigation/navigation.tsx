@@ -3,8 +3,6 @@ import { observer } from 'mobx-react-lite';
 
 import Logo from '../../../base/visualizing/logo';
 import CategoryFilter from '../../../base/interacting/category-filter';
-import SecondaryNavigation from '../../../structure/interacting/secondary-navigation';
-
 
 import translations from './translations.json';
 import './navigation.scss';
@@ -13,7 +11,7 @@ import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreCon
 
 
 const Navigation = () => {
-  const { globalSearch, ui } = useContext(StoreContext);
+  const { root: { globalSearch, ui } } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Navigation', translations);
 
@@ -31,10 +29,6 @@ const Navigation = () => {
     {
       title: 'Paintings',
       filterValue: GlobalSearchEntityType.PAINTINGS,
-    },
-    {
-      title: 'Archival Documents',
-      filterValue: GlobalSearchEntityType.DOCUMENTS,
     }
   ];
 
@@ -67,10 +61,6 @@ const Navigation = () => {
           ))
         }
       </ul>
-
-
-      <SecondaryNavigation />
-
     </nav>
   );
 };

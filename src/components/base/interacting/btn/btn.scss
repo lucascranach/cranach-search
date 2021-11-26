@@ -6,6 +6,7 @@
   background-color: $accent;
   border-radius: $border-radius;
   color: $darkest;
+  transition: opacity $op-full;
 
   &:hover {
     cursor: pointer;

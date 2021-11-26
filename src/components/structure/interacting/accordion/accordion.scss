@@ -22,6 +22,7 @@
         flex-grow: 1;
         color: $lighter;
         font-size: $bfs;
+        padding-top: $quad;
       }
 
       > .toggle-control {
@@ -49,7 +50,7 @@
     }
 
     & + & {
-      margin-top: $m;
+      margin-top: $xs;
     }
   }
 }

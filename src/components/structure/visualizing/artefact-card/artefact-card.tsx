@@ -32,7 +32,7 @@ const ArtefactCard: FC<Props> = ({
   openInNewWindow = false,
 }) => {
 
-  const { collection } = useContext(StoreContext);
+  const { root: { collection } } = useContext(StoreContext);
 
   let isStoredFavorite = !!(collection.artefacts.includes(storageSlug));
 
@@ -63,6 +63,10 @@ const ArtefactCard: FC<Props> = ({
             modifierWithBox={true}
           />
         </a>
+        <a
+          className={`artefact-card__favorite icon ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}`}
+          onClick={toggleFav}
+        >{bookmarkIcon}</a>
       </div>
       {id
         && (
@@ -76,10 +80,7 @@ const ArtefactCard: FC<Props> = ({
               <p className="artefact-card__subtitle">{subtitle}</p>
               <p className="artefact-card__text">{text}</p>
             </a>
-            <a
-              className={`artefact-card__favorite icon ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}`}
-              onClick={toggleFav}
-            >{bookmarkIcon}</a>
+
           </div>
         )
       }

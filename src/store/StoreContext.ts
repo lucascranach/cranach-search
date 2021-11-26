@@ -1,9 +1,7 @@
 import { createContext } from 'react';
 import { configure } from 'mobx';
 
-import { UIStoreInterface } from './domains/ui';
-import { CollectionStoreInterface } from './domains/collection';
-import { GlobalSearchStoreInterface } from './domains/globalSearch';
+import { RootStoreInterface } from './rootStore';
 
 export { GlobalSearchEntityType } from './domains/globalSearch';
 export type {
@@ -17,9 +15,7 @@ configure({
 });
 
 type StoreDefaultType = {
-  ui: UIStoreInterface;
-  globalSearch: GlobalSearchStoreInterface;
-  collection: CollectionStoreInterface;
+  root: RootStoreInterface;
 }
 
 export default createContext<StoreDefaultType>({} as StoreDefaultType);

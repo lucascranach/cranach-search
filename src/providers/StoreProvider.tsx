@@ -1,19 +1,19 @@
 import React, { FC } from 'react';
+import { createBrowserHistory } from 'history';
 
 import StoreContext from '../store/StoreContext';
+import RootStore from '../store/rootStore';
 
-import { UI, GlobalSearch, Collection } from '../store';
-import globalSearchAPI from '../api/globalSearch';
+const history = createBrowserHistory();
 
-const ui = new UI();
+const StoreProvider: FC = ({ children }) => {
+  const root = new RootStore(history);
 
-const globalSearch = new GlobalSearch(ui, globalSearchAPI);
-const collection = new Collection(globalSearch);
-
-const StoreProvider: FC = ({ children }) => (
-  <StoreContext.Provider value={ { ui, globalSearch, collection } }>
-    {children}
-  </StoreContext.Provider>
-);
+  return (
+    <StoreContext.Provider value={ { root } }>
+      {children}
+    </StoreContext.Provider>
+  );
+}
 
 export default StoreProvider
