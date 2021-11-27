@@ -44,7 +44,7 @@ const ArtefactCard: FC<Props> = ({
     }
   };
 
-  const bookmarkIcon = isStoredFavorite ? 'bookmark_remove' : 'bookmark_add';
+  const bookmarkIcon = isStoredFavorite ? 'remove' : 'add';
 
   return (
     <div

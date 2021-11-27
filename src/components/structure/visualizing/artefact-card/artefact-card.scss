@@ -6,6 +6,9 @@
   flex-direction: column;
   background-color: $darker;
   position: relative;
+  transition: transform $tr-fast;
+  overflow: hidden;
+  $self: &;
 
   &__image {
     padding: 1px;
@@ -45,22 +48,40 @@
 
   &__favorite {
     position: absolute;
+    background-color: $darken-strongest;
     right: $xs;
     top: $xs;
     color: $light;
-    opacity: $op-medium;
-    transition: transform $tr-fast, color $tr-fast, opacity $tr-medium;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    transition: transform $tr-fast, color $tr-fast, opacity $tr-medium, top $tr-medium;
 
     &:hover,
     &--is-active {
       opacity: 1;
-      color: $accent;
+      background-color: $accent;
+      color: $darkest;
       cursor: pointer;
-      transform: scale(1.4);
+    }
+
+    &--is-armed{
+      opacity: 0;
+      top: -100px;
     }
 
     &--is-active {
       transform: scale(1);
+    }
+  }
+
+  &:hover{
+    transform: scale(1.05);
+    box-shadow: $shadow-m;
+    z-index: $level-overall-nav;
+
+    #{$self}__favorite{
+      opacity: 1 !important;
+      top: $xs !important;
     }
   }
 }

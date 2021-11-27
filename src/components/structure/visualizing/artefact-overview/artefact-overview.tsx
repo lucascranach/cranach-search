@@ -1,5 +1,4 @@
-import React, { FC } from 'react';
-
+import React, { FC, useEffect } from 'react';
 import Switcher from '../../../base/interacting/switcher';
 import ArtefactCard from '../artefact-card';
 import ArtefactLine from '../artefact-line';
@@ -105,6 +104,16 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
     const splitTitle = title.split(' ');
     return splitTitle.length <= maximumTitleLengthInWords ? title : `${splitTitle.slice(0, maximumTitleLengthInWords).join(' ')} ...`;
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const favIcons = document.querySelectorAll(".artefact-card__favorite");
+      favIcons.forEach(item => {
+        item.classList.add("artefact-card__favorite--is-armed");
+      })
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (<div
     className="artefact-overview"
