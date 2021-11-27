@@ -41,7 +41,7 @@
 
   &.is-active {
     background-color: $darker;
-    padding: $xs $xs $l $m;
+    padding: $xs $m $l $m;
     width: $sidebar-width;
 
     .secondary-navigation__options {
