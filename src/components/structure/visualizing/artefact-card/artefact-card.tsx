@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
@@ -45,6 +45,18 @@ const ArtefactCard: FC<Props> = ({
   };
 
   const bookmarkIcon = isStoredFavorite ? 'remove' : 'add';
+
+  const armFavIcons = () => {
+    const favIcons = document.querySelectorAll(".artefact-card__favorite");
+    favIcons.forEach(item => {
+      item.classList.add("artefact-card__favorite--is-armed");
+    });
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => { armFavIcons();}, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div
