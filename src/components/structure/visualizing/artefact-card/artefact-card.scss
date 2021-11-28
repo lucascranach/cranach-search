@@ -6,20 +6,21 @@
   flex-direction: column;
   background-color: $darker;
   position: relative;
+  transition: opacity $tr-fast;
+  overflow: hidden;
+  opacity: 0.9;
 
-  &__image {
-    padding: 1px;
-  }
+  $self: &;
 
   &__content {
     position: relative;
     flex-grow: 1;
-    //padding: $s;
     padding-top: $s;
     padding-bottom: $s;
-    border-top: solid $border-stroke-weight-s $accent;
+    border-top: solid $border-stroke-weight-s transparent;
     background-color: $darkest;
     color: $lighter;
+    transition: border-color $tr-slow;
   }
 
   &__title {
@@ -45,22 +46,42 @@
 
   &__favorite {
     position: absolute;
+    background-color: $darken-strongest;
     right: $xs;
     top: $xs;
     color: $light;
-    opacity: $op-medium;
-    transition: transform $tr-fast, color $tr-fast, opacity $tr-medium;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    transition: transform $tr-fast, color $tr-fast, opacity $tr-medium, top $tr-medium;
 
     &:hover,
     &--is-active {
       opacity: 1;
-      color: $accent;
+      background-color: $accent;
+      color: $darkest;
       cursor: pointer;
-      transform: scale(1.4);
+    }
+
+    &--is-armed{
+      opacity: 0;
+      top: -100px;
     }
 
     &--is-active {
       transform: scale(1);
+    }
+  }
+
+  &:hover{
+    opacity: 1;
+
+    #{$self}__favorite{
+      opacity: 1 !important;
+      top: $xs !important;
+    }
+
+    #{$self}__content{
+      border-color: $accent;
     }
   }
 }

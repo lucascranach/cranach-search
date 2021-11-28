@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-
 import Switcher from '../../../base/interacting/switcher';
 import ArtefactCard from '../artefact-card';
 import ArtefactLine from '../artefact-line';
