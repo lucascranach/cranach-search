@@ -106,6 +106,10 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     };
   }
 
+  applyFreetextFields() {
+    this.setRoutingForFreetextFields();
+  }
+
   setSearchLoading(loading: boolean) {
     this.loading = loading;
   }
@@ -249,6 +253,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
             case 'is_best_of':
               this.handleRoutingNotificationForIsBestOf(value);
               break;
+
+            case 'search_term':
+            case 'title':
+            case 'location':
+            case 'inventory_number':
+              this.handleRoutingNotificationForFreetext(name, value);
+              break;
           }
         });
         break;
@@ -303,6 +314,24 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     ]);
   }
 
+  private setRoutingForFreetextFields() {
+    const changeActions: RoutingSearchQueryParamChange = [];
+
+    const keyMap: Record<string, string> = {
+      'allFieldsTerm': 'search_term',
+      'inventoryNumber': 'inventory_number',
+    };
+
+    Object.entries(this.freetextFields).forEach(([key, value]) => {
+      changeActions.push([
+        value ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE,
+        [(key in keyMap ? keyMap[key]: key), value],
+      ]);
+    });
+
+    this.rootStore.routing.updateSearchQueryParams(changeActions);
+  }
+
   private handleRoutingNotificationForDating(name: string, value: string) {
     switch (name) {
       case 'from_year':
@@ -317,6 +346,26 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   private handleRoutingNotificationForIsBestOf(value: string) {
     this.filters.isBestOf = (value === '1');
+  }
+
+  private handleRoutingNotificationForFreetext(name: string, value: string) {
+    switch(name) {
+      case 'search_term':
+        this.freetextFields.allFieldsTerm = value;
+        break;
+
+      case 'title':
+        this.freetextFields.title = value;
+        break;
+
+      case 'location':
+        this.freetextFields.location = value;
+        break;
+
+      case 'inventory_number':
+        this.freetextFields.inventoryNumber = value;
+        break;
+    }
   }
 }
 
@@ -352,5 +401,6 @@ export interface GlobalSearchStoreInterface {
   triggerFilterRequest(): void;
   triggerUserCollectionRequest(ids: string[]): void;
   resetEntityType(): void;
+  applyFreetextFields(): void;
 
 }

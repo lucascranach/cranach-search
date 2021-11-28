@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext } from 'react';
+import React, { FC, useState, useContext, KeyboardEvent } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Btn from '../../../base/interacting/btn';
@@ -52,8 +52,9 @@ const Search: FC = () => {
 
   const isActiveFilter = ui.sidebar === UISidebarType.FILTER ? 'search--is-active' : '';
 
-  const triggerFilterRequestOnEnter = (e) => {
+  const triggerFilterRequestOnEnter = (e: KeyboardEvent) => {
     if ((e.code && e.code === 'Enter') || (e.keyCode === 13)) {
+      globalSearch.applyFreetextFields();
       globalSearch.triggerFilterRequest();
     }
   }
