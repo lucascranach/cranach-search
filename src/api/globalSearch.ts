@@ -130,8 +130,7 @@ const searchByFiltersAndTerm = async (
 
   const cleanTitle = freetextFields.title.trim();
   if (cleanTitle) {
-    // re-activate when title-parameter is useable again
-    // params['title:eq'] = cleanTitle;
+    params['title:eq'] = cleanTitle;
   }
 
   const cleanFRNr = freetextFields.FRNr.trim();
