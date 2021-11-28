@@ -23,7 +23,6 @@ const Search: FC = () => {
   const { t } = ui.useTranslation('Search', translations);
 
   const hits = globalSearch.result?.meta.hits ?? 0;
-  const catalogWorkReferenceNumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
   const filterGroups = globalSearch.result?.filterGroups ?? [];
@@ -86,8 +85,8 @@ const Search: FC = () => {
 
         <TextInput
           className="search-input"
-          label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ catalogWorkReferenceNumber[0] }
-          onChange={ catalogWorkReferenceNumber[1] }
+          label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ globalSearch.freetextFields.FRNr }
+          onChange={ FRNr => globalSearch.setFreetextFields({ FRNr }) }
           onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 

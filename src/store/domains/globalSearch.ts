@@ -49,6 +49,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   freetextFields = {
     allFieldsTerm: '',
     title: '',
+    FRNr: '',
     location: '',
     inventoryNumber: '',
   }
@@ -372,6 +373,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 export interface FreeTextFields {
   allFieldsTerm: string;
   title: string;
+  FRNr: string;
   location: string;
   inventoryNumber: string;
 }

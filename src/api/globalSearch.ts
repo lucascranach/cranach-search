@@ -134,6 +134,11 @@ const searchByFiltersAndTerm = async (
     // params['title:eq'] = cleanTitle;
   }
 
+  const cleanFRNr = freetextFields.FRNr.trim();
+  if (cleanFRNr) {
+    params['object_name:eq'] = cleanFRNr;
+  }
+
   const cleanLocation = freetextFields.location.trim();
   if (cleanLocation) {
     params['location:eq'] = cleanLocation;
@@ -247,6 +252,7 @@ export type APIFilterType = {
 export type APIFreetextFieldsType = {
   allFieldsTerm: string,
   title: string,
+  FRNr: string,
   location: string,
   inventoryNumber: string,
 };
