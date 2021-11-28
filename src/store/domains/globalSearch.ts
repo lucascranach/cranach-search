@@ -1,5 +1,5 @@
 
-import { makeAutoObservable } from 'mobx';
+import { reaction, makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import GlobalSearchAPI_, {
   GlobalSearchArtifact,
@@ -72,6 +72,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.rootStore = rootStore;
     this.globalSearchAPI = globalSearchAPI;
     this.rootStore.routing.addObserver(this);
+
+    reaction(
+      () => this.rootStore.ui.lang,
+      () => this.triggerFilterRequest(),
+    );
   }
 
   /* Computed */

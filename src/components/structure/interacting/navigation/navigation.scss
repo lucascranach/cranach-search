@@ -4,15 +4,21 @@
   z-index: $level-overall-nav;
   display: flex;
   min-height: $xl + $s;
-  padding: $m;
-  padding-bottom: 0;
+  padding: $s 0;
   background-color: $darkest;
 
   flex: 0 1 auto;
 
+  .logo {
+    padding: $s 0;
+    padding-left: $m;
+  }
+
   .menu {
+    flex: 1 0 auto;
+    padding: $s 0 $s $m;
+
     &__item {
-      // display: none;
       a {
         display: block;
         padding: $s $m;
@@ -27,6 +33,21 @@
 
     &:hover {
       cursor: pointer;
+    }
+  }
+
+  .lang-selector {
+    flex: 0 1 auto;
+
+    &__item {
+      padding: $s 0;
+      display: inline-block;
+      cursor: pointer;
+      opacity: 0.3;
+
+      &--is-active {
+        opacity: 1;
+      }
     }
   }
 

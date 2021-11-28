@@ -10,8 +10,8 @@ function App() {
   const isActiveSidebar = 'sidebar--is-active';
 
   useEffect(() => {
-    const match = routing.history.location.pathname.match(/^\/([a-z]+)\//);
-    if (match && ui.allowedLangs.includes(match[1])) {
+    const match = routing.history.location.pathname.match(/^\/([a-z]+)\/?/);
+    if (match && (match[1] in ui.allowedLangs)) {
       ui.setLanguage(match[1]);
     } else {
       routing.history.replace({ ...routing.history.location, pathname: `${import.meta.env.BASE_URL}${ui.lang}/` });
