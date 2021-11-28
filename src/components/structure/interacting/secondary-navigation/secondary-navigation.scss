@@ -2,17 +2,19 @@
 
 .secondary-navigation {
 
-  background-color: $darkest;
+  background-color: transparent;
   transition: all $tr-fast;
-  z-index: $level-overall-nav;
+  width: $xl;
+  text-align: right;
 
   $trigger: "#{&}__trigger";
 
   #{$trigger}{
+    padding: 0;
+    transition: transform $tr-fast;
     position: absolute;
-    top: $m;
-    right: $xs;
-    transition: transform $tr-faster;
+    right: $s;
+    top: $s;
 
     &::after{
       content: "more_vert";
@@ -28,23 +30,32 @@
 
   &__options {
     display: none;
+    text-align: left;
+
+    li{
+      &  > *{
+        padding: $xxs 0;
+      }
+    }
   }
 
   &.is-active {
     background-color: $darker;
-    padding: $m $m $l $m;
+    padding: $xs $m $l $m;
     width: $sidebar-width;
 
     .secondary-navigation__options {
       display: block;
     }
 
-    #{$trigger}::after{
-      content: "close";
-    }
-  }
+    #{$trigger}{
+      &::after{
+        content: "close";
+      }
 
-  .btn {
-    padding: $xxs;
+      &:hover{
+        transform: none;
+      }
+    }
   }
 }
