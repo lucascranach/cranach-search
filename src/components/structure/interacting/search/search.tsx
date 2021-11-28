@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext, KeyboardEvent } from 'react';
+import React, { FC, useContext, KeyboardEvent } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Btn from '../../../base/interacting/btn';
