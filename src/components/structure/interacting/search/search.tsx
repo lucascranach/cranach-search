@@ -52,6 +52,12 @@ const Search: FC = () => {
 
   const isActiveFilter = ui.sidebar === UISidebarType.FILTER ? 'search--is-active' : '';
 
+  const triggerFilterRequestOnEnter = (e) => {
+    if ((e.code && e.code === 'Enter') || (e.keyCode === 13)) {
+      globalSearch.triggerFilterRequest();
+    }
+  }
+
   return (
     <div
       className={`search ${isActiveFilter}`}
@@ -66,6 +72,7 @@ const Search: FC = () => {
           label={ t('all Fields') }
           value={ globalSearch.freetextFields.allFieldsTerm }
           onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <TextInput
@@ -73,12 +80,14 @@ const Search: FC = () => {
           label={ t('Title') }
           value={ globalSearch.freetextFields.title }
           onChange={ title => globalSearch.setFreetextFields({ title }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <TextInput
           className="search-input"
           label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ catalogWorkReferenceNumber[0] }
           onChange={ catalogWorkReferenceNumber[1] }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <TextInput
@@ -86,6 +95,7 @@ const Search: FC = () => {
           label={ t('Location') }
           value={ globalSearch.freetextFields.location }
           onChange={ location => globalSearch.setFreetextFields({ location }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <TextInput
@@ -93,6 +103,7 @@ const Search: FC = () => {
           label={ t('CDA ID / Inventorynumber') }
           value={ globalSearch.freetextFields.inventoryNumber }
           onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <Btn
