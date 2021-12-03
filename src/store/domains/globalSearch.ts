@@ -121,12 +121,14 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   setDatingFrom(fromYear: number) {
     this.filters.dating.fromYear = fromYear;
+    this.resetPagination();
     this.setRoutingForDating();
     this.triggerFilterRequest();
   }
 
   setDatingTo(toYear: number) {
     this.filters.dating.toYear = toYear;
+    this.resetPagination();
     this.setRoutingForDating();
     this.triggerFilterRequest();
   }
@@ -139,8 +141,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   setIsBestOf(isBestOf: boolean) {
     this.filters.isBestOf = isBestOf;
+    this.resetPagination();
     this.setRoutingForIsBestOf();
     this.triggerFilterRequest();
+  }
+
+  resetPagination() {
+    this.setFrom(0);
   }
 
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string) {
@@ -160,6 +167,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
+    this.resetPagination();
     this.updateRoutingForFilterGroups(groupKey);
     this.triggerFilterRequest();
   }
@@ -175,7 +183,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   triggerFilterRequest() {
-
     clearTimeout(this.debounceHandler);
 
     this.debounceHandler = window.setTimeout(async () => {
@@ -333,6 +340,7 @@ export interface GlobalSearchStoreInterface {
   setSearchLoading(loading: boolean): void;
   setSearchResult(result: GlobalSearchResult | null): void;
   resetSearchResult(): void;
+  resetPagination(): void;
   setSearchFailed(error: string | null): void;
   searchForAllFieldsTerm(allFieldsTerm: string): void;
   setDatingFrom(fromYear: number): void;
