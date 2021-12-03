@@ -64,6 +64,15 @@ export default class Routing implements RoutingStoreInterface {
     this.notifyObserverWithCurrentSearchParams(observer);
   }
 
+  updateLanguageParam(langCode: string) {
+    this.disableNotify = true;
+    this.history.replace({
+      pathname: `/${langCode}/`,
+      search: Array.from(this.searchParams).length ? `?${this.searchParams.toString()}` : '',
+    });
+    this.disableNotify = false;
+  }
+
   updateSearchQueryParams(change: SearchQueryParamChange) {
     const currentSearchParams = this.searchParams;
 
@@ -108,6 +117,7 @@ export interface RoutingStoreInterface {
   history: History;
 
   addObserver: (observer: ObserverInterface) => void;
+  updateLanguageParam: (langCode: string) => void;
   updateSearchQueryParams: (change: SearchQueryParamChange) => void;
 }
 
