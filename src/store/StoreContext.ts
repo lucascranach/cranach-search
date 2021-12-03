@@ -8,7 +8,7 @@ export type {
   GlobalSearchFilterGroupItem,
   GlobalSearchFilterItem,
 } from './domains/globalSearch';
-export { UISidebarType, UIOverviewViewType } from './domains/ui';
+export { UISidebarContentType, UIOverviewViewType, UISidebarStatusType } from './domains/ui';
 
 configure({
   useProxies: 'never',

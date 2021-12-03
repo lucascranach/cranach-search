@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import ArtefactOverview, { ArtefactOverviewType } from '../../../structure/visualizing/artefact-overview';
@@ -8,32 +8,37 @@ import translations from './translations.json';
 import './secondary-navigation.scss';
 
 
-import StoreContext, { UIOverviewViewType, UISidebarType } from '../../../../store/StoreContext';
+import StoreContext, { UIOverviewViewType, UISidebarContentType, UISidebarStatusType } from '../../../../store/StoreContext';
 
 
 const SecondaryNavigation = () => {
   const { root: { ui, collection, globalSearch } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Navigation', translations);
 
-  const [isActive, setActive] = useState(false);
   const toggleSecondaryMenu = () => {
-    setActive(!isActive);
+    const targetIsVisible = !ui.secondaryNavigationIsVisible;
+
+    if (targetIsVisible) {
+      ui.setSideBarStatus(UISidebarStatusType.MAXIMIZED);
+    }
+
+    ui.setSecondaryNavigationIsVisible(targetIsVisible);
   };
-  const secondaryMenuStatus = isActive ? "is-active" : "";
+  const secondaryMenuStatus = ui.secondaryNavigationIsVisible ? "is-active" : "";
 
   const showMyCranach = () => {
-    ui.setSideBarContent(UISidebarType.MY_CRANACH);
+    ui.setSideBarContent(UISidebarContentType.MY_CRANACH);
     collection.showCollection();
   }
 
-  const hideSidebar = () => {
-    ui.setSideBarContent(UISidebarType.NONE);
-    toggleSecondaryMenu();
+  const showFilter = () => {
+    ui.setSideBarContent(UISidebarContentType.FILTER);
+    globalSearch.triggerFilterRequest();
   }
 
-  const showFilter = () => {
-    ui.setSideBarContent(UISidebarType.FILTER);
-    globalSearch.triggerFilterRequest();
+  const hideSidebar = () => {
+    ui.setSideBarStatus(UISidebarStatusType.MINIMIZED);
+    toggleSecondaryMenu();
   }
 
   /* Building a map for mapping UIOverviewViewType enum values to matching ArtefactOverviewType enum values */
@@ -70,7 +75,7 @@ const SecondaryNavigation = () => {
           <ArtefactOverview.Switcher
             viewType={overviewViewTypeMap[ui.overviewViewType]}
             className="overview-switcher"
-            handleChange={(type) => ui.setOverviewViewType(reverseOverviewViewTypeMap[type])}
+            handleChange={(type) => ui.setOverviewViewType(reverseOverviewViewTypeMap[type]) }
           ></ArtefactOverview.Switcher>
 
           <Switcher className="lang-selector">

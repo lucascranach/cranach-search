@@ -1,4 +1,4 @@
-import { reaction, makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import i18n from 'i18next';
 import {
   initReactI18next,
@@ -7,11 +7,15 @@ import {
 } from 'react-i18next';
 import { RootStoreInterface } from '../rootStore';
 
+const CRANACH_SEARCH_LOCALSTORAGE_KEY = 'cranachSearchUI';
+
 export default class UI implements UIStoreInterface {
   rootStore: RootStoreInterface
   lang: string = 'de';
-  sidebar: UISidebarType = UISidebarType.FILTER;
+  sidebarContent: UISidebarContentType = UISidebarContentType.FILTER;
+  sidebarStatus: UISidebarStatusType = UISidebarStatusType.MAXIMIZED;
   overviewViewType: UIOverviewViewType = UIOverviewViewType.CARD;
+  secondaryNavigationIsVisible: boolean = false;
   allowedLangs: Record<string, string> = { de: 'DE', en: 'EN' };
 
   constructor(rootStore: RootStoreInterface) {
@@ -34,6 +38,8 @@ export default class UI implements UIStoreInterface {
         useSuspense: false,
       },
     });
+
+    this.loadFromLocalStorage();
   }
 
   /* Actions */
@@ -56,25 +62,77 @@ export default class UI implements UIStoreInterface {
     return useTranslation(namespace);
   }
 
-  toggleSidebar() {
-    this.sidebar = (this.sidebar === UISidebarType.FILTER)
-      ? UISidebarType.MY_CRANACH
-      : UISidebarType.FILTER;
+  setSideBarContent(content: UISidebarContentType) {
+    this.sidebarContent = content;
+    this.updateLocalStorage();
   }
 
-  setSideBarContent(type: UISidebarType) {
-    this.sidebar = type;
+  setSideBarStatus(status: UISidebarStatusType) {
+    this.sidebarStatus = status;
   }
 
   setOverviewViewType(type: UIOverviewViewType) {
     this.overviewViewType = type;
+    this.updateLocalStorage();
+  }
+
+  setSecondaryNavigationIsVisible(isVisible: boolean) {
+    this.secondaryNavigationIsVisible = isVisible;
+    this.updateLocalStorage();
+  }
+
+  updateLocalStorage() {
+    const item: StorageItemType = {
+      sidebarContent: this.sidebarContent,
+      sidebarStatus: this.sidebarStatus,
+      overviewViewType: this.overviewViewType,
+      secondaryNavigationIsVisible: this.secondaryNavigationIsVisible,
+    }
+
+    window.localStorage.setItem(CRANACH_SEARCH_LOCALSTORAGE_KEY, JSON.stringify(item));
+  }
+
+  loadFromLocalStorage() {
+    const rawItem = window.localStorage.getItem(CRANACH_SEARCH_LOCALSTORAGE_KEY);
+
+    if (!rawItem) return;
+
+    const item = JSON.parse(rawItem) as StorageItemType;
+
+    /* Sidebar content */
+    if (item.sidebarContent && Object.values(UISidebarContentType).includes(item.sidebarContent )) {
+      this.sidebarContent = item.sidebarContent;
+    }
+
+    /* Sidebar status */
+    if (item.sidebarStatus && Object.values(UISidebarStatusType).includes(item.sidebarStatus)) {
+      this.sidebarStatus = item.sidebarStatus;
+    }
+
+    /* Sidebar status */
+    if (item.overviewViewType && Object.values(UIOverviewViewType).includes(item.overviewViewType)) {
+      this.overviewViewType = item.overviewViewType;
+    }
+
+    /* Secondary navigation visibilitu */
+    this.secondaryNavigationIsVisible = item.secondaryNavigationIsVisible;
   }
 }
 
-export enum UISidebarType {
+type StorageItemType = {
+  sidebarContent: UISidebarContentType;
+  sidebarStatus: UISidebarStatusType;
+  overviewViewType: UIOverviewViewType;
+  secondaryNavigationIsVisible: boolean;
+}
+
+export enum UISidebarContentType {
   MY_CRANACH = 'myCranach',
   FILTER = 'filter',
-  NONE = '',
+}
+export enum UISidebarStatusType {
+  MAXIMIZED = 'maximized',
+  MINIMIZED = 'minimized',
 }
 export enum UIOverviewViewType {
   CARD = 'card',
@@ -83,12 +141,15 @@ export enum UIOverviewViewType {
 }
 export interface UIStoreInterface {
   lang: string;
-  sidebar: UISidebarType;
+  sidebarContent: UISidebarContentType;
+  sidebarStatus: UISidebarStatusType;
   overviewViewType: UIOverviewViewType;
+  secondaryNavigationIsVisible: boolean;
   allowedLangs: Record<string, string>;
   setLanguage(lang: string): void;
-  toggleSidebar(): void;
-  setSideBarContent(type: UISidebarType): void;
+  setSideBarContent(content: UISidebarContentType): void;
+  setSideBarStatus(status: UISidebarStatusType): void;
   setOverviewViewType(type: UIOverviewViewType): void;
+  setSecondaryNavigationIsVisible(isVisible: boolean): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
 }

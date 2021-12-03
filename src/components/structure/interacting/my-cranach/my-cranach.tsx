@@ -5,14 +5,14 @@ import translations from './translations.json';
 import './my-cranach.scss';
 
 
-import StoreContext, { UISidebarType } from '../../../../store/StoreContext';
+import StoreContext, { UISidebarContentType, UISidebarStatusType } from '../../../../store/StoreContext';
 
 const MyCranach = () => {
   const { root: { collection, ui } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Search', translations);
   const triggerComparism = () => collection.startComparism();
   const compareIsActive = collection.size && collection.size > 1 ? 'btn--is-active' : 'btn--is-disabled';
-  const isActiveMyCranach = ui.sidebar === UISidebarType.MY_CRANACH ? 'my-cranach--is-active' : '';
+  const isActiveMyCranach = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.MY_CRANACH ? 'my-cranach--is-active' : '';
 
   return (
     <div
