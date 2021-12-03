@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 
 import Logo from '../../../base/visualizing/logo';
 import CategoryFilter from '../../../base/interacting/category-filter';
-import Switcher from '../../../base/interacting/switcher';
 
 import translations from './translations.json';
 import './navigation.scss';
@@ -63,18 +62,6 @@ const Navigation = () => {
         }
       </ul>
 
-      <Switcher className="lang-selector">
-        {
-          Object.entries(ui.allowedLangs).map(([langCode, langAbbreviation]) => (
-            <Switcher.Item key={langCode}>
-              <span
-                className={`lang-selector__item ${ langCode === ui.lang ? 'lang-selector__item--is-active' : '' }`}
-                onClick={ () => ui.setLanguage(langCode) }
-              >{langAbbreviation}</span>
-            </Switcher.Item>
-          ))
-        }
-      </Switcher>
     </nav>
   );
 };

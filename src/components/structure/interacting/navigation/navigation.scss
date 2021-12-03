@@ -36,21 +36,6 @@
     }
   }
 
-  .lang-selector {
-    flex: 0 1 auto;
-
-    &__item {
-      padding: $s 0;
-      display: inline-block;
-      cursor: pointer;
-      opacity: 0.3;
-
-      &--is-active {
-        opacity: 1;
-      }
-    }
-  }
-
   @media only screen and (min-width: $vp-large) {
     .menu {
       display: flex;
