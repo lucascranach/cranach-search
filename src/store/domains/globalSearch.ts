@@ -232,6 +232,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
             case 'subject':
             case 'form':
             case 'function':
+            case 'catalog':
               this.handleRoutingNotificationForFilterGroups(name, value);
               break;
 
