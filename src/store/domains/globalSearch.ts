@@ -307,18 +307,34 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
     this.rootStore.routing.updateSearchQueryParams([
       [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
-      [(toYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['to_year', toYear.toString()]],
+      [RoutingChangeAction.ADD, ['to_year', toYear <= THRESOLD_UPPER_DATING_YEAR ? toYear.toString() : 'max']],
     ]);
   }
 
   private handleRoutingNotificationForDating(name: string, value: string) {
     switch (name) {
       case 'from_year':
-        this.filters.dating.fromYear = parseInt(value, 10);
+        this.filters.dating.fromYear = Math.min(
+          Math.max(
+            parseInt(value, 10),
+            this.datingRangeBounds[0],
+          ),
+          this.datingRangeBounds[1],
+        );
         break;
 
       case 'to_year':
-        this.filters.dating.toYear = parseInt(value, 10);
+        if (value === 'max') {
+          this.filters.dating.toYear = THRESOLD_UPPER_DATING_YEAR;
+        } else {
+          this.filters.dating.toYear = Math.min(
+            Math.max(
+              parseInt(value, 10),
+              this.datingRangeBounds[1],
+            ),
+            this.datingRangeBounds[0],
+          );
+        }
         break;
     }
   }
