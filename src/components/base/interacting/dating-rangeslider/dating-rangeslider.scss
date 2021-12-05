@@ -1,0 +1,58 @@
+@import "../../../../style//000-abstracts/__abstracts-dir";
+@import 'nouislider/dist/nouislider.css';
+
+.dating-rangeslider {
+  &__rangeslider {
+    margin: 0 1rem;
+    margin-top: 1rem;
+
+    &.noUi-horizontal {
+      height: 6px;
+    }
+
+    .noUi {
+      &-handle {
+        &::before,
+        &::after {
+          display: none;
+        }
+
+        top: -7px;
+        right: -10px;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+        box-shadow: none;
+      }
+
+      &-connect {
+        background-color: $accent;
+      }
+
+      &-value {
+        margin-top: 0.75rem;
+      }
+
+      &-marker {
+        width: 1px;
+      }
+    }
+  }
+
+  &__input-holder {
+    display: flex;
+    margin-top: 4rem;
+  }
+
+  &__year-input {
+    flex: 0 1 auto;
+
+    &:first-child {
+      margin-right: 1rem;
+    }
+
+    &:last-child {
+      margin-left: 1rem;
+    }
+  }
+}

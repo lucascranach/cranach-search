@@ -21,6 +21,7 @@ export type {
   GlobalSearchFilterItem,
 } from '../../api/globalSearch';
 
+const THRESOLD_UPPER_DATING_YEAR = 1600;
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
@@ -50,10 +51,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   loading: boolean = false;
   result: GlobalSearchResult | null = null;
   error: string | null = null;
+  datingRangeBounds: [number, number] = [1500, 1600];
   filters: FilterType = {
     dating: {
-      fromYear: 0,
-      toYear: 0,
+      fromYear: 1500,
+      toYear: 1600,
     },
     size: 50,
     from: 0,
@@ -124,13 +126,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.triggerFilterRequest();
   }
 
-  setDatingFrom(fromYear: number) {
+  setDating(fromYear: number, toYear: number) {
     this.filters.dating.fromYear = fromYear;
-    this.setRoutingForDating();
-    this.triggerFilterRequest();
-  }
-
-  setDatingTo(toYear: number) {
     this.filters.dating.toYear = toYear;
     this.setRoutingForDating();
     this.triggerFilterRequest();
@@ -187,8 +184,17 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       const { lang } = this.rootStore.ui;
       this.setSearchLoading(true);
       try {
+        const updatedFilters: FilterType = {
+          ...this.filters,
+          dating: {
+            ...this.filters.dating,
+            /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */
+            toYear: (this.filters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.filters.dating.toYear : 0,
+          }
+        };
+
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
-          this.filters,
+          updatedFilters,
           this.allFieldsTerm,
           lang,
         );
@@ -327,6 +333,7 @@ export interface GlobalSearchStoreInterface {
   loading: boolean;
   result: GlobalSearchResult | null;
   error: string | null;
+  datingRangeBounds: [number, number];
   filters: FilterType;
   debounceWaitInMSecs: number;
   debounceHandler: undefined | number;
@@ -340,8 +347,7 @@ export interface GlobalSearchStoreInterface {
   resetSearchResult(): void;
   setSearchFailed(error: string | null): void;
   searchForAllFieldsTerm(allFieldsTerm: string): void;
-  setDatingFrom(fromYear: number): void;
-  setDatingTo(toYear: number): void;
+  setDating(fromYear: number, toYear: number): void;
   setEntityType(entityType: EntityType): void;
   setFrom(from: number): void;
   setIsBestOf(isBestOf: boolean): void;
