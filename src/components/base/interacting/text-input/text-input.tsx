@@ -7,7 +7,8 @@ type Props = {
   className?: string,
   value?: string,
   placeholder?: string,
-  onChange?: (value: string) => void
+  onChange?: (value: string) => void,
+  disabled?: boolean,
 };
 
 const TextInput: FC<Props> = ({
@@ -16,6 +17,7 @@ const TextInput: FC<Props> = ({
   value = '',
   placeholder = '',
   onChange = (value: string) => {},
+  disabled = false,
 }) => (
   <label
     className={ `text-input ${className}` }
@@ -27,6 +29,7 @@ const TextInput: FC<Props> = ({
       value={ value }
       placeholder={ placeholder }
       onChange={ (e) => { onChange(e.target.value); } }
+      disabled={ disabled }
     />
     { label
       && <span className="label-text">{ label }</span>
