@@ -17,8 +17,8 @@ export default class RootStore implements RootStoreInterface {
   constructor(history: History) {
     makeAutoObservable(this);
 
-    this.ui = new UI(this);
     this.routing = new Routing(this, history);
+    this.ui = new UI(this);
     this.globalSearch = new GlobalSearch(this, globalSearchAPI);
     this.collection = new Collection(this);
   }
