@@ -1,11 +1,15 @@
 @import '../../../../style/000-abstracts/__abstracts-dir';
 
 .switcher {
+  display: inline-flex;
+  flex-direction: row;
+
   &-item {
-    display: inline-block;
+    display: flex;
     margin: $s $xxs;
     margin-right: 0;
-    justify-self: flex-end;
+    align-items: center;
+    justify-content: center;
 
     a {
       display: block;
@@ -19,13 +23,4 @@
     border-left: solid $border-stroke-weight-s $accent;
   }
 
-  @media only screen and (min-width: $vp-large) {
-    display: inline-flex;
-    flex-direction: row;
-
-    .switcher .switcher-item {
-      display: inline-flex;
-      align-items: flex-end;
-    }
-  }
 }

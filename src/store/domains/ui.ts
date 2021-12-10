@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { reaction, makeAutoObservable } from 'mobx';
 import i18n from 'i18next';
 import {
   initReactI18next,
@@ -12,7 +12,7 @@ export default class UI implements UIStoreInterface {
   lang: string = 'de';
   sidebar: UISidebarType = UISidebarType.FILTER;
   overviewViewType: UIOverviewViewType = UIOverviewViewType.CARD;
-  allowedLangs: string[] = ['de', 'en'];
+  allowedLangs: Record<string, string> = { de: 'DE', en: 'EN' };
 
   constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
@@ -44,6 +44,8 @@ export default class UI implements UIStoreInterface {
     if (i18n.language !== lang) {
       i18n.changeLanguage(lang);
     }
+
+    this.rootStore.routing.updateLanguageParam(this.lang);
   }
 
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>) {
@@ -83,7 +85,7 @@ export interface UIStoreInterface {
   lang: string;
   sidebar: UISidebarType;
   overviewViewType: UIOverviewViewType;
-  allowedLangs: string[];
+  allowedLangs: Record<string, string>;
   setLanguage(lang: string): void;
   toggleSidebar(): void;
   setSideBarContent(type: UISidebarType): void;

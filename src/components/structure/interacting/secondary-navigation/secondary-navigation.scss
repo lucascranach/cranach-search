@@ -58,4 +58,24 @@
       }
     }
   }
+
+  .switcher-row{
+    display: flex;
+    gap: $m;
+    margin-left: -$xs;
+  }
+
+  .lang-selector {
+    flex: 0 1 auto;
+
+    &__item {
+      display: inline;
+      cursor: pointer;
+      opacity: $op-medium;
+
+      &--is-active {
+        opacity: 1;
+      }
+    }
+  }
 }

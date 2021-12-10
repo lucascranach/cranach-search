@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import ArtefactOverview, { ArtefactOverviewType } from '../../../structure/visualizing/artefact-overview';
+import Switcher from '../../../base/interacting/switcher';
 
 import translations from './translations.json';
 import './secondary-navigation.scss';
@@ -65,12 +66,25 @@ const SecondaryNavigation = () => {
 
       <ul className="secondary-navigation__options">
 
-        <li>
+        <li className="switcher-row">
           <ArtefactOverview.Switcher
             viewType={overviewViewTypeMap[ui.overviewViewType]}
             className="overview-switcher"
             handleChange={(type) => ui.setOverviewViewType(reverseOverviewViewTypeMap[type])}
           ></ArtefactOverview.Switcher>
+
+          <Switcher className="lang-selector">
+            {
+              Object.entries(ui.allowedLangs).map(([langCode, langAbbreviation]) => (
+                <Switcher.Item key={langCode}>
+                  <span
+                    className={`lang-selector__item ${langCode === ui.lang ? 'lang-selector__item--is-active' : ''}`}
+                    onClick={() => ui.setLanguage(langCode)}
+                  >{langAbbreviation}</span>
+                </Switcher.Item>
+              ))
+            }
+          </Switcher>
         </li>
 
         <li>
