@@ -24,6 +24,7 @@ export type ArtefactOverviewItem = {
   to: string;
   openInNewWindow: boolean;
   medium: string;
+  _highlight?: Record<string, Array<string>>;
 };
 
 export enum ArtefactOverviewType {
@@ -50,14 +51,56 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   items = [],
   viewType = DefaultViewType,
 }) => {
+  const hasHighlightedText = (item: ArtefactOverviewItem, prop: keyof ArtefactOverviewItem): boolean => {
+    return !!(item._highlight && item._highlight[prop])
+  }
+
+  const getAvailableHighlightExcerpt = (item: ArtefactOverviewItem, prop: keyof ArtefactOverviewItem) => {
+    if (!(item._highlight && hasHighlightedText(item, prop))) return '';
+
+    const ellipsis = '…';
+    const highlightedText = item._highlight[prop][0];
+    const splitHT = highlightedText.split(' ');
+
+    const startIdx = splitHT.findIndex((seg) => seg.match('<em>'));
+    const endIdx = splitHT.findIndex((seg) => seg.match('</em>'));
+
+    const wordCntForPadding = 4;
+
+    const preIdx = Math.max(0, startIdx - wordCntForPadding);
+    const postIdx = Math.min(splitHT.length, endIdx + wordCntForPadding + 1);
+
+    let slice = splitHT.slice(preIdx, postIdx - preIdx).join(' ');
+
+    if (preIdx != 0) {
+      slice = `${ellipsis} ${slice}`;
+    }
+
+    if (postIdx != splitHT.length) {
+      slice = `${slice} ${ellipsis}`;
+    }
+
+    return slice;
+  };
+  const shortenTitle = (title: string): string => {
+    const splitTitle = title.split(' ');
+    return splitTitle.length <= maximumTitleLengthInWords ? title : `${splitTitle.slice(0, maximumTitleLengthInWords).join(' ')} …`;
+  };
 
   const assembleTitleForCardView = (item: ArtefactOverviewItem): string => {
-    const shortenedTitle = shortenTitle(item.title);
-    return `${shortenedTitle}, ${item.date}`;
+    const title = hasHighlightedText(item, 'title')
+      ? getAvailableHighlightExcerpt(item, 'title') as string
+      : shortenTitle(item.title);
+
+    return `${title}, ${item.date}`;
   }
 
   const assembleTitleForListView = (item: ArtefactOverviewItem): string => {
-    return `${item.title}, ${item.date}`;
+    const title = hasHighlightedText(item, 'title')
+      ? getAvailableHighlightExcerpt(item, 'title') as string
+      : shortenTitle(item.title);
+
+    return `${title}, ${item.date}`;
   }
 
   const assembleSubTitleForCardView = (item: ArtefactOverviewItem): string => {
@@ -99,11 +142,6 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
     const dimensionList = dimensions.split(/\n/);
     return dimensionList[0];
   }
-
-  const shortenTitle = (title: string): string => {
-    const splitTitle = title.split(' ');
-    return splitTitle.length <= maximumTitleLengthInWords ? title : `${splitTitle.slice(0, maximumTitleLengthInWords).join(' ')} ...`;
-  };
 
   return (<div
     className="artefact-overview"

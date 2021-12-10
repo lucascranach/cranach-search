@@ -37,6 +37,11 @@
     color: $lightest;
     font-weight: $fw-semibold;
     line-height: $lh-headlines;
+
+    em {
+      color: $lightest;
+      font-weight: $fw-semibold;
+    }
   }
 
   &__subtitle {

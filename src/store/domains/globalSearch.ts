@@ -46,7 +46,13 @@ export type SingleFilter = {
 export default class GlobalSearch implements GlobalSearchStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
   globalSearchAPI: GlobalSearchAPI;
-  allFieldsTerm: string = '';
+  freetextFields = {
+    allFieldsTerm: '',
+    title: '',
+    FRNr: '',
+    location: '',
+    inventoryNumber: '',
+  }
   loading: boolean = false;
   result: GlobalSearchResult | null = null;
   error: string | null = null;
@@ -99,8 +105,15 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   /* Actions */
 
-  setAllFieldsTerm(allFieldsTerm: string) {
-    this.allFieldsTerm = allFieldsTerm;
+  setFreetextFields(fields: Partial<FreeTextFields>) {
+    this.freetextFields = {
+      ...this.freetextFields,
+      ...fields,
+    };
+  }
+
+  applyFreetextFields() {
+    this.setRoutingForFreetextFields();
   }
 
   setSearchLoading(loading: boolean) {
@@ -117,11 +130,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   setSearchFailed(error: string | null) {
     this.error = error;
-  }
-
-  searchForAllFieldsTerm(allFieldsTerm: string) {
-    this.setAllFieldsTerm(allFieldsTerm);
-    this.triggerFilterRequest();
   }
 
   setDatingFrom(fromYear: number) {
@@ -165,6 +173,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
+
     this.updateRoutingForFilterGroups(groupKey);
     this.triggerFilterRequest();
   }
@@ -180,7 +189,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   triggerFilterRequest() {
-
     clearTimeout(this.debounceHandler);
 
     this.debounceHandler = window.setTimeout(async () => {
@@ -189,7 +197,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       try {
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
           this.filters,
-          this.allFieldsTerm,
+          this.freetextFields,
           lang,
         );
         this.setSearchResult(result);
@@ -252,6 +260,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
             case 'is_best_of':
               this.handleRoutingNotificationForIsBestOf(value);
               break;
+
+            case 'search_term':
+            case 'title':
+            case 'location':
+            case 'inventory_number':
+              this.handleRoutingNotificationForFreetext(name, value);
+              break;
           }
         });
         break;
@@ -306,6 +321,24 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     ]);
   }
 
+  private setRoutingForFreetextFields() {
+    const changeActions: RoutingSearchQueryParamChange = [];
+
+    const keyMap: Record<string, string> = {
+      'allFieldsTerm': 'search_term',
+      'inventoryNumber': 'inventory_number',
+    };
+
+    Object.entries(this.freetextFields).forEach(([key, value]) => {
+      changeActions.push([
+        value ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE,
+        [(key in keyMap ? keyMap[key]: key), value],
+      ]);
+    });
+
+    this.rootStore.routing.updateSearchQueryParams(changeActions);
+  }
+
   private handleRoutingNotificationForDating(name: string, value: string) {
     switch (name) {
       case 'from_year':
@@ -321,10 +354,38 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   private handleRoutingNotificationForIsBestOf(value: string) {
     this.filters.isBestOf = (value === '1');
   }
+
+  private handleRoutingNotificationForFreetext(name: string, value: string) {
+    switch(name) {
+      case 'search_term':
+        this.freetextFields.allFieldsTerm = value;
+        break;
+
+      case 'title':
+        this.freetextFields.title = value;
+        break;
+
+      case 'location':
+        this.freetextFields.location = value;
+        break;
+
+      case 'inventory_number':
+        this.freetextFields.inventoryNumber = value;
+        break;
+    }
+  }
+}
+
+export interface FreeTextFields {
+  allFieldsTerm: string;
+  title: string;
+  FRNr: string;
+  location: string;
+  inventoryNumber: string;
 }
 
 export interface GlobalSearchStoreInterface {
-  allFieldsTerm: string;
+  freetextFields: FreeTextFields;
   loading: boolean;
   result: GlobalSearchResult | null;
   error: string | null;
@@ -332,15 +393,13 @@ export interface GlobalSearchStoreInterface {
   debounceWaitInMSecs: number;
   debounceHandler: undefined | number;
   flattenedSearchResultItems: GlobalSearchArtifact[];
-
   bestOfFilter: SingleFilter | null;
 
-  setAllFieldsTerm(allFieldsTerm: string): void;
+  setFreetextFields(fields: Partial<FreeTextFields>): void;
   setSearchLoading(loading: boolean): void;
   setSearchResult(result: GlobalSearchResult | null): void;
   resetSearchResult(): void;
   setSearchFailed(error: string | null): void;
-  searchForAllFieldsTerm(allFieldsTerm: string): void;
   setDatingFrom(fromYear: number): void;
   setDatingTo(toYear: number): void;
   setEntityType(entityType: EntityType): void;
@@ -350,5 +409,6 @@ export interface GlobalSearchStoreInterface {
   triggerFilterRequest(): void;
   triggerUserCollectionRequest(ids: string[]): void;
   resetEntityType(): void;
+  applyFreetextFields(): void;
 
 }
