@@ -29,8 +29,8 @@
     line-height: $lh-headlines;
 
     em {
-      background-color: $accent;
-      color: $darkest;
+      color: $lightest;
+      font-weight: $fw-semibold;
     }
   }
 
