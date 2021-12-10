@@ -9,11 +9,6 @@ type Props = {
   range?: number,
 };
 
-enum PaginationDirection {
-  UP = 'UP',
-  DOWN = 'DOWN',
-};
-
 const SearchResultNavigation: FC<Props> = ({
   range = 6,
 }) => {
@@ -25,23 +20,22 @@ const SearchResultNavigation: FC<Props> = ({
   const hiddenClass = `${paginationClass}--hidden`;
 
   const { root: { globalSearch } } = useContext(StoreContext);
-  const { size, from } = globalSearch.filters;
-  const hits = globalSearch.result?.meta.hits ?? 0;
+  const {
+    currentResultPagePos,
+    maxResultPages,
+  } = globalSearch;
 
-  const maxPages = Math.ceil(hits / size);
-  const currentPos = (from / size);
-
-  const firstIsActive = currentPos > 0;
-  const lastIsActive = currentPos < maxPages - 1;
+  const firstIsActive = currentResultPagePos > 0;
+  const lastIsActive = currentResultPagePos < maxResultPages - 1;
 
   const arrayToClassName = (classes: string[]): string => classes.join(' ');
 
-  const getPaginationNavItemClassName = (pos: number, currentPos: number): string => {
-    if (pos === currentPos) {
+  const getPaginationNavItemClassName = (pos: number, currentResultPagePos: number): string => {
+    if (pos === currentResultPagePos) {
       const classes = [paginationClass, clickableClass, activeClass];
 
       if (pos === 0) classes.push(firstItemClass);
-      if (pos === maxPages) classes.push(lastItemClass);
+      if (pos === maxResultPages) classes.push(lastItemClass);
 
       return arrayToClassName(classes);
     }
@@ -50,60 +44,51 @@ const SearchResultNavigation: FC<Props> = ({
       return arrayToClassName([paginationClass, clickableClass, firstItemClass]);
     }
 
-    if (pos === maxPages - 1) {
+    if (pos === maxResultPages - 1) {
       return arrayToClassName([paginationClass, clickableClass, lastItemClass]);
     }
 
-    const addRight = currentPos <= range ? (range - currentPos) : 0;
-    if (pos > currentPos - range && pos < (currentPos + range + addRight)) {
+    const addRight = currentResultPagePos <= range ? (range - currentResultPagePos) : 0;
+    if (pos > currentResultPagePos - range && pos < (currentResultPagePos + range + addRight)) {
       return arrayToClassName([paginationClass, clickableClass]);
     }
 
     return arrayToClassName([paginationClass, hiddenClass]);
   }
 
-  const setPagination = (direction: PaginationDirection) => {
-    const newFrom = (direction === PaginationDirection.UP) ? from + size : from - size;
-    globalSearch.setFrom(newFrom);
-  }
-
-  const jumpToPage = (page: number) => {
-    globalSearch.setFrom(page * size);
-  }
-
-  const navItems = Array(maxPages).fill(0).map((_, idx) => ({
+  const navItems = Array(maxResultPages).fill(0).map((_, idx) => ({
     pos: idx,
     text: idx + 1,
-    className: getPaginationNavItemClassName(idx, currentPos),
+    className: getPaginationNavItemClassName(idx, currentResultPagePos),
   }));
 
   return (
     <div className="pagination-wrap">
-      {maxPages > 1 &&
+      {maxResultPages > 1 &&
         <ul className="pagination">
           <li
             className={firstIsActive
               ? arrayToClassName([paginationClass, firstItemClass, clickableClass])
               : arrayToClassName([paginationClass, firstItemClass])
             }
-            onClick={() => { firstIsActive && setPagination(PaginationDirection.DOWN); }}
+            onClick={() => { firstIsActive && globalSearch.setPagination(-1); }}
           >&lt;</li>
           <li
             className={lastIsActive
               ? arrayToClassName([paginationClass, lastItemClass, clickableClass])
               : arrayToClassName([paginationClass, lastItemClass])
             }
-            onClick={() => { lastIsActive && setPagination(PaginationDirection.UP); }}
+            onClick={() => { lastIsActive && globalSearch.setPagination(1); }}
           >&gt;</li>
         </ul>
       }
-      {maxPages > 2 &&
+      {maxResultPages > 2 &&
         <ul className="pagination">
           {navItems.map(navItem => (
             <li
               className={navItem.className}
               key={navItem.pos}
-              onClick={() => { jumpToPage(navItem.pos) }}
+              onClick={() => { globalSearch.jumpToPagePos(navItem.pos) }}
             >{navItem.text}</li>))
           }
 

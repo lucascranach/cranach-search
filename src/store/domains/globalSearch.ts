@@ -103,6 +103,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     };
   }
 
+  get currentResultPagePos(): number {
+    return this.filters.from / this.filters.size;
+  }
+
+  get maxResultPages(): number {
+    const hits = this.result?.meta.hits ?? 0;
+
+    return Math.ceil(hits / this.filters.size);
+  }
+
   /* Actions */
 
   setFreetextFields(fields: Partial<FreeTextFields>) {
@@ -134,25 +144,47 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
   setDatingFrom(fromYear: number) {
     this.filters.dating.fromYear = fromYear;
+    this.resetFrom();
     this.setRoutingForDating();
     this.triggerFilterRequest();
   }
 
   setDatingTo(toYear: number) {
     this.filters.dating.toYear = toYear;
+    this.resetFrom();
     this.setRoutingForDating();
     this.triggerFilterRequest();
   }
 
   setFrom(from: number) {
     this.filters.from = from;
-    this.setRoutingForPage();
-    this.triggerFilterRequest();
+  }
+
+  resetFrom() {
+    this.setFrom(0);
   }
 
   setIsBestOf(isBestOf: boolean) {
     this.filters.isBestOf = isBestOf;
+    this.resetFrom();
     this.setRoutingForIsBestOf();
+    this.triggerFilterRequest();
+  }
+
+  setPagination(relativePagePos: number) {
+    if (relativePagePos === 0) return;
+
+    const newFrom = this.filters.from + (this.filters.size * relativePagePos);
+    const gatedFrom = Math.max(0, newFrom);
+
+    this.setFrom(gatedFrom);
+    this.setRoutingForPage();
+    this.triggerFilterRequest();
+  }
+
+  jumpToPagePos(pagePos: number) {
+    this.setFrom(pagePos * this.filters.size);
+    this.setRoutingForPage();
     this.triggerFilterRequest();
   }
 
@@ -173,13 +205,14 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
-
+    this.resetFrom();
     this.updateRoutingForFilterGroups(groupKey);
     this.triggerFilterRequest();
   }
 
   setEntityType(entityType: EntityType) {
     this.filters.entityType = entityType;
+    this.resetFrom();
     this.setRoutingForEntityType();
     this.triggerFilterRequest();
   }
@@ -292,11 +325,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['page', page.toString()]]]);
   }
 
-  private setRoutingForIsBestOf() {
-    const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
-    this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
-  }
-
   private handleRoutingNotificationForPage(value: string) {
     this.filters.from = Math.max(0, (parseInt(value, 10) - 1) * this.filters.size);
   }
@@ -351,6 +379,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     }
   }
 
+  private setRoutingForIsBestOf() {
+    const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
+    this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
+  }
+
+
   private handleRoutingNotificationForIsBestOf(value: string) {
     this.filters.isBestOf = (value === '1');
   }
@@ -393,17 +427,23 @@ export interface GlobalSearchStoreInterface {
   debounceWaitInMSecs: number;
   debounceHandler: undefined | number;
   flattenedSearchResultItems: GlobalSearchArtifact[];
+  currentResultPagePos: number;
+  maxResultPages: number;
+
   bestOfFilter: SingleFilter | null;
 
   setFreetextFields(fields: Partial<FreeTextFields>): void;
   setSearchLoading(loading: boolean): void;
   setSearchResult(result: GlobalSearchResult | null): void;
   resetSearchResult(): void;
+  setPagination(relativePagePos: number): void;
+  jumpToPagePos(pagePos: number): void;
   setSearchFailed(error: string | null): void;
   setDatingFrom(fromYear: number): void;
   setDatingTo(toYear: number): void;
   setEntityType(entityType: EntityType): void;
   setFrom(from: number): void;
+  resetFrom(): void;
   setIsBestOf(isBestOf: boolean): void;
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
   triggerFilterRequest(): void;
