@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, KeyboardEvent } from 'react';
 
 import './text-input.scss';
 
@@ -8,6 +8,7 @@ type Props = {
   value?: string,
   placeholder?: string,
   onChange?: (value: string) => void,
+  onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void,
   disabled?: boolean,
 };
 
@@ -16,7 +17,8 @@ const TextInput: FC<Props> = ({
   className = '',
   value = '',
   placeholder = '',
-  onChange = (value: string) => {},
+  onChange = () => {},
+  onKeyDown = () => {},
   disabled = false,
 }) => (
   <label
@@ -29,6 +31,7 @@ const TextInput: FC<Props> = ({
       value={ value }
       placeholder={ placeholder }
       onChange={ (e) => { onChange(e.target.value); } }
+      onKeyDown={ onKeyDown }
       disabled={ disabled }
     />
     { label

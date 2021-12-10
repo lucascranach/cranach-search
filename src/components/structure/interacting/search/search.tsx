@@ -1,4 +1,4 @@
-import React, { FC, useState, useContext } from 'react';
+import React, { FC, useContext, KeyboardEvent } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Btn from '../../../base/interacting/btn';
@@ -24,10 +24,6 @@ const Search: FC = () => {
   const { t } = ui.useTranslation('Search', translations);
 
   const hits = globalSearch.result?.meta.hits ?? 0;
-  const title = useState('*');
-  const catalogWorkReferenceNumber = useState('*');
-  const location = useState('*');
-  const cdaIDInventorynumber = useState('*');
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
   const filterGroups = globalSearch.result?.filterGroups ?? [];
@@ -56,6 +52,13 @@ const Search: FC = () => {
 
   const isActiveFilter = ui.sidebar === UISidebarType.FILTER ? 'search--is-active' : '';
 
+  const triggerFilterRequestOnEnter = (e: KeyboardEvent) => {
+    if ((e.code && e.code === 'Enter') || (e.keyCode === 13)) {
+      globalSearch.applyFreetextFields();
+      globalSearch.triggerFilterRequest();
+    }
+  }
+
   return (
     <div
       className={`search ${isActiveFilter}`}
@@ -68,38 +71,46 @@ const Search: FC = () => {
         <TextInput
           className="search-input"
           label={ t('all Fields') }
-          value={ globalSearch.allFieldsTerm }
-          onChange={ term => globalSearch.searchForAllFieldsTerm(term) }
+          value={ globalSearch.freetextFields.allFieldsTerm }
+          onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <TextInput
           className="search-input"
           label={ t('Title') }
-          value={ title[0] }
-          onChange={ title[1] }
+          value={ globalSearch.freetextFields.title }
+          onChange={ title => globalSearch.setFreetextFields({ title }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <TextInput
           className="search-input"
-          label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ catalogWorkReferenceNumber[0] }
-          onChange={ catalogWorkReferenceNumber[1] }
+          label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ globalSearch.freetextFields.FRNr }
+          onChange={ FRNr => globalSearch.setFreetextFields({ FRNr }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <TextInput
           className="search-input"
           label={ t('Location') }
-          value={ location[0] }
-          onChange={ location[1] }
+          value={ globalSearch.freetextFields.location }
+          onChange={ location => globalSearch.setFreetextFields({ location }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
         <TextInput
           className="search-input"
           label={ t('CDA ID / Inventorynumber') }
-          value={ cdaIDInventorynumber[0] }
-          onChange={ cdaIDInventorynumber[1] }
+          value={ globalSearch.freetextFields.inventoryNumber }
+          onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
+          onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
-        <Btn className="search-button">{ t('find') }</Btn>
+        <Btn
+          className="search-button"
+          click={ () => globalSearch.triggerFilterRequest() }
+        >{ t('find') }</Btn>
       </fieldset>
 
 
