@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import Btn from '../../../base/interacting/btn';
 import TextInput from '../../../base/interacting/text-input';
+import DatingRangeslider from '../../../base/interacting/dating-rangeslider';
 import Accordion from '../accordion';
 import Checkbox from '../../../base/interacting/checkbox';
 import TreeList, { TreeListItem } from '../tree-list';
@@ -132,6 +133,15 @@ const Search: FC = () => {
         </div>
 
         <Accordion>
+          <Accordion.Entry title={ t('Dating') }>
+            <DatingRangeslider
+              bounds={globalSearch.datingRangeBounds}
+              start={globalSearch.filters.dating.fromYear}
+              end={globalSearch.filters.dating.toYear}
+              onChange={ (start: number, end: number) => globalSearch.setDating(start, end) }
+            ></DatingRangeslider>
+          </Accordion.Entry>
+
           { mappedFiltersInfos.map(
               (item) => {
                 return (<Accordion.Entry key={ item.id } title={ item.name }>

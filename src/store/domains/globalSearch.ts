@@ -21,6 +21,7 @@ export type {
   GlobalSearchFilterItem,
 } from '../../api/globalSearch';
 
+const THRESOLD_UPPER_DATING_YEAR = 1600;
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
@@ -56,10 +57,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   loading: boolean = false;
   result: GlobalSearchResult | null = null;
   error: string | null = null;
+  datingRangeBounds: [number, number] = [1500, 1600];
   filters: FilterType = {
     dating: {
-      fromYear: 0,
-      toYear: 0,
+      fromYear: 1500,
+      toYear: 1600,
     },
     size: 50,
     from: 0,
@@ -142,14 +144,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.error = error;
   }
 
-  setDatingFrom(fromYear: number) {
+  setDating(fromYear: number, toYear: number) {
     this.filters.dating.fromYear = fromYear;
-    this.resetFrom();
-    this.setRoutingForDating();
-    this.triggerFilterRequest();
-  }
-
-  setDatingTo(toYear: number) {
     this.filters.dating.toYear = toYear;
     this.resetFrom();
     this.setRoutingForDating();
@@ -228,8 +224,17 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       const { lang } = this.rootStore.ui;
       this.setSearchLoading(true);
       try {
+        const updatedFilters: FilterType = {
+          ...this.filters,
+          dating: {
+            ...this.filters.dating,
+            /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */
+            toYear: (this.filters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.filters.dating.toYear : 0,
+          }
+        };
+
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
-          this.filters,
+          updatedFilters,
           this.freetextFields,
           lang,
         );
@@ -345,7 +350,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
     this.rootStore.routing.updateSearchQueryParams([
       [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
-      [(toYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['to_year', toYear.toString()]],
+      [RoutingChangeAction.ADD, ['to_year', toYear <= THRESOLD_UPPER_DATING_YEAR ? toYear.toString() : 'max']],
     ]);
   }
 
@@ -370,11 +375,27 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   private handleRoutingNotificationForDating(name: string, value: string) {
     switch (name) {
       case 'from_year':
-        this.filters.dating.fromYear = parseInt(value, 10);
+        this.filters.dating.fromYear = Math.max(
+          Math.min(
+            parseInt(value, 10),
+            this.datingRangeBounds[1],
+          ),
+          this.datingRangeBounds[0],
+        );
         break;
 
       case 'to_year':
-        this.filters.dating.toYear = parseInt(value, 10);
+        if (value === 'max') {
+          this.filters.dating.toYear = THRESOLD_UPPER_DATING_YEAR + 1;
+        } else {
+          this.filters.dating.toYear = Math.max(
+            Math.min(
+              parseInt(value, 10),
+              this.datingRangeBounds[1],
+            ),
+            this.datingRangeBounds[0],
+          );
+        }
         break;
     }
   }
@@ -423,6 +444,7 @@ export interface GlobalSearchStoreInterface {
   loading: boolean;
   result: GlobalSearchResult | null;
   error: string | null;
+  datingRangeBounds: [number, number];
   filters: FilterType;
   debounceWaitInMSecs: number;
   debounceHandler: undefined | number;
@@ -439,8 +461,7 @@ export interface GlobalSearchStoreInterface {
   setPagination(relativePagePos: number): void;
   jumpToPagePos(pagePos: number): void;
   setSearchFailed(error: string | null): void;
-  setDatingFrom(fromYear: number): void;
-  setDatingTo(toYear: number): void;
+  setDating(fromYear: number, toYear: number): void;
   setEntityType(entityType: EntityType): void;
   setFrom(from: number): void;
   resetFrom(): void;

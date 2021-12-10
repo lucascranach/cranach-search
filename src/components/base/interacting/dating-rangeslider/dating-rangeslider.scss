@@ -1,0 +1,78 @@
+@use "sass:math";
+@import "../../../../style//000-abstracts/__abstracts-dir";
+@import 'nouislider/dist/nouislider.css';
+
+.dating-rangeslider {
+  height: $xl;
+
+  &__rangeslider {
+    margin: 0 $m;
+    margin-top: $m;
+
+    &.noUi-horizontal {
+      height: $border-stroke-weight-s;
+    }
+
+    &.noUi-target{
+      border: none;
+      background: transparent;
+    }
+
+    .noUi {
+
+      &-handle {
+        &::before,
+        &::after {
+          display: none;
+        }
+
+        transition: transform $tr-fast, box-shadow $tr-fast $tr-fast;
+        top: math.div(-$slider-handles, 2);
+        right: math.div(-$slider-handles, 2);
+        width: $slider-handles;
+        height: $slider-handles;
+        box-shadow: $shadow-s;
+        border: none;
+        border-radius: $border-radius;
+        background-color: $accent;
+
+        &:hover{
+          cursor: pointer;
+          transform: scale(1.2);
+          box-shadow: $shadow-m;
+        }
+
+      }
+
+      &-connect {
+        background-color: $accent;
+      }
+
+      &-value {
+        margin-top: 0.75rem;
+      }
+
+      &-marker {
+        width: 1px;
+      }
+    }
+  }
+
+  &__input-holder {
+
+    display: none;
+    margin-top: 4rem;
+  }
+
+  &__year-input {
+    flex: 0 1 auto;
+
+    &:first-child {
+      margin-right: 1rem;
+    }
+
+    &:last-child {
+      margin-left: 1rem;
+    }
+  }
+}

@@ -7,8 +7,9 @@ type Props = {
   className?: string,
   value?: string,
   placeholder?: string,
-  onChange?: (value: string) => void
+  onChange?: (value: string) => void,
   onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void,
+  disabled?: boolean,
 };
 
 const TextInput: FC<Props> = ({
@@ -18,6 +19,7 @@ const TextInput: FC<Props> = ({
   placeholder = '',
   onChange = () => {},
   onKeyDown = () => {},
+  disabled = false,
 }) => (
   <label
     className={ `text-input ${className}` }
@@ -30,6 +32,7 @@ const TextInput: FC<Props> = ({
       placeholder={ placeholder }
       onChange={ (e) => { onChange(e.target.value); } }
       onKeyDown={ onKeyDown }
+      disabled={ disabled }
     />
     { label
       && <span className="label-text">{ label }</span>
