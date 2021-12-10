@@ -15,7 +15,8 @@ import './search.scss';
 import StoreContext, {
   GlobalSearchFilterGroupItem,
   GlobalSearchFilterItem,
-  UISidebarType,
+  UISidebarStatusType,
+  UISidebarContentType,
 } from '../../../../store/StoreContext';
 
 const Search: FC = () => {
@@ -50,7 +51,7 @@ const Search: FC = () => {
      globalSearch.toggleFilterItemActiveStatus(groupKey, filterInfoId);
   };
 
-  const isActiveFilter = ui.sidebar === UISidebarType.FILTER ? 'search--is-active' : '';
+  const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search--is-active' : '';
 
   const triggerFilterRequestOnEnter = (e: KeyboardEvent) => {
     if ((e.code && e.code === 'Enter') || (e.keyCode === 13)) {
