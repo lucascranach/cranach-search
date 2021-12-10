@@ -5,7 +5,7 @@
   display: flex;
   min-height: $xl + $s;
   padding: $s 0;
-  background-color: $darkest;
+  background-color: $lightest;
 
   flex: 0 1 auto;
 
@@ -23,7 +23,7 @@
         display: block;
         padding: $s $m;
         border-bottom: solid $border-stroke-weight transparent;
-        color: $lighter;
+        color: $darker;
       }
     }
 
