@@ -21,6 +21,7 @@ export type {
   GlobalSearchFilterItem,
 } from '../../api/globalSearch';
 
+const THRESOLD_UPPER_DATING_YEAR = 1600;
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
@@ -46,14 +47,21 @@ export type SingleFilter = {
 export default class GlobalSearch implements GlobalSearchStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
   globalSearchAPI: GlobalSearchAPI;
-  allFieldsTerm: string = '';
+  freetextFields = {
+    allFieldsTerm: '',
+    title: '',
+    FRNr: '',
+    location: '',
+    inventoryNumber: '',
+  }
   loading: boolean = false;
   result: GlobalSearchResult | null = null;
   error: string | null = null;
+  datingRangeBounds: [number, number] = [1500, 1600];
   filters: FilterType = {
     dating: {
-      fromYear: 0,
-      toYear: 0,
+      fromYear: 1500,
+      toYear: 1600,
     },
     size: 50,
     from: 0,
@@ -97,10 +105,27 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     };
   }
 
+  get currentResultPagePos(): number {
+    return this.filters.from / this.filters.size;
+  }
+
+  get maxResultPages(): number {
+    const hits = this.result?.meta.hits ?? 0;
+
+    return Math.ceil(hits / this.filters.size);
+  }
+
   /* Actions */
 
-  setAllFieldsTerm(allFieldsTerm: string) {
-    this.allFieldsTerm = allFieldsTerm;
+  setFreetextFields(fields: Partial<FreeTextFields>) {
+    this.freetextFields = {
+      ...this.freetextFields,
+      ...fields,
+    };
+  }
+
+  applyFreetextFields() {
+    this.setRoutingForFreetextFields();
   }
 
   setSearchLoading(loading: boolean) {
@@ -119,32 +144,43 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.error = error;
   }
 
-  searchForAllFieldsTerm(allFieldsTerm: string) {
-    this.setAllFieldsTerm(allFieldsTerm);
-    this.triggerFilterRequest();
-  }
-
-  setDatingFrom(fromYear: number) {
+  setDating(fromYear: number, toYear: number) {
     this.filters.dating.fromYear = fromYear;
-    this.setRoutingForDating();
-    this.triggerFilterRequest();
-  }
-
-  setDatingTo(toYear: number) {
     this.filters.dating.toYear = toYear;
+    this.resetFrom();
     this.setRoutingForDating();
     this.triggerFilterRequest();
   }
 
   setFrom(from: number) {
     this.filters.from = from;
-    this.setRoutingForPage();
-    this.triggerFilterRequest();
+  }
+
+  resetFrom() {
+    this.setFrom(0);
   }
 
   setIsBestOf(isBestOf: boolean) {
     this.filters.isBestOf = isBestOf;
+    this.resetFrom();
     this.setRoutingForIsBestOf();
+    this.triggerFilterRequest();
+  }
+
+  setPagination(relativePagePos: number) {
+    if (relativePagePos === 0) return;
+
+    const newFrom = this.filters.from + (this.filters.size * relativePagePos);
+    const gatedFrom = Math.max(0, newFrom);
+
+    this.setFrom(gatedFrom);
+    this.setRoutingForPage();
+    this.triggerFilterRequest();
+  }
+
+  jumpToPagePos(pagePos: number) {
+    this.setFrom(pagePos * this.filters.size);
+    this.setRoutingForPage();
     this.triggerFilterRequest();
   }
 
@@ -165,12 +201,14 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
+    this.resetFrom();
     this.updateRoutingForFilterGroups(groupKey);
     this.triggerFilterRequest();
   }
 
   setEntityType(entityType: EntityType) {
     this.filters.entityType = entityType;
+    this.resetFrom();
     this.setRoutingForEntityType();
     this.triggerFilterRequest();
   }
@@ -180,16 +218,24 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   triggerFilterRequest() {
-
     clearTimeout(this.debounceHandler);
 
     this.debounceHandler = window.setTimeout(async () => {
       const { lang } = this.rootStore.ui;
       this.setSearchLoading(true);
       try {
+        const updatedFilters: FilterType = {
+          ...this.filters,
+          dating: {
+            ...this.filters.dating,
+            /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */
+            toYear: (this.filters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.filters.dating.toYear : 0,
+          }
+        };
+
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
-          this.filters,
-          this.allFieldsTerm,
+          updatedFilters,
+          this.freetextFields,
           lang,
         );
         this.setSearchResult(result);
@@ -232,6 +278,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
             case 'subject':
             case 'form':
             case 'function':
+            case 'catalog':
               this.handleRoutingNotificationForFilterGroups(name, value);
               break;
 
@@ -250,6 +297,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
             case 'is_best_of':
               this.handleRoutingNotificationForIsBestOf(value);
+              break;
+
+            case 'search_term':
+            case 'title':
+            case 'location':
+            case 'inventory_number':
+              this.handleRoutingNotificationForFreetext(name, value);
               break;
           }
         });
@@ -276,11 +330,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['page', page.toString()]]]);
   }
 
-  private setRoutingForIsBestOf() {
-    const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
-    this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
-  }
-
   private handleRoutingNotificationForPage(value: string) {
     this.filters.from = Math.max(0, (parseInt(value, 10) - 1) * this.filters.size);
   }
@@ -301,53 +350,126 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
 
     this.rootStore.routing.updateSearchQueryParams([
       [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
-      [(toYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['to_year', toYear.toString()]],
+      [RoutingChangeAction.ADD, ['to_year', toYear <= THRESOLD_UPPER_DATING_YEAR ? toYear.toString() : 'max']],
     ]);
+  }
+
+  private setRoutingForFreetextFields() {
+    const changeActions: RoutingSearchQueryParamChange = [];
+
+    const keyMap: Record<string, string> = {
+      'allFieldsTerm': 'search_term',
+      'inventoryNumber': 'inventory_number',
+    };
+
+    Object.entries(this.freetextFields).forEach(([key, value]) => {
+      changeActions.push([
+        value ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE,
+        [(key in keyMap ? keyMap[key]: key), value],
+      ]);
+    });
+
+    this.rootStore.routing.updateSearchQueryParams(changeActions);
   }
 
   private handleRoutingNotificationForDating(name: string, value: string) {
     switch (name) {
       case 'from_year':
-        this.filters.dating.fromYear = parseInt(value, 10);
+        this.filters.dating.fromYear = Math.max(
+          Math.min(
+            parseInt(value, 10),
+            this.datingRangeBounds[1],
+          ),
+          this.datingRangeBounds[0],
+        );
         break;
 
       case 'to_year':
-        this.filters.dating.toYear = parseInt(value, 10);
+        if (value === 'max') {
+          this.filters.dating.toYear = THRESOLD_UPPER_DATING_YEAR + 1;
+        } else {
+          this.filters.dating.toYear = Math.max(
+            Math.min(
+              parseInt(value, 10),
+              this.datingRangeBounds[1],
+            ),
+            this.datingRangeBounds[0],
+          );
+        }
         break;
     }
   }
 
+  private setRoutingForIsBestOf() {
+    const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
+    this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
+  }
+
+
   private handleRoutingNotificationForIsBestOf(value: string) {
     this.filters.isBestOf = (value === '1');
   }
+
+  private handleRoutingNotificationForFreetext(name: string, value: string) {
+    switch(name) {
+      case 'search_term':
+        this.freetextFields.allFieldsTerm = value;
+        break;
+
+      case 'title':
+        this.freetextFields.title = value;
+        break;
+
+      case 'location':
+        this.freetextFields.location = value;
+        break;
+
+      case 'inventory_number':
+        this.freetextFields.inventoryNumber = value;
+        break;
+    }
+  }
+}
+
+export interface FreeTextFields {
+  allFieldsTerm: string;
+  title: string;
+  FRNr: string;
+  location: string;
+  inventoryNumber: string;
 }
 
 export interface GlobalSearchStoreInterface {
-  allFieldsTerm: string;
+  freetextFields: FreeTextFields;
   loading: boolean;
   result: GlobalSearchResult | null;
   error: string | null;
+  datingRangeBounds: [number, number];
   filters: FilterType;
   debounceWaitInMSecs: number;
   debounceHandler: undefined | number;
   flattenedSearchResultItems: GlobalSearchArtifact[];
+  currentResultPagePos: number;
+  maxResultPages: number;
 
   bestOfFilter: SingleFilter | null;
 
-  setAllFieldsTerm(allFieldsTerm: string): void;
+  setFreetextFields(fields: Partial<FreeTextFields>): void;
   setSearchLoading(loading: boolean): void;
   setSearchResult(result: GlobalSearchResult | null): void;
   resetSearchResult(): void;
+  setPagination(relativePagePos: number): void;
+  jumpToPagePos(pagePos: number): void;
   setSearchFailed(error: string | null): void;
-  searchForAllFieldsTerm(allFieldsTerm: string): void;
-  setDatingFrom(fromYear: number): void;
-  setDatingTo(toYear: number): void;
+  setDating(fromYear: number, toYear: number): void;
   setEntityType(entityType: EntityType): void;
   setFrom(from: number): void;
+  resetFrom(): void;
   setIsBestOf(isBestOf: boolean): void;
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
   triggerFilterRequest(): void;
   triggerUserCollectionRequest(ids: string[]): void;
   resetEntityType(): void;
+  applyFreetextFields(): void;
 
 }

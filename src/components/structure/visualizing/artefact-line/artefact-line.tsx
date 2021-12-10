@@ -41,7 +41,7 @@ const ArtefactLine: FC<Props> = ({
 
     <div className="artefact-line__content">
       <a href={to}>
-        <h2 className="artefact-line__title">{title}</h2>
+        <h2 className="artefact-line__title"  dangerouslySetInnerHTML={{__html: title}}></h2>
         <h3 className="artefact-line__subtitle">{subtitle}</h3>
         <p className="artefact-line__text">{text}</p>
         <p className="artefact-line__text">{additionalText}</p>
