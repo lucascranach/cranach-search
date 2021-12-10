@@ -1,28 +1,47 @@
+@use "sass:math";
 @import "../../../../style//000-abstracts/__abstracts-dir";
 @import 'nouislider/dist/nouislider.css';
 
 .dating-rangeslider {
+  height: $xl;
+
   &__rangeslider {
-    margin: 0 1rem;
-    margin-top: 1rem;
+    margin: 0 $m;
+    margin-top: $m;
 
     &.noUi-horizontal {
-      height: 6px;
+      height: $border-stroke-weight-s;
+    }
+
+    &.noUi-target{
+      border: none;
+      background: transparent;
     }
 
     .noUi {
+
       &-handle {
         &::before,
         &::after {
           display: none;
         }
 
-        top: -7px;
-        right: -10px;
-        width: 20px;
-        height: 20px;
-        border-radius: 100%;
-        box-shadow: none;
+        transition: transform $tr-fast, box-shadow $tr-fast $tr-fast;
+        top: math.div(-$slider-handles, 2);
+        right: math.div(-$slider-handles, 2);
+        width: $slider-handles;
+        height: $slider-handles;
+        box-shadow: $shadow-s;
+        border: none;
+        border-radius: $border-radius;
+        background-color: $accent;
+
+        &:hover{
+          cursor: pointer;
+          transform: scale(1.2);
+          box-shadow: $shadow-m;
+        }
+
       }
 
       &-connect {
@@ -40,7 +59,8 @@
   }
 
   &__input-holder {
-    display: flex;
+
+    display: none;
     margin-top: 4rem;
   }
 
