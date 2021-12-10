@@ -33,12 +33,23 @@ export default class Routing implements RoutingStoreInterface {
     this.history = history;
 
     history.listen(this.updateState.bind(this));
+
+    this.updateState({
+      action: history.action,
+      location: history.location,
+    });
   }
 
   /* Computed */
 
   get searchParams(): URLSearchParams {
     return new URLSearchParams(this.state.location.search);
+  }
+
+  get pathParams(): [string, string][] {
+    const [lang = ''] = this.state.location.pathname.split('/').filter((seg) => !!seg);
+
+    return [['lang', lang]];
   }
 
   /* Actions */
@@ -53,6 +64,15 @@ export default class Routing implements RoutingStoreInterface {
       });
     }
 
+    if (newState.location.pathname !== this.state.location.pathname) {
+      const [lang = ''] = newState.location.pathname.split('/').filter((seg) => !!seg);
+
+      this.notifyAllObservers({
+        type: NotificationType.PATH_CHANGE,
+        params: [['lang', lang]],
+      })
+    }
+
     this.state = {
       action: newState.action,
       location: { ...newState.location },
@@ -62,6 +82,7 @@ export default class Routing implements RoutingStoreInterface {
   addObserver(observer: ObserverInterface) {
     this.routingObservers.push(observer);
     this.notifyObserverWithCurrentSearchParams(observer);
+    this.notifyObserverWithCurrentPathParams(observer);
   }
 
   updateLanguageParam(langCode: string) {
@@ -98,11 +119,30 @@ export default class Routing implements RoutingStoreInterface {
   }
 
   notifyObserverWithCurrentSearchParams(observer: ObserverInterface) {
-    let { searchParams } = this;
+    const { searchParams } = this;
+
+    const params = Array.from(searchParams.entries());
+
+    if (params.length === 0) {
+      return;
+    }
 
     observer.notify({
       type: NotificationType.SEARCH_INIT,
-      params: Array.from(searchParams.entries()),
+      params: params,
+    });
+  }
+
+  notifyObserverWithCurrentPathParams(observer: ObserverInterface) {
+    const { pathParams } = this;
+
+    if (pathParams.length === 0) {
+      return;
+    }
+
+    observer.notify({
+      type: NotificationType.PATH_INIT,
+      params: pathParams,
     });
   }
 
@@ -124,6 +164,8 @@ export interface RoutingStoreInterface {
 export enum NotificationType {
   SEARCH_INIT = 'SEARCH_INIT',
   SEARCH_CHANGE = 'SEARCH_CHANGE',
+  PATH_INIT = 'PATH_INIT',
+  PATH_CHANGE = 'PATH_CHANGE',
 }
 
 export enum ChangeAction {

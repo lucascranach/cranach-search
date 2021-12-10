@@ -1,13 +1,20 @@
-import { reaction, makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import i18n from 'i18next';
 import {
   initReactI18next,
   useTranslation,
   UseTranslationResponse,
 } from 'react-i18next';
+import type {
+  ObserverInterface as RoutingObservableInterface,
+  NotificationInterface as RoutingNotificationInterface,
+} from './routing';
+import {
+  NotificationType as RoutingNotificationType,
+} from './routing';
 import { RootStoreInterface } from '../rootStore';
 
-export default class UI implements UIStoreInterface {
+export default class UI implements UIStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface
   lang: string = 'de';
   sidebar: UISidebarType = UISidebarType.FILTER;
@@ -22,8 +29,6 @@ export default class UI implements UIStoreInterface {
     i18n
     .use(initReactI18next)
     .init({
-      lng: this.lang,
-
       debug: false,
 
       interpolation: {
@@ -34,6 +39,8 @@ export default class UI implements UIStoreInterface {
         useSuspense: false,
       },
     });
+
+    this.rootStore.routing.addObserver(this);
   }
 
   /* Actions */
@@ -41,11 +48,9 @@ export default class UI implements UIStoreInterface {
   setLanguage(lang: string) {
     this.lang = lang;
 
-    if (i18n.language !== lang) {
-      i18n.changeLanguage(lang);
-    }
+    i18n.changeLanguage(this.lang);
 
-    this.rootStore.routing.updateLanguageParam(this.lang);
+    this.setRoutingForLanguage();
   }
 
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>) {
@@ -68,6 +73,33 @@ export default class UI implements UIStoreInterface {
 
   setOverviewViewType(type: UIOverviewViewType) {
     this.overviewViewType = type;
+  }
+
+  notify(notification: RoutingNotificationInterface) {
+    switch (notification.type) {
+      case RoutingNotificationType.PATH_INIT:
+      case RoutingNotificationType.PATH_CHANGE:
+        notification.params.forEach(([name, value]) => {
+          switch (name) {
+            case 'lang':
+              this.handleRoutingNotificationLanguage(value);
+              return;
+          }
+        });
+        break;
+    }
+  }
+
+  private setRoutingForLanguage() {
+    this.rootStore.routing.updateLanguageParam(this.lang);
+  }
+
+  private handleRoutingNotificationLanguage(value: string) {
+    if (value in this.allowedLangs) {
+      this.setLanguage(value);
+    } else {
+      this.setLanguage(this.lang);
+    }
   }
 }
 
