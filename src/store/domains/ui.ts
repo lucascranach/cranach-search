@@ -80,7 +80,8 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       'height': artefactOverview.clientHeight
     };
 
-    const rows = Math.floor(artefactOverviewDimensions.height / tileSize) -1;
+    const safetyDistance = 1;
+    const rows = Math.floor(artefactOverviewDimensions.height / tileSize) -safetyDistance;
     const cols = Math.floor(artefactOverviewDimensions.width / tileSize);
     return cols * rows;
   }
