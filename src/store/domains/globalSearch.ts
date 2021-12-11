@@ -80,6 +80,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.rootStore = rootStore;
     this.globalSearchAPI = globalSearchAPI;
     this.rootStore.routing.addObserver(this);
+    this.filters.size = this.rootStore.ui.getSuitableAmmountOfArtefacts();
 
     reaction(
       () => this.rootStore.ui.lang,
@@ -149,6 +150,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.filters.dating.toYear = toYear;
     this.resetFrom();
     this.setRoutingForDating();
+    this.triggerFilterRequest();
+  }
+
+  setSize(size: number) {
+    this.filters.size = size;
     this.triggerFilterRequest();
   }
 
@@ -463,6 +469,7 @@ export interface GlobalSearchStoreInterface {
   setSearchFailed(error: string | null): void;
   setDating(fromYear: number, toYear: number): void;
   setEntityType(entityType: EntityType): void;
+  setSize(size: number): void;
   setFrom(from: number): void;
   resetFrom(): void;
   setIsBestOf(isBestOf: boolean): void;

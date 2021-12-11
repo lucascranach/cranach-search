@@ -144,6 +144,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   }
 
   return (<div
+    id="artefact-overview"
     className="artefact-overview"
     data-component="structure/visualizing/artefact-overview"
     data-active-view={viewType}

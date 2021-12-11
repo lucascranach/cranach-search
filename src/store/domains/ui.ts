@@ -66,6 +66,30 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     return useTranslation(namespace);
   }
 
+  getSuitableAmmountOfArtefacts() {
+    const defaultAmmountOfArtefacts = 50;
+    const artefactOverview = document.getElementById('artefact-overview');
+    if (!artefactOverview) return defaultAmmountOfArtefacts;
+
+    const baseFontSize = parseFloat(getComputedStyle(document.body).fontSize);
+    const styles = getComputedStyle(document.documentElement);
+    const tileSize = parseFloat(styles.getPropertyValue('--tile-xxs')) * baseFontSize;
+
+    const artefactOverviewDimensions = {
+      'width': artefactOverview.clientWidth,
+      'height': artefactOverview.clientHeight
+    };
+
+    const rows = Math.floor(artefactOverviewDimensions.height / tileSize) -1;
+    const cols = Math.floor(artefactOverviewDimensions.width / tileSize);
+    return cols * rows;
+  }
+
+  private loadSuitableOverview() {
+    const suitableAmmountOfArtefacts = this.getSuitableAmmountOfArtefacts();
+    this.rootStore.globalSearch.setSize(suitableAmmountOfArtefacts);
+  }
+
   setSideBarContent(content: UISidebarContentType) {
     this.sidebarContent = content;
     this.updateLocalStorage();
@@ -77,6 +101,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
 
   setOverviewViewType(type: UIOverviewViewType) {
     this.overviewViewType = type;
+    if(type === UIOverviewViewType.CARD_SMALL) this.loadSuitableOverview();
     this.updateLocalStorage();
   }
 
@@ -182,5 +207,6 @@ export interface UIStoreInterface {
   setSideBarStatus(status: UISidebarStatusType): void;
   setOverviewViewType(type: UIOverviewViewType): void;
   setSecondaryNavigationIsVisible(isVisible: boolean): void;
+  getSuitableAmmountOfArtefacts(): number;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
 }
