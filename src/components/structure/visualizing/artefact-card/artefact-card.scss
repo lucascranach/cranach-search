@@ -4,11 +4,10 @@
   display: flex;
   height: 100%;
   flex-direction: column;
-  background-color: $lighter;
+  background-color: $darken-medium;
   position: relative;
-  transition: opacity $tr-fast;
+  transition: background-color $tr-fast;
   overflow: hidden;
-  opacity: 0.9;
 
   $self: &;
 
@@ -61,7 +60,6 @@
 
     &:hover,
     &--is-active {
-      opacity: 1;
       background-color: $accent;
       color: $lightest;
       cursor: pointer;
@@ -78,7 +76,7 @@
   }
 
   &:hover{
-    opacity: 1;
+    background-color: $darken-strong;
 
     #{$self}__favorite{
       opacity: 1 !important;

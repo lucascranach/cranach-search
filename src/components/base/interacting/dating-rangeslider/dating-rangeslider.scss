@@ -30,8 +30,8 @@
 
         transition: transform $tr-fast, box-shadow $tr-fast;
         top: math.div(-$slider-handles, 2);
-        right: math.div(-$slider-handles, 2);
-        width: $slider-handles;
+        right: math.div(-$slider-handles, 4);
+        width: math.div($slider-handles, 2);
         height: $slider-handles;
         box-shadow: $shadow-xs;
         border: none;
