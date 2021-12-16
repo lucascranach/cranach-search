@@ -23,7 +23,7 @@ const Dashboard: FC = () => {
 
     switch (entityType) {
       case GlobalSearchEntityType.GRAPHICS:
-        return `${graphicsBaseUrl}/${ui.lang}/${id}?back=${window.encodeURIComponent(window.location.href)}`;
+        return `${graphicsBaseUrl}/${ui.lang}/graphics/${id}`;
 
       case GlobalSearchEntityType.PAINTINGS:
         return `${paintingsBaseUrl}/${ui.lang}/paintings/${id}`;
