@@ -134,7 +134,10 @@ const Search: FC = () => {
         </div>
 
         <Accordion>
-          <Accordion.Entry title={ t('Dating') }>
+          <Accordion.Entry 
+            title={ t('Dating') } 
+            isOpen={ true }
+          >
             <DatingRangeslider
               bounds={globalSearch.datingRangeBounds}
               start={globalSearch.filters.dating.fromYear}
