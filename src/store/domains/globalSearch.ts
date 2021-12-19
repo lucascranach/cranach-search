@@ -61,7 +61,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   filters: FilterType = {
     dating: {
       fromYear: 1500,
-      toYear: 1600,
+      toYear: 1601,
     },
     size: 50,
     from: 0,
