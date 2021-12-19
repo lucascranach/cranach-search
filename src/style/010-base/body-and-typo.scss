@@ -3,15 +3,15 @@
 }
 
 body {
-  background-color: $darkest;
-  color: $lightest;
+  background-color: $lightest;
+  color: $darkest;
   font-family: $font-sans-serif;
   font-size: $bfs;
   font-weight: $fw-light;
 }
 
 a {
-  color: $darkest;
+  color: $lightest;
   text-decoration: none;
 }
 
@@ -19,8 +19,8 @@ a {
 ----------------------------------------------------------------------------- */
 
 .template {
-  background-color: $darkest;
-  color: $darkest;
+  background-color: $lightest;
+  color: $lightest;
 }
 
 /* Title & Subtitle

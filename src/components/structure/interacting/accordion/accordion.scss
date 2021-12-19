@@ -9,18 +9,18 @@
 
       .box {
         padding: $s 0;
-        color: $light;
+        color: $dark;
       }
     }
 
     > .head {
       display: flex;
       align-items: center;
-      border-top: 1px solid rgba($lightest, 0.3);
+      border-top: 1px solid $darken-strong;
 
       > .entry-title {
         flex-grow: 1;
-        color: $lighter;
+        color: $darker;
         font-size: $bfs;
         padding-top: $quad;
       }

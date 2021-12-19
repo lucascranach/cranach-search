@@ -4,14 +4,14 @@
   display: grid;
   height: 100%;
   border-bottom: solid $border-stroke-weight-s $accent;
-  background-color: $darker;
+  background-color: $lighter;
   grid-template-columns: $tile-xxs 1fr;
 
   $self: &;
 
   &:hover {
     #{$self}__content {
-      background-color: $dark;
+      background-color: $light;
     }
   }
 
@@ -27,37 +27,37 @@
     flex-grow: 1;
     padding: $m;
     padding-bottom: $l;
-    background-color: $darker;
-    color: $light;
+    background-color: $lighter;
+    color: $dark;
     transition: background-color $tr-fast;
   }
 
   &__title {
     margin-bottom: $xxs;
-    color: $lightest;
+    color: $darkest;
     font-weight: $fw-semibold;
     line-height: $lh-headlines;
 
     em {
-      color: $lightest;
+      color: $darkest;
       font-weight: $fw-semibold;
     }
   }
 
   &__subtitle {
     margin-bottom: $xxs;
-    color: $lighter;
+    color: $darker;
     line-height: $lh-headlines;
   }
 
   &__text {
     margin-bottom: $xxs;
-    color: $light;
+    color: $dark;
     line-height: $lh-headlines;
   }
 
   &__master-data {
-    color: $light;
+    color: $dark;
     line-height: $lh-loose;
   }
 }

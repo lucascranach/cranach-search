@@ -4,11 +4,10 @@
   display: flex;
   height: 100%;
   flex-direction: column;
-  background-color: $darker;
+  background-color: $darken-medium;
   position: relative;
-  transition: opacity $tr-fast;
+  transition: background-color $tr-fast;
   overflow: hidden;
-  opacity: 0.9;
 
   $self: &;
 
@@ -18,52 +17,51 @@
     padding-top: $s;
     padding-bottom: $s;
     border-top: solid $border-stroke-weight-s transparent;
-    background-color: $darkest;
-    color: $lighter;
+    background-color: $lightest;
+    color: $darker;
     transition: border-color $tr-slow;
   }
 
   &__title {
     margin-bottom: $xxs;
-    color: $light;
+    color: $dark;
     font-weight: $fw-semibold;
     line-height: $lh-headlines;
 
     em {
-      color: $lightest;
+      color: $darkest;
       font-weight: $fw-semibold;
     }
   }
 
   &__subtitle {
     margin-bottom: $xxs;
-    color: $light;
+    color: $dark;
     font-weight: $fw-light;
     line-height: $lh-headlines;
   }
 
   &__text {
     margin-bottom: $xxs;
-    color: $light;
+    color: $dark;
     font-weight: $fw-light;
     line-height: $lh-headlines;
   }
 
   &__favorite {
     position: absolute;
-    background-color: $darken-strongest;
+    background-color: $lighten-strongest;
     right: $xs;
     top: $xs;
-    color: $light;
+    color: $dark;
     aspect-ratio: 1/1;
     border-radius: 50%;
     transition: transform $tr-fast, color $tr-fast, opacity $tr-medium, top $tr-medium;
 
     &:hover,
     &--is-active {
-      opacity: 1;
       background-color: $accent;
-      color: $darkest;
+      color: $lightest;
       cursor: pointer;
     }
 
@@ -78,7 +76,7 @@
   }
 
   &:hover{
-    opacity: 1;
+    background-color: $darken-strong;
 
     #{$self}__favorite{
       opacity: 1 !important;

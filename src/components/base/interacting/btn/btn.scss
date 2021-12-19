@@ -5,7 +5,7 @@
   border-width: 0;
   background-color: $accent;
   border-radius: $border-radius;
-  color: $darkest;
+  color: $lightest;
   transition: opacity $op-full;
 
   &:hover {
@@ -20,7 +20,7 @@
     display: flex;
     align-items: center;
     background-color: transparent;
-    color: $light;
+    color: $dark;
     font-weight: $fw-light;
 
     & > .icon {
@@ -29,7 +29,7 @@
 
     &:active {
       background-color: transparent;
-      color: $lightest;
+      color: $darkest;
     }
   }
 
