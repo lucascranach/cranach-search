@@ -102,13 +102,15 @@ $level-overall-nav: 40;
 
 /* Schatten
 ----------------------------------------------------------------------------- */
-$shadow: 1px 1px $xxs rgba(0, 0, 0, 0.4);
-$shadow-xs: 1px 1px $xxxs rgba(0, 0, 0, 0.4);
-$shadow-s: 1px 1px $s rgba(0, 0, 0, 0.4);
-$shadow-m: 1px 1px $m rgba(0, 0, 0, 0.4);
-$shadow-top: 0 0 $xxs rgba(0, 0, 0, 0.4);
-$shadow-top-s: 0 0 $s rgba(0, 0, 0, 0.4);
-$shadow-top-m: 0 0 $m rgba(0, 0, 0, 0.4);
+$shadow-color: rgba(0, 0, 0, 0.4);
+
+$shadow: 1px 1px $xxs $shadow-color;
+$shadow-xs: 1px 1px $xxxs $shadow-color;
+$shadow-s: 1px 1px $s $shadow-color;
+$shadow-m: 1px 1px $m $shadow-color;
+$shadow-top: 0 0 $xxs $shadow-color;
+$shadow-top-s: 0 0 $s $shadow-color;
+$shadow-top-m: 0 0 $m $shadow-color;
 
 /* Misc
 ----------------------------------------------------------------------------- */
@@ -123,10 +125,9 @@ $op-low: 0.3;
 $sidebar-width: $bfs * 28;
 $slider-handles: $m;
 
-
 /* Custom Properties
 ----------------------------------------------------------------------------- */
 
-:root{
+:root {
   --tile-xxs: #{$tile-xxs};
 }

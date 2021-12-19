@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useRef, useEffect } from 'react';
 import Switcher from '../../../base/interacting/switcher';
 import ArtefactCard from '../artefact-card';
 import ArtefactLine from '../artefact-line';
@@ -36,6 +36,7 @@ export enum ArtefactOverviewType {
 type OverviewProps = {
   items?: ArtefactOverviewItem[],
   viewType?: ArtefactOverviewType,
+  handleArtefactAmountChange?: (amount: number) => void;
 }
 
 type SwitcherProps = {
@@ -50,7 +51,9 @@ const maximumTitleLengthInWords = 10;
 const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   items = [],
   viewType = DefaultViewType,
+  handleArtefactAmountChange = () => {},
 }) => {
+  const artefactOverviewElRef = useRef<HTMLDivElement | null>(null);
   const hasHighlightedText = (item: ArtefactOverviewItem, prop: keyof ArtefactOverviewItem): boolean => {
     return !!(item._highlight && item._highlight[prop])
   }
@@ -143,8 +146,32 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
     return dimensionList[0];
   }
 
+  const getSuitableAmountOfArtefacts = (elRef: HTMLElement) => {
+    const baseFontSize = parseFloat(getComputedStyle(document.body).fontSize);
+    const styles = getComputedStyle(document.documentElement);
+    const tileSize = parseFloat(styles.getPropertyValue('--tile-xxs')) * baseFontSize;
+
+    const artefactOverviewDimensions = {
+      'width': elRef.clientWidth,
+      'height': elRef.clientHeight
+    };
+
+    const safetyDistance = 1;
+    const rows = Math.floor(artefactOverviewDimensions.height / tileSize) - safetyDistance;
+    const cols = Math.floor(artefactOverviewDimensions.width / tileSize);
+    return cols * rows;
+  }
+
+  useEffect(() => {
+    if (!artefactOverviewElRef.current) return;
+
+    if (viewType === ArtefactOverviewType.CARD_SMALL) {
+      handleArtefactAmountChange(getSuitableAmountOfArtefacts(artefactOverviewElRef.current));
+    }
+  }, [viewType, artefactOverviewElRef]);
+
   return (<div
-    id="artefact-overview"
+    ref={ artefactOverviewElRef }
     className="artefact-overview"
     data-component="structure/visualizing/artefact-overview"
     data-active-view={viewType}

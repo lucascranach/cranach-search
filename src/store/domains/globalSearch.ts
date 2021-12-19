@@ -80,7 +80,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.rootStore = rootStore;
     this.globalSearchAPI = globalSearchAPI;
     this.rootStore.routing.addObserver(this);
-    this.filters.size = this.rootStore.ui.getSuitableAmmountOfArtefacts();
 
     reaction(
       () => this.rootStore.ui.lang,
@@ -154,6 +153,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   setSize(size: number) {
+    if (this.filters.size === size) return;
+
     this.filters.size = size;
     this.triggerFilterRequest();
   }

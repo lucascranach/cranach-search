@@ -1,0 +1,30 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+
+.cloak {
+  position: absolute;
+  z-index: 20;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  animation: cloakIn 0.3s;
+  background-color: $shadow-color;
+
+  &__text {
+    position: absolute;
+    right: $l;
+    bottom: $xxl;
+    font-size: $m;
+    text-shadow: $shadow-m;
+  }
+
+  @keyframes cloakIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}

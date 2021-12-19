@@ -3,6 +3,7 @@ import React, { FC, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import ArtefactOverview, { ArtefactOverviewItem, ArtefactOverviewType } from '../../structure/visualizing/artefact-overview';
+import Cloak from '../../base/visualizing/cloak';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
 import Navigation from '../../structure/interacting/navigation';
 import StoreContext, { GlobalSearchEntityType, UIOverviewViewType } from '../../../store/StoreContext';
@@ -55,16 +56,14 @@ const Dashboard: FC = () => {
       className="dashboard"
       data-component="page/search"
     >
-
       <main className="main-content">
         <Navigation></Navigation>
-        {globalSearch.loading && 'Loading...'}
-        {!globalSearch.loading
-          && <ArtefactOverview
-            viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
-            items={overviewItems}
-          />
-        }
+        {globalSearch.loading && <Cloak />}
+        <ArtefactOverview
+          viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
+          items={overviewItems}
+          handleArtefactAmountChange={ (amount: number) => globalSearch.setSize(amount) }
+        />
       </main>
       <SearchResultNavigation></SearchResultNavigation>
     </div>
