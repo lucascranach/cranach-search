@@ -152,6 +152,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.triggerFilterRequest();
   }
 
+  setSize(size: number) {
+    if (this.filters.size === size) return;
+
+    this.filters.size = size;
+    this.triggerFilterRequest();
+  }
+
   setFrom(from: number) {
     this.filters.from = from;
   }
@@ -463,6 +470,7 @@ export interface GlobalSearchStoreInterface {
   setSearchFailed(error: string | null): void;
   setDating(fromYear: number, toYear: number): void;
   setEntityType(entityType: EntityType): void;
+  setSize(size: number): void;
   setFrom(from: number): void;
   resetFrom(): void;
   setIsBestOf(isBestOf: boolean): void;

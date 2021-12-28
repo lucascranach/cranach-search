@@ -6,6 +6,7 @@
   align-content: flex-start;
   padding-bottom: $xxl;
   gap: $s;
+  height: 100%;
 
   @include grid-auto-columns();
 
