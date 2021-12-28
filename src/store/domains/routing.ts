@@ -87,8 +87,13 @@ export default class Routing implements RoutingStoreInterface {
 
   updateLanguageParam(langCode: string) {
     this.disableNotify = true;
+
+    const pathnameSegments = this.state.location.pathname.split('/').filter(seg => !!seg);
+
+    pathnameSegments[0] = langCode;
+
     this.history.replace({
-      pathname: `/${langCode}/`,
+      pathname: `/${pathnameSegments.join('/')}/`,
       search: Array.from(this.searchParams).length ? `?${this.searchParams.toString()}` : '',
     });
     this.disableNotify = false;

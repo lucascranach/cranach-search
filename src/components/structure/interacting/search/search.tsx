@@ -116,8 +116,6 @@ const Search: FC = () => {
 
 
       <fieldset className="block">
-        <legend className="headline">{ t('Filter results by') }</legend>
-
         <div className="single-filter">
           {/* isBestOf */}
           <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
@@ -134,7 +132,10 @@ const Search: FC = () => {
         </div>
 
         <Accordion>
-          <Accordion.Entry title={ t('Dating') }>
+          <Accordion.Entry 
+            title={ t('Dating') } 
+            isOpen={ true }
+          >
             <DatingRangeslider
               bounds={globalSearch.datingRangeBounds}
               start={globalSearch.filters.dating.fromYear}
