@@ -12,7 +12,8 @@ $lighter: #f2f2f2;
 $lightest:#fff;
 $lighten: rgba(255, 255, 255, 0.1);
 $lighten-strong: rgba(255, 255, 255, 0.2);
-$accent: #fc0;
+$lighten-strongest: rgba(255, 255, 255, 0.8);
+$accent: #FEB701; // fc0
 $decoration:#cc5800;
 $error: #c00;
 $darken: rgba(0, 0, 0, 0.04);
@@ -102,6 +103,7 @@ $level-overall-nav: 40;
 
 /* Schatten
 ----------------------------------------------------------------------------- */
+
 $shadow-color: rgba(0, 0, 0, 0.4);
 
 $shadow: 1px 1px $xxs $shadow-color;
@@ -111,6 +113,7 @@ $shadow-m: 1px 1px $m $shadow-color;
 $shadow-top: 0 0 $xxs $shadow-color;
 $shadow-top-s: 0 0 $s $shadow-color;
 $shadow-top-m: 0 0 $m $shadow-color;
+
 
 /* Misc
 ----------------------------------------------------------------------------- */

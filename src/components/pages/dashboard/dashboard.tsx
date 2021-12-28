@@ -18,16 +18,14 @@ const Dashboard: FC = () => {
   }, [])
 
   const getToUrlForArtifact = (entityType: GlobalSearchEntityType, id: string): string => {
-    const paintingsBaseUrl = import.meta.env.VITE_CDA_PAINTINGS_BASE_URL;
-    const graphicsBaseUrl = import.meta.env.VITE_CDA_GRAPHICS_BASE_URL;
     const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
 
     switch (entityType) {
       case GlobalSearchEntityType.GRAPHICS:
-        return `${graphicsBaseUrl}/${ui.lang}/${id}?back=${window.encodeURIComponent(window.location.href)}`;
+        return `${cdaBaseUrl}/${ui.lang}/graphics/${id}`;
 
       case GlobalSearchEntityType.PAINTINGS:
-        return `${paintingsBaseUrl}/${ui.lang}/paintings/${id}`;
+        return `${cdaBaseUrl}/${ui.lang}/paintings/${id}`;
 
       case GlobalSearchEntityType.DOCUMENTS:
         return `${cdaBaseUrl}/archival-documents/${id}`;

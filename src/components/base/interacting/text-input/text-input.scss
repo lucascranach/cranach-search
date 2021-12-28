@@ -9,14 +9,14 @@
     width: 100%;
     padding: 0;
     border: 0;
-    border-bottom: 1px solid $light;
+    border-bottom: 1px solid $dark;
     margin-bottom: 2px;
     background-color: transparent;
-    color: $light;
+    color: $dark;
     font: inherit;
   }
 
   .label-text {
-    color: $light;
+    color: $dark;
   }
 }
