@@ -147,9 +147,8 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   }
 
   const getSuitableAmountOfArtefacts = (elRef: HTMLElement) => {
-    const baseFontSize = parseFloat(getComputedStyle(document.body).fontSize);
     const styles = getComputedStyle(document.documentElement);
-    const tileSize = parseFloat(styles.getPropertyValue('--tile-xxs')) * baseFontSize;
+    const tileSize = parseFloat(styles.getPropertyValue('--tile-fix'));
 
     const artefactOverviewDimensions = {
       'width': elRef.clientWidth,
@@ -159,14 +158,24 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
     const safetyDistance = 1;
     const rows = Math.floor(artefactOverviewDimensions.height / tileSize) - safetyDistance;
     const cols = Math.floor(artefactOverviewDimensions.width / tileSize);
+
     return cols * rows;
+  }
+
+  const setFittedArtefactAmount = () => {
+    const element = artefactOverviewElRef.current;
+    const suitableAmountOfArtefacts = getSuitableAmountOfArtefacts(element);
+    handleArtefactAmountChange(suitableAmountOfArtefacts);
   }
 
   useEffect(() => {
     if (!artefactOverviewElRef.current) return;
 
     if (viewType === ArtefactOverviewType.CARD_SMALL) {
-      handleArtefactAmountChange(getSuitableAmountOfArtefacts(artefactOverviewElRef.current));
+      setFittedArtefactAmount();
+      window.addEventListener('resize', function () {
+        setFittedArtefactAmount();
+      });
     }
   }, [viewType, artefactOverviewElRef]);
 
