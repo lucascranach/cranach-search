@@ -140,6 +140,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.result = null;
   }
 
+  storeSearchResult(result: GlobalSearchResult | null) {
+    if (result === null) return;
+    this.result = result;
+
+    const artefactIds = this.result.items.map(item => item.id);
+    localStorage.setItem('searchResult', artefactIds.join(','));
+
+    return true;
+  }
+
   setSearchFailed(error: string | null) {
     this.error = error;
   }
@@ -246,6 +256,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
           lang,
         );
         this.setSearchResult(result);
+        this.storeSearchResult(result);
       } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
