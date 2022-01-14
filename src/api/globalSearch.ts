@@ -11,9 +11,11 @@ const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
     'attribution',
     'collection_repository',
     'examination_analysis',
-    'subject',
-    'form',
     'function',
+    'form',
+    'component_parts',
+    'subject',
+    'technique',
   ].map((filterGroupKey) => ({
     key: filterGroupKey,
     text: filters[filterGroupKey].display_value,
