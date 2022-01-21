@@ -23,8 +23,6 @@ import StoreContext, {
 const Search: FC = () => {
   const { root: { globalSearch, ui } } = useContext(StoreContext);
 
-  const toggle = useState(false);
-
   const { t } = ui.useTranslation('Search', translations);
 
   const hits = globalSearch.result?.meta.hits ?? 0;
