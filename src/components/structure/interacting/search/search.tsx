@@ -75,6 +75,7 @@ const Search: FC = () => {
           value={ globalSearch.freetextFields.allFieldsTerm }
           onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
           onKeyDown={ triggerFilterRequestOnEnter }
+          resetable={true}
         ></TextInput>
 
         <TextInput
@@ -83,6 +84,7 @@ const Search: FC = () => {
           value={ globalSearch.freetextFields.title }
           onChange={ title => globalSearch.setFreetextFields({ title }) }
           onKeyDown={ triggerFilterRequestOnEnter }
+          resetable={true}
         ></TextInput>
 
         <TextInput
@@ -90,6 +92,7 @@ const Search: FC = () => {
           label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ globalSearch.freetextFields.FRNr }
           onChange={ FRNr => globalSearch.setFreetextFields({ FRNr }) }
           onKeyDown={ triggerFilterRequestOnEnter }
+          resetable={true}
         ></TextInput>
 
         <TextInput
@@ -98,6 +101,7 @@ const Search: FC = () => {
           value={ globalSearch.freetextFields.location }
           onChange={ location => globalSearch.setFreetextFields({ location }) }
           onKeyDown={ triggerFilterRequestOnEnter }
+          resetable={true}
         ></TextInput>
 
         <TextInput
@@ -106,6 +110,7 @@ const Search: FC = () => {
           value={ globalSearch.freetextFields.inventoryNumber }
           onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
           onKeyDown={ triggerFilterRequestOnEnter }
+          resetable={true}
         ></TextInput>
 
         <Btn
@@ -116,8 +121,6 @@ const Search: FC = () => {
 
 
       <fieldset className="block">
-        <legend className="headline">{ t('Filter results by') }</legend>
-
         <div className="single-filter">
           {/* isBestOf */}
           <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
@@ -134,7 +137,10 @@ const Search: FC = () => {
         </div>
 
         <Accordion>
-          <Accordion.Entry title={ t('Dating') }>
+          <Accordion.Entry 
+            title={ t('Dating') } 
+            isOpen={ true }
+          >
             <DatingRangeslider
               bounds={globalSearch.datingRangeBounds}
               start={globalSearch.filters.dating.fromYear}

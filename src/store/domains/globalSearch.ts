@@ -61,7 +61,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   filters: FilterType = {
     dating: {
       fromYear: 1500,
-      toYear: 1600,
+      toYear: 1601,
     },
     size: 50,
     from: 0,
@@ -140,6 +140,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.result = null;
   }
 
+  storeSearchResult(result: GlobalSearchResult | null) {
+    if (result === null) return;
+    this.result = result;
+
+    const artefactIds = this.result.items.map(item => item.id);
+    localStorage.setItem('searchResult', artefactIds.join(','));
+
+    return true;
+  }
+
   setSearchFailed(error: string | null) {
     this.error = error;
   }
@@ -149,6 +159,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.filters.dating.toYear = toYear;
     this.resetFrom();
     this.setRoutingForDating();
+    this.triggerFilterRequest();
+  }
+
+  setSize(size: number) {
+    if (this.filters.size === size) return;
+
+    this.filters.size = size;
     this.triggerFilterRequest();
   }
 
@@ -239,6 +256,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
           lang,
         );
         this.setSearchResult(result);
+        this.storeSearchResult(result);
       } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
@@ -463,6 +481,7 @@ export interface GlobalSearchStoreInterface {
   setSearchFailed(error: string | null): void;
   setDating(fromYear: number, toYear: number): void;
   setEntityType(entityType: EntityType): void;
+  setSize(size: number): void;
   setFrom(from: number): void;
   resetFrom(): void;
   setIsBestOf(isBestOf: boolean): void;
