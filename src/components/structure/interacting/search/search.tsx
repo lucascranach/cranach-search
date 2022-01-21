@@ -1,4 +1,4 @@
-import React, { FC, useContext, KeyboardEvent } from 'react';
+import React, { FC, useContext, useState, KeyboardEvent } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Btn from '../../../base/interacting/btn';
@@ -8,6 +8,7 @@ import Accordion from '../accordion';
 import Checkbox from '../../../base/interacting/checkbox';
 import TreeList, { TreeListItem } from '../tree-list';
 import Size from '../../../base/visualizing/size';
+import Toggle from '../../../base/interacting/toggle';
 
 import translations from './translations.json';
 import './search.scss';
@@ -21,6 +22,8 @@ import StoreContext, {
 
 const Search: FC = () => {
   const { root: { globalSearch, ui } } = useContext(StoreContext);
+
+  const toggle = useState(false);
 
   const { t } = ui.useTranslation('Search', translations);
 
@@ -77,36 +80,41 @@ const Search: FC = () => {
           onKeyDown={ triggerFilterRequestOnEnter }
         ></TextInput>
 
-        <TextInput
-          className="search-input"
-          label={ t('Title') }
-          value={ globalSearch.freetextFields.title }
-          onChange={ title => globalSearch.setFreetextFields({ title }) }
-          onKeyDown={ triggerFilterRequestOnEnter }
-        ></TextInput>
+        <Toggle
+          isOpen={ui.additionalSearchInputsVisible}
+          onToggle={ () => ui.setAdditionalSearchInputsVisible(!ui.additionalSearchInputsVisible) }
+        >
+          <TextInput
+            className="search-input"
+            label={ t('Title') }
+            value={ globalSearch.freetextFields.title }
+            onChange={ title => globalSearch.setFreetextFields({ title }) }
+            onKeyDown={ triggerFilterRequestOnEnter }
+          ></TextInput>
 
-        <TextInput
-          className="search-input"
-          label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ globalSearch.freetextFields.FRNr }
-          onChange={ FRNr => globalSearch.setFreetextFields({ FRNr }) }
-          onKeyDown={ triggerFilterRequestOnEnter }
-        ></TextInput>
+          <TextInput
+            className="search-input"
+            label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ globalSearch.freetextFields.FRNr }
+            onChange={ FRNr => globalSearch.setFreetextFields({ FRNr }) }
+            onKeyDown={ triggerFilterRequestOnEnter }
+          ></TextInput>
 
-        <TextInput
-          className="search-input"
-          label={ t('Location') }
-          value={ globalSearch.freetextFields.location }
-          onChange={ location => globalSearch.setFreetextFields({ location }) }
-          onKeyDown={ triggerFilterRequestOnEnter }
-        ></TextInput>
+          <TextInput
+            className="search-input"
+            label={ t('Location') }
+            value={ globalSearch.freetextFields.location }
+            onChange={ location => globalSearch.setFreetextFields({ location }) }
+            onKeyDown={ triggerFilterRequestOnEnter }
+          ></TextInput>
 
-        <TextInput
-          className="search-input"
-          label={ t('CDA ID / Inventorynumber') }
-          value={ globalSearch.freetextFields.inventoryNumber }
-          onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
-          onKeyDown={ triggerFilterRequestOnEnter }
-        ></TextInput>
+          <TextInput
+            className="search-input"
+            label={ t('CDA ID / Inventorynumber') }
+            value={ globalSearch.freetextFields.inventoryNumber }
+            onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
+            onKeyDown={ triggerFilterRequestOnEnter }
+          ></TextInput>
+        </Toggle>
 
         <Btn
           className="search-button"
