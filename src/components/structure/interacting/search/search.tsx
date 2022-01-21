@@ -117,6 +117,11 @@ const Search: FC = () => {
           className="search-button"
           click={ () => globalSearch.triggerFilterRequest() }
         >{ t('find') }</Btn>
+
+        <span
+          className="reset-filters"
+          onClick={ () => globalSearch.resetAllFilters() }
+        >{ t('reset all filters') }</span>
       </fieldset>
 
 

@@ -21,7 +21,16 @@ export type {
   GlobalSearchFilterItem,
 } from '../../api/globalSearch';
 
+const MIN_LOWER_DATING_YEAR = 1500;
+const MAX_UPPER_DATING_YEAR = 1601;
 const THRESOLD_UPPER_DATING_YEAR = 1600;
+const INITIAL_DATING_RANGE_BOUNDS: [number, number] = [MIN_LOWER_DATING_YEAR, THRESOLD_UPPER_DATING_YEAR];
+const INITIAL_RESULTS_SIZE = 50;
+const INITIAL_RESULTS_FROM = 0;
+const INITIAL_IS_BEST_OF = false;
+const INITIAL_ENTITY_TYPE: EntityType = EntityType.UNKNOWN;
+const INITIAL_FILTER_GROUPS = new Map();
+
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
@@ -57,18 +66,18 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   loading: boolean = false;
   result: GlobalSearchResult | null = null;
   error: string | null = null;
-  datingRangeBounds: [number, number] = [1500, 1600];
+  datingRangeBounds: [number, number] = INITIAL_DATING_RANGE_BOUNDS;
   filters: FilterType = {
     dating: {
-      fromYear: 1500,
-      toYear: 1601,
+      fromYear: MIN_LOWER_DATING_YEAR,
+      toYear: MAX_UPPER_DATING_YEAR,
     },
-    size: 50,
-    from: 0,
-    entityType: EntityType.UNKNOWN,
+    size: INITIAL_RESULTS_SIZE,
+    from: INITIAL_RESULTS_FROM,
+    entityType: INITIAL_ENTITY_TYPE,
     id: '',
-    filterGroups: new Map(),
-    isBestOf: false,
+    filterGroups: INITIAL_FILTER_GROUPS,
+    isBestOf: INITIAL_IS_BEST_OF,
   };
 
   debounceWaitInMSecs: number = 500;
@@ -329,6 +338,30 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     }
   }
 
+  resetAllFilters() {
+    this.freetextFields = {
+      allFieldsTerm: '',
+      title: '',
+      FRNr: '',
+      location: '',
+      inventoryNumber: '',
+    };
+    
+    this.datingRangeBounds = INITIAL_DATING_RANGE_BOUNDS;
+    this.filters.dating = {
+      fromYear: MIN_LOWER_DATING_YEAR,
+      toYear: MAX_UPPER_DATING_YEAR,
+    };
+    
+    this.filters.size = INITIAL_RESULTS_SIZE;
+    this.filters.from = INITIAL_RESULTS_FROM;
+    this.filters.entityType = INITIAL_ENTITY_TYPE;
+    this.filters.filterGroups = INITIAL_FILTER_GROUPS;
+    this.filters.isBestOf = INITIAL_IS_BEST_OF;
+
+    this.triggerFilterRequest();
+  }
+
   private updateRoutingForFilterGroups(groupKey: string) {
     const groupSet = this.filters.filterGroups.get(groupKey);
     const routingActions: RoutingSearchQueryParamChange = [];
@@ -490,5 +523,6 @@ export interface GlobalSearchStoreInterface {
   triggerUserCollectionRequest(ids: string[]): void;
   resetEntityType(): void;
   applyFreetextFields(): void;
+  resetAllFilters(): void;
 
 }
