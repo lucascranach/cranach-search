@@ -164,6 +164,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
   const setFittedArtefactAmount = () => {
     const element = artefactOverviewElRef.current;
+    if (!element) return;
     const suitableAmountOfArtefacts = getSuitableAmountOfArtefacts(element);
     handleArtefactAmountChange(suitableAmountOfArtefacts);
   }
@@ -173,9 +174,9 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
     if (viewType === ArtefactOverviewType.CARD_SMALL) {
       setFittedArtefactAmount();
-      window.addEventListener('resize', function () {
-        setFittedArtefactAmount();
-      });
+      window.addEventListener('resize', setFittedArtefactAmount);
+
+      return () => window.removeEventListener('resize', setFittedArtefactAmount);
     }
   }, [viewType, artefactOverviewElRef]);
 
