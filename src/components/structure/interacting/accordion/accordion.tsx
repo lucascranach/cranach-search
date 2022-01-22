@@ -1,6 +1,12 @@
 import React, { FC, Dispatch, SetStateAction, useState } from 'react';
 
+import Toggle from "../../../base/interacting/toggle";
+
 import './accordion.scss';
+
+type Prop = {
+  className?: string,
+};
 
 type EntryProp = {
   title: string,
@@ -8,9 +14,9 @@ type EntryProp = {
   isOpen?: boolean
 }
 
-const Accordion: FC & { Entry: FC<EntryProp> } = ({ children }) => (
+const Accordion: FC<Prop> & { Entry: FC<EntryProp> } = ({ children, className = '' }) => (
   <div
-    className="accordion"
+    className={ `accordion ${className}` }
     data-component="structure/interacting/accordion"
   >
     { children }
@@ -27,24 +33,14 @@ Accordion.Entry = ({
     toggle = useState(isOpen)
   }
 
-  return (<div
-      className={ `accordion-entry ${toggle[0] ? '-open' : ''}` }
+  return (<Toggle
+      className="accordion-entry"
+      title={title}
+      isOpen={toggle[0]}
+      onToggle={() => toggle && toggle[1](!toggle[0])}
     >
-      <header className="head">
-        <span className="entry-title">{ title }</span>
-        <span
-          className="toggle-control"
-          onClick={ () => { toggle && toggle[1](!toggle[0]); } }
-        >
-          <i className="icon material-icons">expand_more</i>
-        </span>
-      </header>
-      <main className="content">
-        <div className="box">
-          { children }
-        </div>
-      </main>
-    </div>
+      { children }
+    </Toggle>
   );
 }
 

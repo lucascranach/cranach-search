@@ -23,6 +23,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   sidebarStatus: UISidebarStatusType = UISidebarStatusType.MAXIMIZED;
   overviewViewType: UIOverviewViewType = UIOverviewViewType.CARD;
   secondaryNavigationIsVisible: boolean = false;
+  additionalSearchInputsVisible: boolean = false;
   allowedLangs: Record<string, string> = { de: 'DE', en: 'EN' };
 
   constructor(rootStore: RootStoreInterface) {
@@ -85,12 +86,18 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     this.updateLocalStorage();
   }
 
+  setAdditionalSearchInputsVisible(isVisible: boolean) {
+    this.additionalSearchInputsVisible = isVisible;
+    this.updateLocalStorage();
+  }
+
   updateLocalStorage() {
     const item: StorageItemType = {
       sidebarContent: this.sidebarContent,
       sidebarStatus: this.sidebarStatus,
       overviewViewType: this.overviewViewType,
       secondaryNavigationIsVisible: this.secondaryNavigationIsVisible,
+      additionalSearchInputsVisible: this.additionalSearchInputsVisible,
     }
 
     window.localStorage.setItem(CRANACH_SEARCH_LOCALSTORAGE_KEY, JSON.stringify(item));
@@ -118,8 +125,11 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       this.overviewViewType = item.overviewViewType;
     }
 
-    /* Secondary navigation visibilitu */
-    this.secondaryNavigationIsVisible = item.secondaryNavigationIsVisible;
+    /* Secondary navigation visibility */
+    this.secondaryNavigationIsVisible = !!item.secondaryNavigationIsVisible;
+
+    // Additional search input fields visibility */∂
+    this.additionalSearchInputsVisible = !!item.additionalSearchInputsVisible;
   }
 
   notify(notification: RoutingNotificationInterface) {
@@ -155,6 +165,7 @@ type StorageItemType = {
   sidebarStatus: UISidebarStatusType;
   overviewViewType: UIOverviewViewType;
   secondaryNavigationIsVisible: boolean;
+  additionalSearchInputsVisible: boolean;
 }
 
 export enum UISidebarContentType {
@@ -176,11 +187,13 @@ export interface UIStoreInterface {
   sidebarStatus: UISidebarStatusType;
   overviewViewType: UIOverviewViewType;
   secondaryNavigationIsVisible: boolean;
+  additionalSearchInputsVisible: boolean;
   allowedLangs: Record<string, string>;
   setLanguage(lang: string): void;
   setSideBarContent(content: UISidebarContentType): void;
   setSideBarStatus(status: UISidebarStatusType): void;
   setOverviewViewType(type: UIOverviewViewType): void;
   setSecondaryNavigationIsVisible(isVisible: boolean): void;
+  setAdditionalSearchInputsVisible(isVisible: boolean): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
 }

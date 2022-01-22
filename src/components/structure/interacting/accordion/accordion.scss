@@ -2,55 +2,6 @@
 
 .accordion {
   &-entry {
-    .content {
-      overflow: hidden;
-      height: 0;
-      box-sizing: content-box;
-
-      .box {
-        padding: $s 0;
-        color: $dark;
-      }
-    }
-
-    > .head {
-      display: flex;
-      align-items: center;
-      border-top: 1px solid $darken-strong;
-
-      > .entry-title {
-        flex-grow: 1;
-        color: $darker;
-        font-size: $bfs;
-        padding-top: $quad;
-      }
-
-      > .toggle-control {
-        color: $accent;
-        cursor: pointer;
-
-        > .icon {
-          transition: 0.15s transform;
-        }
-      }
-    }
-
-    &.-open {
-      > .head {
-        > .toggle-control {
-          > .icon {
-            transform: rotate(180deg);
-          }
-        }
-      }
-
-      > .content {
-        height: auto;
-      }
-    }
-
-    & + & {
-      margin-top: $xs;
-    }
+    border-top: 1px solid $darken-strong;
   }
 }
