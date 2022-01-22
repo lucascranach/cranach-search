@@ -4,16 +4,38 @@
   display: inline-block;
   width: 100%;
 
-  .input-field {
+  &-group {
+    position: relative;
     display: block;
-    width: 100%;
-    padding: 0;
-    border: 0;
-    border-bottom: 1px solid $dark;
-    margin-bottom: 2px;
-    background-color: transparent;
-    color: $dark;
-    font: inherit;
+
+    .input-field {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      border-bottom: 1px solid $dark;
+      margin-bottom: 2px;
+      background-color: transparent;
+      color: $dark;
+      font: inherit;
+    }
+
+    .reset-icon {
+      opacity: 0;
+      position: absolute;
+      right: 0;
+      top: -$xxxs;
+      transition: opacity 0.3s;
+      transform: scale(0.8);
+      vertical-align: top;
+      cursor: pointer;
+    }
+
+    &:hover {
+      .reset-icon {
+        opacity: 1;
+      }
+    }
   }
 
   .label-text {

@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useContext, useEffect, useRef } from 'react';
 
 import { observer } from 'mobx-react-lite';
 
@@ -13,9 +13,17 @@ import './dashboard.scss';
 const Dashboard: FC = () => {
   const { root: { globalSearch, ui } } = useContext(StoreContext);
 
+  const mainContentEl = useRef<HTMLElement|null>(null);
+
   useEffect(() => {
     globalSearch.triggerFilterRequest();
   }, [])
+
+  useEffect(() => {
+    if (!mainContentEl.current) return;
+
+    mainContentEl.current.scrollTo({ behavior: 'smooth', top: 0 });
+  }, [mainContentEl, globalSearch.flattenedSearchResultItems]);
 
   const getToUrlForArtifact = (entityType: GlobalSearchEntityType, id: string): string => {
     const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
@@ -54,7 +62,10 @@ const Dashboard: FC = () => {
       className="dashboard"
       data-component="page/search"
     >
-      <main className="main-content">
+      <main
+        className="main-content"
+        ref={mainContentEl}
+      >
         <Navigation></Navigation>
         {globalSearch.loading && <Cloak />}
         <ArtefactOverview

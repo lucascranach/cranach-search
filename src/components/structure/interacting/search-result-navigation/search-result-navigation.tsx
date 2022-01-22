@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import './search-result-navigation.scss';
@@ -8,6 +8,9 @@ import StoreContext from '../../../../store/StoreContext';
 type Props = {
   range?: number,
 };
+
+const ARROW_LEFT = 'ArrowLeft';
+const ARROW_RIGHT = 'ArrowRight';
 
 const SearchResultNavigation: FC<Props> = ({
   range = 6,
@@ -61,6 +64,23 @@ const SearchResultNavigation: FC<Props> = ({
     text: idx + 1,
     className: getPaginationNavItemClassName(idx, currentResultPagePos),
   }));
+
+  useEffect(() => {
+    const arrowNavigator = (e: KeyboardEvent) => {
+      switch(e.code) {
+        case ARROW_LEFT:
+          globalSearch.setPagination(-1);
+          break;
+
+        case ARROW_RIGHT:
+          globalSearch.setPagination(1);
+          break;
+      }
+    };
+    document.body.addEventListener('keyup', arrowNavigator);
+
+    return () => document.body.removeEventListener('keyup', arrowNavigator);
+  }, [globalSearch]);
 
   return (
     <div className="pagination-wrap">

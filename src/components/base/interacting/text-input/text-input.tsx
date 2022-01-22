@@ -1,4 +1,4 @@
-import React, { FC, KeyboardEvent } from 'react';
+import React, { FC, KeyboardEvent, useRef } from 'react';
 
 import './text-input.scss';
 
@@ -10,6 +10,7 @@ type Props = {
   onChange?: (value: string) => void,
   onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void,
   disabled?: boolean,
+  resetable?: boolean,
 };
 
 const TextInput: FC<Props> = ({
@@ -20,24 +21,35 @@ const TextInput: FC<Props> = ({
   onChange = () => {},
   onKeyDown = () => {},
   disabled = false,
-}) => (
-  <label
-    className={ `text-input ${className}` }
-    data-component="base/interacting/text-input"
-  >
-    <input
-      type="text"
-      className="input-field"
-      value={ value }
-      placeholder={ placeholder }
-      onChange={ (e) => { onChange(e.target.value); } }
-      onKeyDown={ onKeyDown }
-      disabled={ disabled }
-    />
-    { label
-      && <span className="label-text">{ label }</span>
-    }
-  </label>
-);
+  resetable = false,
+}) => {
+  const inputFieldEl = useRef<HTMLInputElement|null>(null);
+
+  return (<label
+      className={ `text-input ${className} ${resetable ? '-is-resetable' : ''}` }
+      data-component="base/interacting/text-input"
+    >
+      <span className="text-input-group">
+        <input
+          ref={inputFieldEl}
+          type="text"
+          className="input-field"
+          value={ value }
+          placeholder={ placeholder }
+          onChange={ (e) => { onChange(e.target.value); } }
+          onKeyDown={ onKeyDown }
+          disabled={ disabled }
+        />
+        { !disabled && resetable && (<span
+            className="reset-icon material-icons"
+            onClick={ () => inputFieldEl.current && (inputFieldEl.current.value = '') }
+          >backspace</span>) }
+      </span>
+      { label
+        && <span className="label-text">{ label }</span>
+      }
+    </label>
+  );
+}
 
 export default TextInput;

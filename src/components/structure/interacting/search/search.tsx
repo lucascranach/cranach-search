@@ -76,6 +76,7 @@ const Search: FC = () => {
           value={ globalSearch.freetextFields.allFieldsTerm }
           onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
           onKeyDown={ triggerFilterRequestOnEnter }
+          resetable={true}
         ></TextInput>
 
         <Toggle
@@ -138,8 +139,8 @@ const Search: FC = () => {
         </div>
 
         <Accordion>
-          <Accordion.Entry 
-            title={ t('Dating') } 
+          <Accordion.Entry
+            title={ t('Dating') }
             isOpen={ true }
           >
             <DatingRangeslider
