@@ -71,8 +71,8 @@ const Search: FC = () => {
       </div>
       <fieldset className="block">
         <TextInput
+          placeholder={t('Enter Search Keyword')}
           className="search-input"
-          label={ t('all Fields') }
           value={ globalSearch.freetextFields.allFieldsTerm }
           onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
           onKeyDown={ triggerFilterRequestOnEnter }
