@@ -19,7 +19,7 @@ const Navigation = () => {
 
   const navStructure = [
     {
-      title: 'All Departments',
+      title: 'All Objects',
       filterValue: GlobalSearchEntityType.UNKNOWN,
     },
     {
