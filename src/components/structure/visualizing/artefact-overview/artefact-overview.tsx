@@ -85,6 +85,13 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
     return slice;
   };
+
+  const cleanupRecord = (record: string): string => {
+    const recordElements = record.split(/,/);
+    const cleanRecord = recordElements[0].replace(/(\(.*?\)|\[.*?\])/,"");
+    return cleanRecord;
+  }
+
   const shortenTitle = (title: string): string => {
     const splitTitle = title.split(' ');
     return splitTitle.length <= maximumTitleLengthInWords ? title : `${splitTitle.slice(0, maximumTitleLengthInWords).join(' ')} …`;
@@ -113,7 +120,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
       case GlobalSearchEntityType.GRAPHICS:
         return `${item.classification}, ${item.printProcess}`;
     }
-    return item.classification;
+    return cleanupRecord(item.medium);
   }
 
   const assembleSubTitleForListView = (item: ArtefactOverviewItem): string => {
@@ -123,6 +130,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
       case GlobalSearchEntityType.GRAPHICS:
         return `${item.classification}, ${item.printProcess}`;
     }
+
     return item.medium;
   }
 
@@ -140,10 +148,11 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
     return `${item.artist}`;
   }
 
-  const assembleAdditionalText = (item: ArtefactOverviewItem): string => {
+  const assembleAdditionalText = (item: ArtefactOverviewItem): Array<string> => {
     const dimensions = item.dimensions ? item.dimensions : '';
     const dimensionList = dimensions.split(/\n/);
-    return dimensionList[0];
+    const owner = item.owner ? item.owner : '';
+    return [dimensionList[0], owner];
   }
 
   const getSuitableAmountOfArtefacts = (elRef: HTMLElement) => {
@@ -215,6 +224,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
           subtitle={assembleSubTitleForListView(item)}
           text={assembleTextForListView(item)}
           additionalText={assembleAdditionalText(item)}
+
           to={item.to}
           imgSrc={item.imgSrc || ''}
         />

@@ -119,10 +119,16 @@ const Search: FC = () => {
           className="search-button"
           click={ () => globalSearch.triggerFilterRequest() }
         >{ t('find') }</Btn>
+
+        <span
+          className="reset-filters"
+          onClick={ () => globalSearch.resetAllFilters() }
+        >{ t('reset all filters') }</span>
       </fieldset>
 
 
       <fieldset className="block">
+        <legend className="headline">{ t('Filter by') }</legend>
         <div className="single-filter">
           {/* isBestOf */}
           <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
@@ -134,7 +140,7 @@ const Search: FC = () => {
             <span
               className="filter-info-item__name"
               data-count={ globalSearch.bestOfFilter?.docCount ?? 0 }
-            >{ t('Best works')}<Size size={ globalSearch.bestOfFilter?.docCount ?? 0 }/></span>
+            >{ t('Masterpieces')}<Size size={ globalSearch.bestOfFilter?.docCount ?? 0 }/></span>
           </span>
         </div>
 
