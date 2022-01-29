@@ -391,7 +391,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   private handleRoutingNotificationForEntityType(value: string) {
-    if (value in Object.keys(EntityType)){
+    if (Object.values(EntityType).includes(value as EntityType)){
       this.filters.entityType = value as EntityType;
     }
   }
