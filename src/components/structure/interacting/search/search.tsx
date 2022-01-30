@@ -25,6 +25,7 @@ const Search: FC = () => {
 
   const { t } = ui.useTranslation('Search', translations);
 
+  const filterCount = globalSearch.getAmountOfActiveFilters();
   const hits = globalSearch.result?.meta.hits ?? 0;
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
@@ -67,7 +68,7 @@ const Search: FC = () => {
       data-component="structure/interacting/search"
     >
       <div className="search-result-info">
-        <h2>{t('Search')}<Size size={hits} /></h2>
+        {hits > 1 && <p><Size size={hits} /> { t('Works found') }</p>}
       </div>
       <fieldset className="block">
         <TextInput
@@ -120,15 +121,20 @@ const Search: FC = () => {
           click={ () => globalSearch.triggerFilterRequest() }
         >{ t('find') }</Btn>
 
-        <span
-          className="reset-filters"
-          onClick={ () => globalSearch.resetAllFilters() }
-        >{ t('reset all filters') }</span>
       </fieldset>
 
 
       <fieldset className="block">
-        <legend className="headline">{ t('Filter by') }</legend>
+          {filterCount > 0 &&
+            <div>
+              <span
+                className="reset-filters"
+                onClick={ () => globalSearch.resetAllFilters() }
+              >{ t('reset all filters') }</span>
+            </div>
+          }
+
+
         <div className="single-filter">
           {/* isBestOf */}
           <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
