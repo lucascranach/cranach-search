@@ -120,6 +120,8 @@
       background-color: $light;
       color: $darkest;
       transition: background-color $tr-fast, color $tr-fast;
+      height: $l;
+      padding: 0 $s;
 
       &:hover{
         background-color: $accent;

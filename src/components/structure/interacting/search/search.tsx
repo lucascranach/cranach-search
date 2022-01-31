@@ -136,7 +136,7 @@ const Search: FC = () => {
               className="reset-button"
               icon="delete_sweep"
               click={ () => globalSearch.resetAllFilters() }
-            >{ t('reset all filters') }</Btn>
+            >{ t('reset search & filters') }</Btn>
           </div>
           }
 
