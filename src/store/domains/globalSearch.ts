@@ -63,6 +63,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     location: '',
     inventoryNumber: '',
   }
+
   loading: boolean = false;
   result: GlobalSearchResult | null = null;
   error: string | null = null;
@@ -258,7 +259,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
             toYear: (this.filters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.filters.dating.toYear : 0,
           }
         };
-
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
           updatedFilters,
           this.freetextFields,
@@ -338,6 +338,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     }
   }
 
+  getAmountOfActiveFilters() {
+    const activeFilter = 2;
+    return activeFilter;
+  }
+
   resetAllFilters() {
     this.freetextFields = {
       allFieldsTerm: '',
@@ -346,13 +351,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       location: '',
       inventoryNumber: '',
     };
-    
+
     this.datingRangeBounds = INITIAL_DATING_RANGE_BOUNDS;
     this.filters.dating = {
       fromYear: MIN_LOWER_DATING_YEAR,
       toYear: MAX_UPPER_DATING_YEAR,
     };
-    
+
     this.filters.size = INITIAL_RESULTS_SIZE;
     this.filters.from = INITIAL_RESULTS_FROM;
     this.filters.entityType = INITIAL_ENTITY_TYPE;
@@ -524,5 +529,5 @@ export interface GlobalSearchStoreInterface {
   resetEntityType(): void;
   applyFreetextFields(): void;
   resetAllFilters(): void;
-
+  getAmountOfActiveFilters(): number;
 }

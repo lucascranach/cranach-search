@@ -68,9 +68,10 @@ const Search: FC = () => {
       data-component="structure/interacting/search"
     >
       <div className="search-result-info">
-        {hits > 1 && <p><Size size={hits} /> { t('Works found') }</p>}
+        {hits <= 1 && <p><Size size={hits} /> {t('work found')}</p>}
+        {hits > 1 && <p><Size size={hits} /> { t('works found') }</p>}
       </div>
-      <fieldset className="block">
+      <fieldset className="block keyword-search">
         <TextInput
           placeholder={t('Enter Search Keyword')}
           className="search-input"
@@ -81,9 +82,12 @@ const Search: FC = () => {
         ></TextInput>
 
         <Toggle
+          className="advanced-search-toggle"
           isOpen={ui.additionalSearchInputsVisible}
+          title={t('Advanced Search')}
           onToggle={ () => ui.setAdditionalSearchInputsVisible(!ui.additionalSearchInputsVisible) }
         >
+
           <TextInput
             className="search-input"
             label={ t('Title') }
@@ -118,6 +122,7 @@ const Search: FC = () => {
 
         <Btn
           className="search-button"
+          icon="search"
           click={ () => globalSearch.triggerFilterRequest() }
         >{ t('find') }</Btn>
 
@@ -126,12 +131,13 @@ const Search: FC = () => {
 
       <fieldset className="block">
           {filterCount > 0 &&
-            <div>
-              <span
-                className="reset-filters"
-                onClick={ () => globalSearch.resetAllFilters() }
-              >{ t('reset all filters') }</span>
-            </div>
+          <div className="sticky-panel">
+            <Btn
+              className="reset-button"
+              icon="delete_sweep"
+              click={ () => globalSearch.resetAllFilters() }
+            >{ t('reset all filters') }</Btn>
+          </div>
           }
 
 
@@ -153,7 +159,7 @@ const Search: FC = () => {
         <Accordion>
           <Accordion.Entry
             title={ t('Dating') }
-            isOpen={ true }
+            isOpen={ false }
           >
             <DatingRangeslider
               bounds={globalSearch.datingRangeBounds}

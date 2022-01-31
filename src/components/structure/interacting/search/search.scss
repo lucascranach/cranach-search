@@ -4,11 +4,16 @@
 
 .search {
   display: none;
-  padding:  $xl + $s + $m $m $m $m;
+  padding:  $s + $s + $s $m $xxl $m;
   width: $sidebar-width;
 
   &--is-active {
     display: block;
+  }
+
+  &-button{
+    position: relative;
+    z-index: $level-content-nav;
   }
 
   & > .block {
@@ -22,10 +27,6 @@
       & + .search-input {
         margin-top: $s;
       }
-    }
-
-    > .search-button {
-      margin-top: math.div($xl, 2);
     }
 
     .dating-field {
@@ -58,6 +59,10 @@
   .search-result-info {
     margin-bottom: $l;
     font-weight: $fw-semibold;
+
+    & > {
+      line-height: 0;;
+    }
   }
 
   .filter-info-item {
@@ -71,6 +76,55 @@
     &__name {
       margin-left: $xs;
       line-height: $m;
+    }
+  }
+
+  .advanced-search-toggle{
+    margin-top: $m;
+    opacity: $op-medium;
+    height: 0;
+    z-index: $level-content;
+
+    .head .entry-title{
+      padding-top: 0;
+      text-align: right;
+    }
+
+    &.-open{
+      opacity: 1;
+      height: auto;
+      padding-bottom: $l;
+
+      .head .entry-title{
+        text-align: left;
+        font-weight: $fw-semibold;
+      }
+    }
+
+    .box{
+      padding: 0;
+    }
+  }
+
+  .sticky-panel{
+    position: fixed;
+    width: $sidebar-width;
+    bottom: 0;
+    right: 0;
+    padding: 0 $m $m $m;
+    background-color: $lighter;
+    z-index: $level-overall-nav;
+
+    .reset-button{
+      font-weight: $fw-light;
+      background-color: $light;
+      color: $darkest;
+      transition: background-color $tr-fast, color $tr-fast;
+
+      &:hover{
+        background-color: $accent;
+        color: $lightest;
+      }
     }
   }
 }
