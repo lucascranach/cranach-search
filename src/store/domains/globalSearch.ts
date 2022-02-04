@@ -24,15 +24,10 @@ export type {
 const MIN_LOWER_DATING_YEAR = 1500;
 const MAX_UPPER_DATING_YEAR = 1601;
 const THRESOLD_UPPER_DATING_YEAR = 1600;
-const INITIAL_DATING_RANGE_BOUNDS: [number, number] = [MIN_LOWER_DATING_YEAR, THRESOLD_UPPER_DATING_YEAR];
-const INITIAL_RESULTS_SIZE = 50;
-const INITIAL_RESULTS_FROM = 0;
-const INITIAL_IS_BEST_OF = false;
-const INITIAL_ENTITY_TYPE: EntityType = EntityType.UNKNOWN;
-const INITIAL_FILTER_GROUPS = new Map();
-
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
+
+export const DATING_RANGE_TOTAL_BOUNDS: [number, number] = [MIN_LOWER_DATING_YEAR, THRESOLD_UPPER_DATING_YEAR];
 
 export type FilterType = {
   dating: {
@@ -42,7 +37,6 @@ export type FilterType = {
   size: number,
   from: number,
   entityType: EntityType,
-  id: string,
   filterGroups: Map<string, Set<string>>,
   isBestOf: boolean,
 };
@@ -53,33 +47,37 @@ export type SingleFilter = {
   docCount: number,
 }
 
+const createInitialFreeTexts = (): FreeTextFields => ({
+  allFieldsTerm: '',
+  title: '',
+  FRNr: '',
+  location: '',
+  inventoryNumber: '',
+}); 
+
+const createInitialFilters = (): FilterType => ({
+  dating: {
+    fromYear: MIN_LOWER_DATING_YEAR,
+    toYear: MAX_UPPER_DATING_YEAR,
+  },
+  size: 60,
+  from: 0,
+  entityType: EntityType.UNKNOWN,
+  filterGroups: new Map(),
+  isBestOf: false,
+});
+
+
 export default class GlobalSearch implements GlobalSearchStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
   globalSearchAPI: GlobalSearchAPI;
-  freetextFields = {
-    allFieldsTerm: '',
-    title: '',
-    FRNr: '',
-    location: '',
-    inventoryNumber: '',
-  }
 
   loading: boolean = false;
   result: GlobalSearchResult | null = null;
   error: string | null = null;
-  datingRangeBounds: [number, number] = INITIAL_DATING_RANGE_BOUNDS;
-  filters: FilterType = {
-    dating: {
-      fromYear: MIN_LOWER_DATING_YEAR,
-      toYear: MAX_UPPER_DATING_YEAR,
-    },
-    size: INITIAL_RESULTS_SIZE,
-    from: INITIAL_RESULTS_FROM,
-    entityType: INITIAL_ENTITY_TYPE,
-    id: '',
-    filterGroups: INITIAL_FILTER_GROUPS,
-    isBestOf: INITIAL_IS_BEST_OF,
-  };
+  datingRangeBounds: [number, number] = DATING_RANGE_TOTAL_BOUNDS;
+  freetextFields: FreeTextFields = createInitialFreeTexts();
+  filters: FilterType = createInitialFilters();
 
   debounceWaitInMSecs: number = 500;
   debounceHandler: undefined | number = undefined;
@@ -125,6 +123,33 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     return Math.ceil(hits / this.filters.size);
   }
 
+
+  get amountOfActiveFilters() {
+    const curr = this.filters;
+    const init = createInitialFilters();
+
+    const datingChanged = curr.dating.fromYear !== init.dating.fromYear
+      || curr.dating.toYear !== init.dating.toYear;
+
+    const sizeChanged = curr.size !== init.size;
+    const fromChanged = curr.from !== init.from;
+    const entityTypeChanged = curr.entityType !== init.entityType;
+    const idChanged = curr.id !== init.id;
+    const filterGroupsChanged = curr.filterGroups.size !== init.filterGroups.size;
+    const isBestOfChanged = curr.isBestOf !== init.isBestOf;
+
+    return [
+      datingChanged,
+      sizeChanged,
+      fromChanged,
+      entityTypeChanged,
+      idChanged,
+      filterGroupsChanged,
+      isBestOfChanged,
+    ].filter((item) => item).length;
+  }
+
+
   /* Actions */
 
   setFreetextFields(fields: Partial<FreeTextFields>) {
@@ -135,7 +160,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   applyFreetextFields() {
-    this.setRoutingForFreetextFields();
+    this.updateRoutingForFreetextFields();
   }
 
   setSearchLoading(loading: boolean) {
@@ -150,14 +175,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.result = null;
   }
 
-  storeSearchResult(result: GlobalSearchResult | null) {
+  storeSearchResultInLocalStorage(result: GlobalSearchResult | null) {
     if (result === null) return;
-    this.result = result;
 
-    const artefactIds = this.result.items.map(item => item.id);
+    const artefactIds = result.items.map(item => item.id);
     localStorage.setItem('searchResult', artefactIds.join(','));
-
-    return true;
   }
 
   setSearchFailed(error: string | null) {
@@ -168,7 +190,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.filters.dating.fromYear = fromYear;
     this.filters.dating.toYear = toYear;
     this.resetFrom();
-    this.setRoutingForDating();
+    this.updateRoutingForDating();
     this.triggerFilterRequest();
   }
 
@@ -190,7 +212,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   setIsBestOf(isBestOf: boolean) {
     this.filters.isBestOf = isBestOf;
     this.resetFrom();
-    this.setRoutingForIsBestOf();
+    this.updateRoutingForIsBestOf();
     this.triggerFilterRequest();
   }
 
@@ -201,13 +223,13 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     const gatedFrom = Math.max(0, newFrom);
 
     this.setFrom(gatedFrom);
-    this.setRoutingForPage();
+    this.updateRoutingForPage();
     this.triggerFilterRequest();
   }
 
   jumpToPagePos(pagePos: number) {
     this.setFrom(pagePos * this.filters.size);
-    this.setRoutingForPage();
+    this.updateRoutingForPage();
     this.triggerFilterRequest();
   }
 
@@ -229,14 +251,14 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     }
 
     this.resetFrom();
-    this.updateRoutingForFilterGroups(groupKey);
+    this.updateRoutingForFilterGroups();
     this.triggerFilterRequest();
   }
 
   setEntityType(entityType: EntityType) {
     this.filters.entityType = entityType;
     this.resetFrom();
-    this.setRoutingForEntityType();
+    this.updateRoutingForEntityType();
     this.triggerFilterRequest();
   }
 
@@ -265,7 +287,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
           lang,
         );
         this.setSearchResult(result);
-        this.storeSearchResult(result);
+        this.storeSearchResultInLocalStorage(result);
       } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
@@ -338,42 +360,25 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     }
   }
 
-  getAmountOfActiveFilters() {
-    const activeFilter = 2;
-    return activeFilter;
-  }
-
   resetAllFilters() {
-    this.freetextFields = {
-      allFieldsTerm: '',
-      title: '',
-      FRNr: '',
-      location: '',
-      inventoryNumber: '',
-    };
+    this.datingRangeBounds = DATING_RANGE_TOTAL_BOUNDS;
+    this.filters = createInitialFilters();
 
-    this.datingRangeBounds = INITIAL_DATING_RANGE_BOUNDS;
-    this.filters.dating = {
-      fromYear: MIN_LOWER_DATING_YEAR,
-      toYear: MAX_UPPER_DATING_YEAR,
-    };
-
-    this.filters.size = INITIAL_RESULTS_SIZE;
-    this.filters.from = INITIAL_RESULTS_FROM;
-    this.filters.entityType = INITIAL_ENTITY_TYPE;
-    this.filters.filterGroups = INITIAL_FILTER_GROUPS;
-    this.filters.isBestOf = INITIAL_IS_BEST_OF;
-
+    this.updateAllFilterRoutings();
     this.triggerFilterRequest();
   }
 
-  private updateRoutingForFilterGroups(groupKey: string) {
-    const groupSet = this.filters.filterGroups.get(groupKey);
-    const routingActions: RoutingSearchQueryParamChange = [];
-    const routingAction = !groupSet ? RoutingChangeAction.REMOVE : RoutingChangeAction.ADD;
-    const gs = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
+  private updateRoutingForFilterGroups() {
+    const routingActions: RoutingSearchQueryParamChange = [
+      [RoutingChangeAction.REMOVE_ALL, ['', '']],
+    ];
 
-    routingActions.push([routingAction, [groupKey, gs]]);
+    Array.from(this.filters.filterGroups.entries()).forEach(([groupKey, value]) => {
+      const gs = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
+
+      routingActions.push([RoutingChangeAction.ADD, [groupKey, gs]]);
+    });
+
     this.rootStore.routing.updateSearchQueryParams(routingActions);
   }
 
@@ -381,16 +386,17 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.filters.filterGroups.set(name, new Set(value.split(',')));
   }
 
-  private setRoutingForPage() {
+  private updateRoutingForPage() {
     const page = (this.filters.from / this.filters.size) + 1;
-    this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['page', page.toString()]]]);
+    const action = (page !== 0) ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
+    this.rootStore.routing.updateSearchQueryParams([[action, ['page', page.toString()]]]);
   }
 
   private handleRoutingNotificationForPage(value: string) {
     this.filters.from = Math.max(0, (parseInt(value, 10) - 1) * this.filters.size);
   }
 
-  private setRoutingForEntityType() {
+  private updateRoutingForEntityType() {
     const kind = this.filters.entityType;
     this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['kind', kind]]]);
   }
@@ -401,7 +407,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     }
   }
 
-  private setRoutingForDating() {
+  private updateRoutingForDating() {
     const { fromYear, toYear } = this.filters.dating;
 
     this.rootStore.routing.updateSearchQueryParams([
@@ -410,7 +416,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     ]);
   }
 
-  private setRoutingForFreetextFields() {
+  private updateRoutingForFreetextFields() {
     const changeActions: RoutingSearchQueryParamChange = [];
 
     const keyMap: Record<string, string> = {
@@ -434,9 +440,9 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
         this.filters.dating.fromYear = Math.max(
           Math.min(
             parseInt(value, 10),
-            this.datingRangeBounds[1],
+            DATING_RANGE_TOTAL_BOUNDS[1],
           ),
-          this.datingRangeBounds[0],
+          DATING_RANGE_TOTAL_BOUNDS[0],
         );
         break;
 
@@ -447,16 +453,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
           this.filters.dating.toYear = Math.max(
             Math.min(
               parseInt(value, 10),
-              this.datingRangeBounds[1],
+              DATING_RANGE_TOTAL_BOUNDS[1],
             ),
-            this.datingRangeBounds[0],
+            DATING_RANGE_TOTAL_BOUNDS[0],
           );
         }
         break;
     }
   }
 
-  private setRoutingForIsBestOf() {
+  private updateRoutingForIsBestOf() {
     const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
     this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
   }
@@ -485,6 +491,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
         break;
     }
   }
+
+  private updateAllFilterRoutings() {
+    this.updateRoutingForPage();
+    this.updateRoutingForEntityType();
+    this.updateRoutingForDating();
+    this.updateRoutingForIsBestOf();
+
+
+    this.updateRoutingForFilterGroups();
+  }
 }
 
 export interface FreeTextFields {
@@ -496,17 +512,18 @@ export interface FreeTextFields {
 }
 
 export interface GlobalSearchStoreInterface {
-  freetextFields: FreeTextFields;
   loading: boolean;
   result: GlobalSearchResult | null;
   error: string | null;
   datingRangeBounds: [number, number];
+  freetextFields: FreeTextFields;
   filters: FilterType;
   debounceWaitInMSecs: number;
   debounceHandler: undefined | number;
   flattenedSearchResultItems: GlobalSearchArtifact[];
   currentResultPagePos: number;
   maxResultPages: number;
+  amountOfActiveFilters: number;
 
   bestOfFilter: SingleFilter | null;
 
@@ -529,5 +546,4 @@ export interface GlobalSearchStoreInterface {
   resetEntityType(): void;
   applyFreetextFields(): void;
   resetAllFilters(): void;
-  getAmountOfActiveFilters(): number;
 }

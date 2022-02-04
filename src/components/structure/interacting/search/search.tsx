@@ -25,7 +25,7 @@ const Search: FC = () => {
 
   const { t } = ui.useTranslation('Search', translations);
 
-  const filterCount = globalSearch.getAmountOfActiveFilters();
+  const filterCount = globalSearch.amountOfActiveFilters;
   const hits = globalSearch.result?.meta.hits ?? 0;
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
@@ -136,7 +136,7 @@ const Search: FC = () => {
               className="reset-button"
               icon="delete_sweep"
               click={ () => globalSearch.resetAllFilters() }
-            >{ t('reset search & filters') }</Btn>
+            >{ t('reset filters') }</Btn>
           </div>
           }
 
