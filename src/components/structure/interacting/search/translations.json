@@ -15,8 +15,10 @@
     "work found": "Werk gefunden",
     "works found": "Werke gefunden",
     "Search": "Suche",
-    "reset all filters": "Alle Filter zurücksetzen",
+    "reset filters": "Filter zurücksetzen",
     "Masterpieces": "Meisterwerke",
-    "Filter by": "Filtern nach"
+    "Filter by": "Filtern nach",
+    "Enter Search Keyword": "Suchwort eingeben",
+    "Advanced Search": "Erweiterte Suche"
   }
 }

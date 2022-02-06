@@ -25,6 +25,7 @@ const Search: FC = () => {
 
   const { t } = ui.useTranslation('Search', translations);
 
+  const filterCount = globalSearch.amountOfActiveFilters;
   const hits = globalSearch.result?.meta.hits ?? 0;
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
@@ -67,12 +68,13 @@ const Search: FC = () => {
       data-component="structure/interacting/search"
     >
       <div className="search-result-info">
-        <h2>{t('Search')}<Size size={hits} /></h2>
+        {hits === 1 && <p><Size size={hits} /> {t('work found')}</p>}
+        {hits > 1 || hits ===0 && <p><Size size={hits} /> { t('works found') }</p>}
       </div>
-      <fieldset className="block">
+      <fieldset className="block keyword-search">
         <TextInput
+          placeholder={t('Enter Search Keyword')}
           className="search-input"
-          label={ t('all Fields') }
           value={ globalSearch.freetextFields.allFieldsTerm }
           onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
           onKeyDown={ triggerFilterRequestOnEnter }
@@ -80,15 +82,19 @@ const Search: FC = () => {
         ></TextInput>
 
         <Toggle
+          className="advanced-search-toggle"
           isOpen={ui.additionalSearchInputsVisible}
+          title={t('Advanced Search')}
           onToggle={ () => ui.setAdditionalSearchInputsVisible(!ui.additionalSearchInputsVisible) }
         >
+
           <TextInput
             className="search-input"
             label={ t('Title') }
             value={ globalSearch.freetextFields.title }
             onChange={ title => globalSearch.setFreetextFields({ title }) }
             onKeyDown={ triggerFilterRequestOnEnter }
+            resetable={true}
           ></TextInput>
 
           <TextInput
@@ -96,6 +102,7 @@ const Search: FC = () => {
             label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ globalSearch.freetextFields.FRNr }
             onChange={ FRNr => globalSearch.setFreetextFields({ FRNr }) }
             onKeyDown={ triggerFilterRequestOnEnter }
+            resetable={true}
           ></TextInput>
 
           <TextInput
@@ -104,6 +111,7 @@ const Search: FC = () => {
             value={ globalSearch.freetextFields.location }
             onChange={ location => globalSearch.setFreetextFields({ location }) }
             onKeyDown={ triggerFilterRequestOnEnter }
+            resetable={true}
           ></TextInput>
 
           <TextInput
@@ -112,23 +120,31 @@ const Search: FC = () => {
             value={ globalSearch.freetextFields.inventoryNumber }
             onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
             onKeyDown={ triggerFilterRequestOnEnter }
+            resetable={true}
           ></TextInput>
         </Toggle>
 
         <Btn
           className="search-button"
+          icon="search"
           click={ () => globalSearch.triggerFilterRequest() }
         >{ t('find') }</Btn>
 
-        <span
-          className="reset-filters"
-          onClick={ () => globalSearch.resetAllFilters() }
-        >{ t('reset all filters') }</span>
       </fieldset>
 
 
       <fieldset className="block">
-        <legend className="headline">{ t('Filter by') }</legend>
+          {filterCount > 0 &&
+          <div className="sticky-panel">
+            <Btn
+              className="reset-button"
+              icon="delete_sweep"
+              click={ () => globalSearch.resetAllFilters() }
+            >{ t('reset filters') }</Btn>
+          </div>
+          }
+
+
         <div className="single-filter">
           {/* isBestOf */}
           <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
@@ -147,7 +163,7 @@ const Search: FC = () => {
         <Accordion>
           <Accordion.Entry
             title={ t('Dating') }
-            isOpen={ true }
+            isOpen={ false }
           >
             <DatingRangeslider
               bounds={globalSearch.datingRangeBounds}

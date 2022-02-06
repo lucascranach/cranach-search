@@ -245,7 +245,6 @@ export type APIFilterType = {
   size: number,
   from: number,
   entityType: EntityType,
-  id: string
   filterGroups: Map<string, Set<string>>,
   isBestOf: boolean,
 };

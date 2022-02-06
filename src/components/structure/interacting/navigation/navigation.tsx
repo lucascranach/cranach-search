@@ -23,12 +23,12 @@ const Navigation = () => {
       filterValue: GlobalSearchEntityType.UNKNOWN,
     },
     {
-      title: 'Prints and Drawings',
-      filterValue: GlobalSearchEntityType.GRAPHICS,
-    },
-    {
       title: 'Paintings',
       filterValue: GlobalSearchEntityType.PAINTINGS,
+    },
+    {
+      title: 'Prints and Drawings',
+      filterValue: GlobalSearchEntityType.GRAPHICS,
     }
   ];
 

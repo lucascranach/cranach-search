@@ -16,6 +16,16 @@
     background-color: darken($accent, 10%);
   }
 
+  &--with-icon {
+    padding: $xxs $s $xxs $xs;
+    display: flex;
+    align-items: center;
+
+    .icon{
+      margin-right: $xxxs !important;
+    }
+  }
+
   &--is-reduced {
     display: flex;
     align-items: center;

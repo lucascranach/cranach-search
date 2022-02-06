@@ -111,6 +111,9 @@ export default class Routing implements RoutingStoreInterface {
         case ChangeAction.REMOVE:
           currentSearchParams.delete(name);
           break;
+
+        case ChangeAction.REMOVE_ALL:
+          return new URLSearchParams();
       }
 
       return acc;
@@ -176,6 +179,7 @@ export enum NotificationType {
 export enum ChangeAction {
   ADD = 'ADD',
   REMOVE = 'REMOVE',
+  REMOVE_ALL = 'REMOVE_ALL',
 }
 
 export type SearchQueryParamChange = [ChangeAction, [string, string]][];
