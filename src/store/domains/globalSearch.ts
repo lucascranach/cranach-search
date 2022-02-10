@@ -179,10 +179,11 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     if (result === null) return;
 
     const artefactIds = result.items.map(item => {
-      const id = item.id;
+      const { id } = item;
+      const { entityType } = item;
       const pattern = `.*${id}`;
       const imgSrc = item.imgSrc.replace(pattern, id);
-      return { id, imgSrc }
+      return { id, imgSrc, entityType }
     });
 
     const artefactIdsJson = JSON.stringify(artefactIds);
