@@ -26,7 +26,7 @@ const ArtefactLine: FC<Props> = ({
   imgAlt = '',
 }) => {
 
-  const additionalTextString = additionalText.map(item => (<p className="artefact-line__text">{item}</p>));
+  const additionalTextString = additionalText.map((item, index) => (<p key={index} className="artefact-line__text">{item}</p>));
 
   return (<div
     className="artefact-line"
