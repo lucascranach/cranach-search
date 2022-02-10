@@ -53,7 +53,7 @@ const createInitialFreeTexts = (): FreeTextFields => ({
   FRNr: '',
   location: '',
   inventoryNumber: '',
-}); 
+});
 
 const createInitialFilters = (): FilterType => ({
   dating: {
@@ -178,8 +178,16 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   storeSearchResultInLocalStorage(result: GlobalSearchResult | null) {
     if (result === null) return;
 
-    const artefactIds = result.items.map(item => item.id);
-    localStorage.setItem('searchResult', artefactIds.join(','));
+    const artefactIds = result.items.map(item => {
+      const id = item.id;
+      const pattern = `.*${id}`;
+      const imgSrc = item.imgSrc.replace(pattern, id);
+      return { id, imgSrc }
+    });
+
+    const artefactIdsJson = JSON.stringify(artefactIds);
+
+    localStorage.setItem('searchResult', artefactIdsJson);
   }
 
   setSearchFailed(error: string | null) {
@@ -287,7 +295,15 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
           lang,
         );
         this.setSearchResult(result);
-        this.storeSearchResultInLocalStorage(result);
+
+        updatedFilters.size = updatedFilters.size * 2;
+        const resultForInAcrtefactNavigation = await this.globalSearchAPI.searchByFiltersAndTerm(
+          updatedFilters,
+          this.freetextFields,
+          lang,
+        );
+        this.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
+
       } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
@@ -497,8 +513,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.updateRoutingForEntityType();
     this.updateRoutingForDating();
     this.updateRoutingForIsBestOf();
-
-
     this.updateRoutingForFilterGroups();
   }
 }
