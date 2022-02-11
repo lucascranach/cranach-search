@@ -134,7 +134,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     const sizeChanged = curr.size !== init.size;
     const fromChanged = curr.from !== init.from;
     const entityTypeChanged = curr.entityType !== init.entityType;
-    const idChanged = curr.id !== init.id;
     const filterGroupsChanged = curr.filterGroups.size !== init.filterGroups.size;
     const isBestOfChanged = curr.isBestOf !== init.isBestOf;
 
@@ -143,7 +142,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       sizeChanged,
       fromChanged,
       entityTypeChanged,
-      idChanged,
       filterGroupsChanged,
       isBestOfChanged,
     ].filter((item) => item).length;
