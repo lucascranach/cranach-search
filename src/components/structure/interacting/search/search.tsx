@@ -69,7 +69,7 @@ const Search: FC = () => {
     >
       <div className="search-result-info">
         {hits === 1 && <p><Size size={hits} /> {t('work found')}</p>}
-        {hits > 1 || hits ===0 && <p><Size size={hits} /> { t('works found') }</p>}
+        {(hits > 1 || hits === 0) && <p><Size size={hits} /> { t('works found') }</p>}
       </div>
       <fieldset className="block keyword-search">
         <TextInput
