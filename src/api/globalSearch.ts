@@ -151,6 +151,7 @@ const searchByFiltersAndTerm = async (
   }
 
   const queryParams = querify(params);
+  storeQueryInLocalStorage(queryParams);
 
   try {
     return await executeQuery(queryParams);
@@ -181,6 +182,11 @@ const retrieveUserCollection = async (
 
   return null;
 };
+
+const storeQueryInLocalStorage = (queryParams: string): void => {
+  if (queryParams === null) return;
+  localStorage.setItem('searchQueryParams', queryParams);
+}
 
 const executeQuery = async (
   queryParams: string
