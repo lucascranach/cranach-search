@@ -295,20 +295,36 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
         );
         this.setSearchResult(result);
 
-        updatedFilters.size = updatedFilters.size * 2;
-        const resultForInAcrtefactNavigation = await this.globalSearchAPI.searchByFiltersAndTerm(
-          updatedFilters,
-          this.freetextFields,
-          lang,
+        this.storeQueryParamsInLocalStorage(
+          this.globalSearchAPI.getQueryStringForFiltersAndTerm(
+            updatedFilters,
+            this.freetextFields,
+            lang,
+          ),
         );
-        this.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
 
+        await this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
       } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
         this.setSearchLoading(false);
       }
     }, this.debounceWaitInMSecs);
+  }
+
+  private storeQueryParamsInLocalStorage(queryParams: string): void {
+      if (queryParams === null) return;
+      localStorage.setItem('searchQueryParams', queryParams);
+  }
+
+  private async triggerExtendedFilterRequestForLocalStorage(filters: FilterType, lang: string): Promise<void> {
+    const extendedFilters = { ...filters, size: filters.size * 2 };
+    const resultForInAcrtefactNavigation = await this.globalSearchAPI.searchByFiltersAndTerm(
+      extendedFilters,
+      this.freetextFields,
+      lang,
+    );
+    this.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
   }
 
   triggerUserCollectionRequest(ids: string[]) {
