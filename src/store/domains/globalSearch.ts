@@ -240,6 +240,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.triggerFilterRequest();
   }
 
+  checkFilterItemActiveStatus(groupKey: string, filterItemId: string) {
+    const groupSet = this.filters.filterGroups.get(groupKey);
+
+    return !!groupSet && groupSet.has(filterItemId);
+  }
+
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string) {
     const groupSet = this.filters.filterGroups.get(groupKey);
 
@@ -262,6 +268,23 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.triggerFilterRequest();
   }
 
+  /* For temporary use */
+  setTabFilter(entityType: EntityType) {
+    const filterItem: [string, string] = ['catalog', 'catalog.KKL'];
+
+    if (entityType === EntityType.LUTHER_PORTRAITS) {
+      if (!this.checkFilterItemActiveStatus(...filterItem)) {
+        this.toggleFilterItemActiveStatus(...filterItem);
+      }
+    } else {
+      if (this.checkFilterItemActiveStatus(...filterItem)) {
+        this.toggleFilterItemActiveStatus(...filterItem);
+      }
+    }
+
+    this.setEntityType(entityType);
+  }
+
   setEntityType(entityType: EntityType) {
     this.filters.entityType = entityType;
     this.resetFrom();
@@ -282,6 +305,10 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       try {
         const updatedFilters: FilterType = {
           ...this.filters,
+          // TODO: Remove me when luther portraits is removed and all graphics introduced
+          entityType: (this.filters.entityType === EntityType.LUTHER_PORTRAITS)
+            ? EntityType.UNKNOWN
+            : this.filters.entityType,
           dating: {
             ...this.filters.dating,
             /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */
@@ -352,13 +379,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       case RoutingNotificationType.SEARCH_CHANGE:
         notification.params.forEach(([name, value]) => {
           switch (name) {
-            case 'attribution':
-            case 'collection_repository':
-            case 'examination_analysis':
-            case 'subject':
-            case 'form':
-            case 'function':
-            case 'catalog':
+            case 'filters':
               this.handleRoutingNotificationForFilterGroups(name, value);
               break;
 
@@ -400,21 +421,32 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   private updateRoutingForFilterGroups() {
-    const routingActions: RoutingSearchQueryParamChange = [
-      [RoutingChangeAction.REMOVE_ALL, ['', '']],
-    ];
+    const routingActions: RoutingSearchQueryParamChange = [];
 
-    Array.from(this.filters.filterGroups.entries()).forEach(([groupKey, value]) => {
-      const gs = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
+    if (this.filters.filterGroups.size === 0) {
+      routingActions.push([RoutingChangeAction.REMOVE, ['filters', '']]);
+    }
 
-      routingActions.push([RoutingChangeAction.ADD, [groupKey, gs]]);
-    });
+    const payload = Array.from(this.filters.filterGroups.entries()).reduce<string[]>((acc, [groupKey, _]) => {
+      const stringifiedGroupValue = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
+      return acc.concat([`${groupKey}:${stringifiedGroupValue}`]);
+    }, []);
+
+    if (payload.length > 0) {
+      routingActions.push([RoutingChangeAction.ADD, ['filters', payload.join(';')]]);
+    }
 
     this.rootStore.routing.updateSearchQueryParams(routingActions);
   }
 
   private handleRoutingNotificationForFilterGroups(name: string, value: string) {
-    this.filters.filterGroups.set(name, new Set(value.split(',')));
+    value.split(';').forEach((groupStr) => {
+      const [groupKey, filterIds = ''] = groupStr.split(':').map(item => item.trim());
+
+      if (filterIds.length > 0) {
+        this.filters.filterGroups.set(groupKey, new Set(filterIds.split(',')));
+      }
+    });
   }
 
   private updateRoutingForPage() {
@@ -564,6 +596,7 @@ export interface GlobalSearchStoreInterface {
   jumpToPagePos(pagePos: number): void;
   setSearchFailed(error: string | null): void;
   setDating(fromYear: number, toYear: number): void;
+  setTabFilter(entityType: EntityType): void;
   setEntityType(entityType: EntityType): void;
   setSize(size: number): void;
   setFrom(from: number): void;
