@@ -53,7 +53,7 @@ const createInitialFreeTexts = (): FreeTextFields => ({
   FRNr: '',
   location: '',
   inventoryNumber: '',
-}); 
+});
 
 const createInitialFilters = (): FilterType => ({
   dating: {
@@ -134,7 +134,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     const sizeChanged = curr.size !== init.size;
     const fromChanged = curr.from !== init.from;
     const entityTypeChanged = curr.entityType !== init.entityType;
-    const idChanged = curr.id !== init.id;
     const filterGroupsChanged = curr.filterGroups.size !== init.filterGroups.size;
     const isBestOfChanged = curr.isBestOf !== init.isBestOf;
 
@@ -143,7 +142,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       sizeChanged,
       fromChanged,
       entityTypeChanged,
-      idChanged,
       filterGroupsChanged,
       isBestOfChanged,
     ].filter((item) => item).length;
@@ -178,8 +176,17 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   storeSearchResultInLocalStorage(result: GlobalSearchResult | null) {
     if (result === null) return;
 
-    const artefactIds = result.items.map(item => item.id);
-    localStorage.setItem('searchResult', artefactIds.join(','));
+    const artefactIds = result.items.map(item => {
+      const { id } = item;
+      const { entityType } = item;
+      const pattern = `.*${id}`;
+      const imgSrc = item.imgSrc.replace(pattern, id);
+      return { id, imgSrc, entityType }
+    });
+
+    const artefactIdsJson = JSON.stringify(artefactIds);
+
+    localStorage.setItem('searchResult', artefactIdsJson);
   }
 
   setSearchFailed(error: string | null) {
@@ -287,13 +294,37 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
           lang,
         );
         this.setSearchResult(result);
-        this.storeSearchResultInLocalStorage(result);
+
+        this.storeQueryParamsInLocalStorage(
+          this.globalSearchAPI.getQueryStringForFiltersAndTerm(
+            updatedFilters,
+            this.freetextFields,
+            lang,
+          ),
+        );
+
+        this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
       } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
         this.setSearchLoading(false);
       }
     }, this.debounceWaitInMSecs);
+  }
+
+  private storeQueryParamsInLocalStorage(queryParams: string): void {
+      if (queryParams === null) return;
+      localStorage.setItem('searchQueryParams', queryParams);
+  }
+
+  private async triggerExtendedFilterRequestForLocalStorage(filters: FilterType, lang: string): Promise<void> {
+    const extendedFilters = { ...filters, size: filters.size * 2 };
+    const resultForInAcrtefactNavigation = await this.globalSearchAPI.searchByFiltersAndTerm(
+      extendedFilters,
+      this.freetextFields,
+      lang,
+    );
+    this.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
   }
 
   triggerUserCollectionRequest(ids: string[]) {
@@ -497,8 +528,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.updateRoutingForEntityType();
     this.updateRoutingForDating();
     this.updateRoutingForIsBestOf();
-
-
     this.updateRoutingForFilterGroups();
   }
 }

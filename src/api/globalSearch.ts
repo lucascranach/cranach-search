@@ -85,11 +85,11 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
   }
 };
 
-const searchByFiltersAndTerm = async (
+const getQueryStringForFiltersAndTerm = (
   filters: APIFilterType,
   freetextFields: APIFreetextFieldsType,
   langCode: string
-): Promise<GlobalSearchResult | null> => {
+): string => {
   const params: Record<string, string | number> = {
     language: langCode,
     sort_by: 'sorting_number.asc',
@@ -150,7 +150,19 @@ const searchByFiltersAndTerm = async (
     params['inventory_number:eq'] = cleanInventoryNumber;
   }
 
-  const queryParams = querify(params);
+  return querify(params);
+};
+
+const searchByFiltersAndTerm = async (
+  filters: APIFilterType,
+  freetextFields: APIFreetextFieldsType,
+  langCode: string
+): Promise<GlobalSearchResult | null> => {
+  const queryParams = getQueryStringForFiltersAndTerm(
+    filters,
+    freetextFields,
+    langCode,
+  );
 
   try {
     return await executeQuery(queryParams);
@@ -206,19 +218,9 @@ const executeQuery = async (
 
 
 export default {
-  async searchByFiltersAndTerm(
-    filters: APIFilterType,
-    freetextFields: APIFreetextFieldsType,
-    lang: string,
-  ): Promise<GlobalSearchResult | null> {
-    return await searchByFiltersAndTerm(filters, freetextFields, lang);
-  },
-  async retrieveUserCollection(
-    ids: string[],
-    lang: string,
-  ): Promise<GlobalSearchResult | null> {
-    return await retrieveUserCollection(ids, lang);
-  }
+  getQueryStringForFiltersAndTerm,
+  searchByFiltersAndTerm,
+  retrieveUserCollection,
 };
 
 export enum EntityType {
