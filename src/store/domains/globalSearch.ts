@@ -303,7 +303,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
           ),
         );
 
-        await this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
+        this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
       } catch(err: any) {
         this.setSearchFailed(err.toString());
       } finally {
