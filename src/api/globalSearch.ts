@@ -7,7 +7,7 @@ const authPass = import.meta.env.VITE_AUTH_PASS;
 
 const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   return [
-    // 'catalog', // TODO: uncomment me when all grapics were introduced
+    'catalog',
     'attribution',
     'collection_repository',
     'examination_analysis',
@@ -229,7 +229,6 @@ export enum EntityType {
   DOCUMENTS = 'DOCUMENT',
   ARCHIVALS = 'ARCHIVAL',
   UNKNOWN = 'UNKNOWN',
-  LUTHER_PORTRAITS = 'LUTHER_PORTRAITS',
 }
 
 export enum EntityTypeShortcuts {

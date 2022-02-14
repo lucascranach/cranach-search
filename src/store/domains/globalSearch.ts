@@ -268,23 +268,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.triggerFilterRequest();
   }
 
-  /* For temporary use */
-  setTabFilter(entityType: EntityType) {
-    const filterItem: [string, string] = ['catalog', 'catalog.KKL'];
-
-    if (entityType === EntityType.LUTHER_PORTRAITS) {
-      if (!this.checkFilterItemActiveStatus(...filterItem)) {
-        this.toggleFilterItemActiveStatus(...filterItem);
-      }
-    } else {
-      if (this.checkFilterItemActiveStatus(...filterItem)) {
-        this.toggleFilterItemActiveStatus(...filterItem);
-      }
-    }
-
-    this.setEntityType(entityType);
-  }
-
   setEntityType(entityType: EntityType) {
     this.filters.entityType = entityType;
     this.resetFrom();
@@ -305,10 +288,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       try {
         const updatedFilters: FilterType = {
           ...this.filters,
-          // TODO: Remove me when luther portraits is removed and all graphics introduced
-          entityType: (this.filters.entityType === EntityType.LUTHER_PORTRAITS)
-            ? EntityType.UNKNOWN
-            : this.filters.entityType,
           dating: {
             ...this.filters.dating,
             /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */

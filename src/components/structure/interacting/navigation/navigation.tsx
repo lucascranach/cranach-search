@@ -26,14 +26,16 @@ const Navigation = () => {
       title: 'Paintings',
       filterValue: GlobalSearchEntityType.PAINTINGS,
     },
+    /*
     {
-      title: 'Luther portraits (1519-30)',
-      filterValue: GlobalSearchEntityType.LUTHER_PORTRAITS,
-    }
+      title: 'Prints and Drawings',
+      filterValue: GlobalSearchEntityType.GRAPHICS,
+    },
+    */
   ];
 
   const triggerAction = (filterValue: GlobalSearchEntityType) => {
-    globalSearch.setTabFilter(filterValue);
+    globalSearch.setEntityType(filterValue);
   }
 
   return (
