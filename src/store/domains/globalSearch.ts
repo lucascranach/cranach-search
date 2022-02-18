@@ -575,7 +575,6 @@ export interface GlobalSearchStoreInterface {
   jumpToPagePos(pagePos: number): void;
   setSearchFailed(error: string | null): void;
   setDating(fromYear: number, toYear: number): void;
-  setTabFilter(entityType: EntityType): void;
   setEntityType(entityType: EntityType): void;
   setSize(size: number): void;
   setFrom(from: number): void;
