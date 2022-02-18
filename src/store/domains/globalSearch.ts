@@ -196,7 +196,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   setDating(fromYear: number, toYear: number) {
     this.filters.dating.fromYear = fromYear;
     this.filters.dating.toYear = toYear;
-    this.resetFrom();
     this.updateRoutingForDating();
     this.triggerFilterRequest();
   }
@@ -212,13 +211,8 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.filters.from = from;
   }
 
-  resetFrom() {
-    this.setFrom(0);
-  }
-
   setIsBestOf(isBestOf: boolean) {
     this.filters.isBestOf = isBestOf;
-    this.resetFrom();
     this.updateRoutingForIsBestOf();
     this.triggerFilterRequest();
   }
@@ -226,18 +220,26 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   setPagination(relativePagePos: number) {
     if (relativePagePos === 0) return;
 
-    const newFrom = this.filters.from + (this.filters.size * relativePagePos);
-    const gatedFrom = Math.max(0, newFrom);
+    const pagePos = (this.filters.from + (this.filters.size * relativePagePos)) / this.filters.size;
 
-    this.setFrom(gatedFrom);
-    this.updateRoutingForPage();
-    this.triggerFilterRequest();
+    this.updatePagePos(pagePos);
+    this.triggerFilterRequest(false);
   }
 
   jumpToPagePos(pagePos: number) {
-    this.setFrom(pagePos * this.filters.size);
+    this.updatePagePos(pagePos);
+    this.triggerFilterRequest(false);
+  }
+
+  private resetPagePos() {
+    this.updatePagePos(0);
+  }
+
+  private updatePagePos(pagePos: number) {
+    const gatedPagePos = Math.max(0, pagePos);
+
+    this.setFrom(gatedPagePos * this.filters.size);
     this.updateRoutingForPage();
-    this.triggerFilterRequest();
   }
 
   checkFilterItemActiveStatus(groupKey: string, filterItemId: string) {
@@ -263,14 +265,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
-    this.resetFrom();
     this.updateRoutingForFilterGroups();
     this.triggerFilterRequest();
   }
 
   setEntityType(entityType: EntityType) {
     this.filters.entityType = entityType;
-    this.resetFrom();
     this.updateRoutingForEntityType();
     this.triggerFilterRequest();
   }
@@ -279,12 +279,17 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.filters.entityType = EntityType.UNKNOWN;
   }
 
-  triggerFilterRequest() {
+  triggerFilterRequest(resetPagePos: boolean = true) {
     clearTimeout(this.debounceHandler);
 
     this.debounceHandler = window.setTimeout(async () => {
       const { lang } = this.rootStore.ui;
       this.setSearchLoading(true);
+
+      if (resetPagePos) {
+        this.resetPagePos();
+      }
+
       try {
         const updatedFilters: FilterType = {
           ...this.filters,
@@ -565,10 +570,9 @@ export interface GlobalSearchStoreInterface {
   setEntityType(entityType: EntityType): void;
   setSize(size: number): void;
   setFrom(from: number): void;
-  resetFrom(): void;
   setIsBestOf(isBestOf: boolean): void;
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
-  triggerFilterRequest(): void;
+  triggerFilterRequest(resetPagePos?: boolean): void;
   triggerUserCollectionRequest(ids: string[]): void;
   resetEntityType(): void;
   applyFreetextFields(): void;
