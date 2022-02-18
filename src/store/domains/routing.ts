@@ -101,7 +101,6 @@ export default class Routing implements RoutingStoreInterface {
 
   updateSearchQueryParams(change: SearchQueryParamChange) {
     const currentSearchParams = this.searchParams;
-
     const updatedSearchParams = change.reduce((acc, [action, [name, value]]) => {
       switch (action) {
         case ChangeAction.ADD:
@@ -111,9 +110,6 @@ export default class Routing implements RoutingStoreInterface {
         case ChangeAction.REMOVE:
           currentSearchParams.delete(name);
           break;
-
-        case ChangeAction.REMOVE_ALL:
-          return new URLSearchParams();
       }
 
       return acc;
@@ -179,7 +175,6 @@ export enum NotificationType {
 export enum ChangeAction {
   ADD = 'ADD',
   REMOVE = 'REMOVE',
-  REMOVE_ALL = 'REMOVE_ALL',
 }
 
 export type SearchQueryParamChange = [ChangeAction, [string, string]][];

@@ -228,7 +228,7 @@ export enum EntityType {
   PAINTINGS = 'PAINTING',
   DOCUMENTS = 'DOCUMENT',
   ARCHIVALS = 'ARCHIVAL',
-  UNKNOWN = 'UNKNOWN'
+  UNKNOWN = 'UNKNOWN',
 }
 
 export enum EntityTypeShortcuts {

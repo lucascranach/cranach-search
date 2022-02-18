@@ -26,10 +26,12 @@ const Navigation = () => {
       title: 'Paintings',
       filterValue: GlobalSearchEntityType.PAINTINGS,
     },
+    /*
     {
       title: 'Prints and Drawings',
       filterValue: GlobalSearchEntityType.GRAPHICS,
-    }
+    },
+    */
   ];
 
   const triggerAction = (filterValue: GlobalSearchEntityType) => {

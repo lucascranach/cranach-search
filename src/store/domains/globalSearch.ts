@@ -240,6 +240,12 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.triggerFilterRequest();
   }
 
+  checkFilterItemActiveStatus(groupKey: string, filterItemId: string) {
+    const groupSet = this.filters.filterGroups.get(groupKey);
+
+    return !!groupSet && groupSet.has(filterItemId);
+  }
+
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string) {
     const groupSet = this.filters.filterGroups.get(groupKey);
 
@@ -352,13 +358,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
       case RoutingNotificationType.SEARCH_CHANGE:
         notification.params.forEach(([name, value]) => {
           switch (name) {
-            case 'attribution':
-            case 'collection_repository':
-            case 'examination_analysis':
-            case 'subject':
-            case 'form':
-            case 'function':
-            case 'catalog':
+            case 'filters':
               this.handleRoutingNotificationForFilterGroups(name, value);
               break;
 
@@ -400,21 +400,32 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   private updateRoutingForFilterGroups() {
-    const routingActions: RoutingSearchQueryParamChange = [
-      [RoutingChangeAction.REMOVE_ALL, ['', '']],
-    ];
+    const routingActions: RoutingSearchQueryParamChange = [];
 
-    Array.from(this.filters.filterGroups.entries()).forEach(([groupKey, value]) => {
-      const gs = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
+    if (this.filters.filterGroups.size === 0) {
+      routingActions.push([RoutingChangeAction.REMOVE, ['filters', '']]);
+    }
 
-      routingActions.push([RoutingChangeAction.ADD, [groupKey, gs]]);
-    });
+    const payload = Array.from(this.filters.filterGroups.entries()).reduce<string[]>((acc, [groupKey, _]) => {
+      const stringifiedGroupValue = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
+      return acc.concat([`${groupKey}:${stringifiedGroupValue}`]);
+    }, []);
+
+    if (payload.length > 0) {
+      routingActions.push([RoutingChangeAction.ADD, ['filters', payload.join(';')]]);
+    }
 
     this.rootStore.routing.updateSearchQueryParams(routingActions);
   }
 
   private handleRoutingNotificationForFilterGroups(name: string, value: string) {
-    this.filters.filterGroups.set(name, new Set(value.split(',')));
+    value.split(';').forEach((groupStr) => {
+      const [groupKey, filterIds = ''] = groupStr.split(':').map(item => item.trim());
+
+      if (filterIds.length > 0) {
+        this.filters.filterGroups.set(groupKey, new Set(filterIds.split(',')));
+      }
+    });
   }
 
   private updateRoutingForPage() {
