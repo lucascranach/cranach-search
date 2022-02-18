@@ -119,6 +119,7 @@ export default class Routing implements RoutingStoreInterface {
     this.history.replace({
       search: Array.from(updatedSearchParams).length ? `?${updatedSearchParams.toString()}` : '',
     });
+    this.storeQueryParamsInLocalStorage();
     this.disableNotify = false;
   }
 
@@ -154,6 +155,10 @@ export default class Routing implements RoutingStoreInterface {
     if (this.disableNotify) { return; }
 
     this.routingObservers.forEach(observer => observer.notify(notification));
+  }
+
+  private storeQueryParamsInLocalStorage(): void {
+      localStorage.setItem('searchQueryParams', this.history.location.search.slice(1));
   }
 }
 

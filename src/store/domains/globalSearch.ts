@@ -301,14 +301,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
         );
         this.setSearchResult(result);
 
-        this.storeQueryParamsInLocalStorage(
-          this.globalSearchAPI.getQueryStringForFiltersAndTerm(
-            updatedFilters,
-            this.freetextFields,
-            lang,
-          ),
-        );
-
         this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
       } catch(err: any) {
         this.setSearchFailed(err.toString());
@@ -316,11 +308,6 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
         this.setSearchLoading(false);
       }
     }, this.debounceWaitInMSecs);
-  }
-
-  private storeQueryParamsInLocalStorage(queryParams: string): void {
-      if (queryParams === null) return;
-      localStorage.setItem('searchQueryParams', queryParams);
   }
 
   private async triggerExtendedFilterRequestForLocalStorage(filters: FilterType, lang: string): Promise<void> {
