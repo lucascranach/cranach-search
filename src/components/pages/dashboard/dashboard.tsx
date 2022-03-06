@@ -16,7 +16,7 @@ const Dashboard: FC = () => {
   const mainContentEl = useRef<HTMLElement|null>(null);
 
   useEffect(() => {
-    globalSearch.triggerFilterRequest();
+    globalSearch.triggerFilterRequest(false);
   }, [])
 
   useEffect(() => {
