@@ -11,13 +11,22 @@
     .input-field {
       display: block;
       width: 100%;
-      padding: $half 0;
+      padding: $s 0 $quad 0;
       border: 0;
       border-bottom: 1px solid $dark;
       margin-bottom: 2px;
       background-color: transparent;
       color: $dark;
       font: inherit;
+      font-weight: $fw-regular;
+
+      transition: padding $tr-fast;
+
+      &:focus, &:focus-visible{
+        outline: none;
+        padding-top: $m;
+
+      }
     }
 
     .reset-icon {
