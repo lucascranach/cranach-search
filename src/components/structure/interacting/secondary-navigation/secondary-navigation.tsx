@@ -98,7 +98,7 @@ const SecondaryNavigation = () => {
             onClick={() => showFilter()}
           >
             <i className="icon icon--is-inline">manage_search</i>
-            {t('goto search')}
+            {t('Go to search')}
           </button>
         </li>
 
@@ -108,7 +108,7 @@ const SecondaryNavigation = () => {
             onClick={() => showMyCranach()}
           >
             <i className="icon icon--is-inline">list</i>
-            {t('goto My Collection')}
+            {t('Go to my Collection')}
           </button>
         </li>
 
