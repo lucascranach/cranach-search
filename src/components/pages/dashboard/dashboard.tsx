@@ -30,16 +30,16 @@ const Dashboard: FC = () => {
 
     switch (entityType) {
       case GlobalSearchEntityType.GRAPHICS:
-        return `${cdaBaseUrl}/${ui.lang}/graphics/${id}`;
+        return `${cdaBaseUrl}/${ui.lang}/graphics/${id}/`;
 
       case GlobalSearchEntityType.PAINTINGS:
-        return `${cdaBaseUrl}/${ui.lang}/paintings/${id}`;
+        return `${cdaBaseUrl}/${ui.lang}/paintings/${id}/`;
 
       case GlobalSearchEntityType.DOCUMENTS:
-        return `${cdaBaseUrl}/archival-documents/${id}`;
+        return `${cdaBaseUrl}/archival-documents/${id}/`;
 
       default:
-        return `$/{ui.lang}/${id}`;
+        return `$/{ui.lang}/${id}/`;
     }
   };
 
