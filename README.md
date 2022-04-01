@@ -25,7 +25,7 @@ For local development one can also create a `.env.local` not tracked by the VCS,
 ## Custom environment variables
 
 | Environment variable            | Description                        | Example                                        |
-| ------------------------------- | ---------------------------------= | ---------------------------------------------- |
+| ------------------------------- | ---------------------------------- | ---------------------------------------------- |
 | `VITE_SEARCH_API_URL`           | API endpoint                       | `http://localhost:3000`                        |
 | `VITE_CRANACH_COMPARE_URL`      | Url called for artefact comparison | `https://lucascranach.org/compare/?artefacts=` |
 | `VITE_AUTH_USER`                | Username for basic authentication  | `peter`                                        |
