@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState, KeyboardEvent } from 'react';
+import React, { FC, useContext, KeyboardEvent } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Btn from '../../../base/interacting/btn';
@@ -55,10 +55,14 @@ const Search: FC = () => {
 
   const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search--is-active' : '';
 
+  const triggerFilterRequest = () => {
+    globalSearch.applyFreetextFields();
+    globalSearch.triggerFilterRequest();
+  }
+
   const triggerFilterRequestOnEnter = (e: KeyboardEvent) => {
     if ((e.code && e.code === 'Enter') || (e.keyCode === 13)) {
-      globalSearch.applyFreetextFields();
-      globalSearch.triggerFilterRequest();
+      triggerFilterRequest();
     }
   }
 
@@ -78,7 +82,7 @@ const Search: FC = () => {
           value={ globalSearch.freetextFields.allFieldsTerm }
           onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
           onKeyDown={ triggerFilterRequestOnEnter }
-          resetable={true}
+          onReset={ triggerFilterRequest }
         ></TextInput>
 
         <Toggle
@@ -94,6 +98,7 @@ const Search: FC = () => {
             value={ globalSearch.freetextFields.title }
             onChange={ title => globalSearch.setFreetextFields({ title }) }
             onKeyDown={ triggerFilterRequestOnEnter }
+            onReset={ triggerFilterRequest }
             resetable={true}
           ></TextInput>
 
@@ -102,6 +107,7 @@ const Search: FC = () => {
             label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ globalSearch.freetextFields.FRNr }
             onChange={ FRNr => globalSearch.setFreetextFields({ FRNr }) }
             onKeyDown={ triggerFilterRequestOnEnter }
+            onReset={ triggerFilterRequest }
             resetable={true}
           ></TextInput>
 
@@ -111,6 +117,7 @@ const Search: FC = () => {
             value={ globalSearch.freetextFields.location }
             onChange={ location => globalSearch.setFreetextFields({ location }) }
             onKeyDown={ triggerFilterRequestOnEnter }
+            onReset={ triggerFilterRequest }
             resetable={true}
           ></TextInput>
 
@@ -120,6 +127,7 @@ const Search: FC = () => {
             value={ globalSearch.freetextFields.inventoryNumber }
             onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
             onKeyDown={ triggerFilterRequestOnEnter }
+            onReset={ triggerFilterRequest }
             resetable={true}
           ></TextInput>
         </Toggle>
