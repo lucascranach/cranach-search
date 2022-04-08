@@ -11,6 +11,7 @@ type Props = {
   onKeyDown?: (e: KeyboardEvent<HTMLInputElement>) => void,
   disabled?: boolean,
   resetable?: boolean,
+  onReset?: () => void,
 };
 
 const TextInput: FC<Props> = ({
@@ -22,6 +23,7 @@ const TextInput: FC<Props> = ({
   onKeyDown = () => {},
   disabled = false,
   resetable = false,
+  onReset = () => {},
 }) => {
   const inputFieldEl = useRef<HTMLInputElement|null>(null);
 
@@ -42,7 +44,10 @@ const TextInput: FC<Props> = ({
         />
         { !disabled && resetable && (<span
             className="reset-icon material-icons"
-            onClick={ () => inputFieldEl.current && (inputFieldEl.current.value = '') }
+            onClick={ () => {
+              onChange('');
+              onReset();
+            } }
           >backspace</span>) }
       </span>
       { label
