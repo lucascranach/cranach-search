@@ -351,7 +351,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
         notification.params.forEach(([name, value]) => {
           switch (name) {
             case 'filters':
-              this.handleRoutingNotificationForFilterGroups(name, value);
+              this.handleRoutingNotificationForFilterGroups(value);
               break;
 
             case 'page':
@@ -410,7 +410,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     this.rootStore.routing.updateSearchQueryParams(routingActions);
   }
 
-  private handleRoutingNotificationForFilterGroups(name: string, value: string) {
+  private handleRoutingNotificationForFilterGroups(value: string) {
     value.split(';').forEach((groupStr) => {
       const [groupKey, filterIds = ''] = groupStr.split(':').map(item => item.trim());
 
