@@ -130,22 +130,22 @@ const getQueryStringForFiltersAndTerm = (
 
   const cleanTitle = freetextFields.title.trim();
   if (cleanTitle) {
-    params['title:eq'] = cleanTitle;
+    params['title:sim'] = cleanTitle;
   }
 
   const cleanFRNr = freetextFields.FRNr.trim();
   if (cleanFRNr) {
-    params['object_name:eq'] = cleanFRNr;
+    params['object_name:sim'] = cleanFRNr;
   }
 
   const cleanLocation = freetextFields.location.trim();
   if (cleanLocation) {
-    params['location:eq'] = cleanLocation;
+    params['collection_repository:sim'] = cleanLocation;
   }
 
   const cleanInventoryNumber = freetextFields.inventoryNumber.trim();
   if (cleanInventoryNumber) {
-    params['inventory_number:eq'] = cleanInventoryNumber;
+    params['inventory_number:sim'] = cleanInventoryNumber;
   }
 
   return querify(params);
