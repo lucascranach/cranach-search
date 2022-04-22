@@ -20,7 +20,6 @@ export type ArtefactOverviewItem = {
   classification: string;
   printProcess: string;
   imgSrc: string;
-  entityTypeShortcut: string;
   to: string;
   openInNewWindow: boolean;
   medium: string;
@@ -202,7 +201,6 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
       >
         {ArtefactOverviewType.CARD === viewType && <ArtefactCard
           id={item.id}
-          storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
           title={assembleTitleForCardView(item)}
           subtitle={assembleSubTitleForCardView(item)}
           text={assembleTextForCardView(item)}
@@ -214,7 +212,6 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
         {ArtefactOverviewType.CARD_SMALL === viewType && <ArtefactCard
           to={item.to}
-          storageSlug={`${item.id}:${item.objectName}:${item.entityTypeShortcut}`}
           imgSrc={item.imgSrc || ''}
         />
         }

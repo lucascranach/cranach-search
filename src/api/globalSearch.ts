@@ -80,7 +80,6 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     objectName: item.object_name,
     imgSrc: item.img_src,
     medium: getMedium(item),
-    entityTypeShortcut: item.entity_type.substr(0, 1),
     _highlight: item._highlight,
   }
 };
@@ -231,14 +230,6 @@ export enum EntityType {
   UNKNOWN = 'UNKNOWN',
 }
 
-export enum EntityTypeShortcuts {
-  GRAPHICS = 'G',
-  PAINTINGS = 'P',
-  DOCUMENTS = 'D',
-  ARCHIVALS = 'A',
-  UNKNOWN = 'U'
-}
-
 export type APIFilterType = {
   dating: {
     fromYear: number,
@@ -272,7 +263,6 @@ export type GlobalSearchArtifact = {
   classification: string;
   printProcess: string;
   imgSrc: string;
-  entityTypeShortcut: string;
   medium: string;
   _highlight?: Record<string, Array<string>>;
 }

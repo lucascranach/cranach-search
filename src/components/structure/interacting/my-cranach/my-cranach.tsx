@@ -11,7 +11,7 @@ const MyCranach = () => {
   const { root: { collection, ui } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Search', translations);
   const triggerComparism = () => collection.startComparism();
-  const compareIsActive = collection.size && collection.size > 1 ? 'btn--is-active' : 'btn--is-disabled';
+  const compareIsActive = collection.size > 1 ? 'btn--is-active' : 'btn--is-disabled';
   const isActiveMyCranach = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.MY_CRANACH ? 'my-cranach--is-active' : '';
 
   return (
