@@ -27,20 +27,7 @@ const Dashboard: FC = () => {
 
   const getToUrlForArtifact = (entityType: GlobalSearchEntityType, id: string): string => {
     const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
-
-    switch (entityType) {
-      case GlobalSearchEntityType.GRAPHICS:
-        return `${cdaBaseUrl}/${ui.lang}/graphics/${id}/`;
-
-      case GlobalSearchEntityType.PAINTINGS:
-        return `${cdaBaseUrl}/${ui.lang}/paintings/${id}/`;
-
-      case GlobalSearchEntityType.DOCUMENTS:
-        return `${cdaBaseUrl}/archival-documents/${id}/`;
-
-      default:
-        return `$/{ui.lang}/${id}/`;
-    }
+    return `${cdaBaseUrl}/${ui.lang}/${id}/`;
   };
 
   const overviewItems: ArtefactOverviewItem[] = globalSearch.flattenedSearchResultItems.map(
