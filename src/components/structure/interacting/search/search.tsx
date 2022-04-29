@@ -178,15 +178,15 @@ const Search: FC = () => {
                 return (<Accordion.Entry
                   key={ item.id }
                   title={ item.name }
-                  isOpen={ ui.filterItemIsCollapsed(item.id) }
-                  onToggle={ (isOpen) => ui.setFilterItemCollapseState(item.id, isOpen) }
+                  isOpen={ ui.filterItemIsExpanded(item.id) }
+                  onToggle={ (isOpen) => ui.setFilterItemExpandedState(item.id, isOpen) }
                 >
                   <TreeList
                     items={ item.children ?? [] }
-                    isOpenIf={ (treeListItem) => ui.filterItemIsCollapsed(treeListItem.id) }
+                    isOpenIf={ (treeListItem) => ui.filterItemIsExpanded(treeListItem.id) }
                     onToggle={ (treeListItem, isOpen) => {
                       /* Keeping track of the collapse state to, to stay collapsed on page refresh */
-                      ui.setFilterItemCollapseState(treeListItem.id, isOpen);
+                      ui.setFilterItemExpandedState(treeListItem.id, isOpen);
                     }}
                     wrapComponent={
                       (treeListItem, toggle) => (<span className={ `filter-info-item ${ (treeListItem.data?.count ?? 0) === 0 ? 'filter-info-item__inactive' : '' }` }>

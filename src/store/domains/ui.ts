@@ -25,7 +25,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   secondaryNavigationIsVisible: boolean = false;
   additionalSearchInputsVisible: boolean = false;
   allowedLangs: Record<string, string> = { de: 'DE', en: 'EN' };
-  idsOfCollapsedFiltersInFilterTree: string[] = [];
+  idsOfExpandedFiltersInFilterTree: string[] = [];
 
   constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
@@ -92,17 +92,17 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     this.updateLocalStorage();
   }
 
-  filterItemIsCollapsed(filterItemId: string): boolean {
-    return this.idsOfCollapsedFiltersInFilterTree.includes(filterItemId);
+  filterItemIsExpanded(filterItemId: string): boolean {
+    return this.idsOfExpandedFiltersInFilterTree.includes(filterItemId);
   }
 
-  setFilterItemCollapseState(filterItemId: string, collapseState: boolean): void {
-    this.idsOfCollapsedFiltersInFilterTree = this.idsOfCollapsedFiltersInFilterTree.filter(
+  setFilterItemExpandedState(filterItemId: string, collapseState: boolean): void {
+    this.idsOfExpandedFiltersInFilterTree = this.idsOfExpandedFiltersInFilterTree.filter(
       (currFilterItemId) => currFilterItemId !== filterItemId,
     );
 
     if (collapseState) {
-      this.idsOfCollapsedFiltersInFilterTree.push(filterItemId);
+      this.idsOfExpandedFiltersInFilterTree.push(filterItemId);
     }
 
     this.updateLocalStorage();
@@ -115,7 +115,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       overviewViewType: this.overviewViewType,
       secondaryNavigationIsVisible: this.secondaryNavigationIsVisible,
       additionalSearchInputsVisible: this.additionalSearchInputsVisible,
-      idsOfCollapsedFiltersInFilterTree: this.idsOfCollapsedFiltersInFilterTree,
+      idsOfExpandedFiltersInFilterTree: this.idsOfExpandedFiltersInFilterTree,
     }
 
     window.localStorage.setItem(CRANACH_SEARCH_LOCALSTORAGE_KEY, JSON.stringify(item));
@@ -150,8 +150,8 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     this.additionalSearchInputsVisible = !!item.additionalSearchInputsVisible;
 
     /* Ids of FilterItems collapsed in the filter tree */
-    if (item.idsOfCollapsedFiltersInFilterTree) {
-      this.idsOfCollapsedFiltersInFilterTree = item.idsOfCollapsedFiltersInFilterTree;
+    if (item.idsOfExpandedFiltersInFilterTree) {
+      this.idsOfExpandedFiltersInFilterTree = item.idsOfExpandedFiltersInFilterTree;
     }
   }
 
@@ -189,7 +189,7 @@ type StorageItemType = {
   overviewViewType: UIOverviewViewType;
   secondaryNavigationIsVisible: boolean;
   additionalSearchInputsVisible: boolean;
-  idsOfCollapsedFiltersInFilterTree: string[];
+  idsOfExpandedFiltersInFilterTree: string[];
 }
 
 export enum UISidebarContentType {
@@ -220,6 +220,6 @@ export interface UIStoreInterface {
   setSecondaryNavigationIsVisible(isVisible: boolean): void;
   setAdditionalSearchInputsVisible(isVisible: boolean): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
-  filterItemIsCollapsed(filterItemId: string): boolean;
-  setFilterItemCollapseState(filterItemId: string, collapseState: boolean): void;
+  filterItemIsExpanded(filterItemId: string): boolean;
+  setFilterItemExpandedState(filterItemId: string, collapseState: boolean): void;
 }
