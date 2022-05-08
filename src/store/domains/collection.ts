@@ -80,7 +80,6 @@ export default class Collection implements CollectionStoreInterface {
 export interface CollectionStoreInterface {
   size: number;
   showCollection(): void;
-  startComparism(): void;
   addArtefactToCollection(artefact: string): void;
   removeArtefactFromCollection(artefact: string): void;
   collectionIncludesArtefact(id: string): boolean;
