@@ -10,8 +10,6 @@ import StoreContext, { UISidebarContentType, UISidebarStatusType } from '../../.
 const MyCranach = () => {
   const { root: { collection, ui } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Search', translations);
-  const triggerComparism = () => collection.startComparism();
-  const compareIsActive = collection.size > 1 ? 'btn--is-active' : 'btn--is-disabled';
   const isActiveMyCranach = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.MY_CRANACH ? 'my-cranach--is-active' : '';
 
   return (
@@ -20,17 +18,6 @@ const MyCranach = () => {
       data-component="structure/interacting/my-cranach"
     >
       <h2 className="my-cranach__title">{t('Show My Collection')}<Size size={collection.size} /></h2>
-
-      <ul>
-        <li
-          className={`btn btn--is-reduced btn--is-stacked ${compareIsActive}`}
-          onClick={() => triggerComparism()}
-        >
-          <i className="icon icon--is-medium icon--is-inline">compare</i>
-          {t('Compare Artefacts')}
-
-        </li>
-      </ul>
     </div>
   );
 };
