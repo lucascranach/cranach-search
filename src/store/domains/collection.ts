@@ -3,8 +3,6 @@ import { makeAutoObservable } from 'mobx';
 import { EntityType } from '../../api/globalSearch';
 import { RootStoreInterface } from '../rootStore';
 
-const cranachCompareURL = import.meta.env.VITE_CRANACH_COMPARE_URL;
-
 const CRANACH_SEARCH_LOCALSTORAGE_KEY = 'collection';
 
 interface CollectionItem {
@@ -66,27 +64,6 @@ export default class Collection implements CollectionStoreInterface {
     return this.artefacts.some(artefact => artefact.inventoryNumber === inventoryNumber);
   }
 
-  startComparism() {
-    const queryParamValue = this.getComparisonQueryParamValue();
-    const url = `${cranachCompareURL}${queryParamValue}`;
-    window.open(url, "_blank");
-    return true;
-  }
-
-  getComparisonQueryParamValue(): string {
-    return this.artefacts.map((artefact) => {
-      const {
-        inventoryNumber,
-        objectName,
-        entityType,
-      } = artefact;
-
-      const entityTypeCode = entityType.slice(0, 1);
-
-      return `${inventoryNumber}:${objectName}:${entityTypeCode}`;
-    }).join(',');
-  }
-
   private readCollectionFromLocalStorage() {
     const artefactsJSON = localStorage.getItem(CRANACH_SEARCH_LOCALSTORAGE_KEY);
     if(artefactsJSON) {
@@ -103,7 +80,6 @@ export default class Collection implements CollectionStoreInterface {
 export interface CollectionStoreInterface {
   size: number;
   showCollection(): void;
-  startComparism(): void;
   addArtefactToCollection(artefact: string): void;
   removeArtefactFromCollection(artefact: string): void;
   collectionIncludesArtefact(id: string): boolean;
