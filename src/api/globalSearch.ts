@@ -140,7 +140,7 @@ const getQueryStringForFiltersAndTerm = (
 
   const cleanLocation = freetextFields.location.trim();
   if (cleanLocation) {
-    params['collection_repository:sim'] = cleanLocation;
+    params['locations:sim'] = cleanLocation;
   }
 
   const cleanInventoryNumber = freetextFields.inventoryNumber.trim();
