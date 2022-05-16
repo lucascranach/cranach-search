@@ -1,5 +1,5 @@
 
-const querify = (obj: Record<string, string | number>) => Object.entries(obj).map(([name, value]) => `${name}=${encodeURIComponent(value)}`).join('&');
+const querify = (obj: Record<string, string | number | boolean>) => Object.entries(obj).map(([name, value]) => `${name}=${encodeURIComponent(value)}`).join('&');
 
 const host = import.meta.env.VITE_SEARCH_API_URL;
 const authUser = import.meta.env.VITE_AUTH_USER;
@@ -79,6 +79,9 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     dimensions: item.dimensions,
     objectName: item.object_name,
     imgSrc: item.img_src,
+    sortNumber: item.sorting_number,
+    sortInfoYear: item.data_all.sortingInfo.year,
+    sortInfoPosition: item.data_all.sortingInfo.position,
     medium: getMedium(item),
     _highlight: item._highlight,
   }
@@ -89,10 +92,11 @@ const getQueryStringForFiltersAndTerm = (
   freetextFields: APIFreetextFieldsType,
   langCode: string
 ): string => {
-  const params: Record<string, string | number> = {
+  const params: Record<string, string | number | boolean> = {
     language: langCode,
     'entity_type:neq': EntityType.DOCUMENTS,
-    'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
+    'size_height:gt': 200,
+    'show_data_all': true,
   };
 
   if (filters.size) {
@@ -263,6 +267,9 @@ export type GlobalSearchArtifact = {
   printProcess: string;
   imgSrc: string;
   medium: string;
+  sortInfoYear: number,
+  sortInfoPosition: number,
+  sortNumber: string,
   _highlight?: Record<string, Array<string>>;
 }
 

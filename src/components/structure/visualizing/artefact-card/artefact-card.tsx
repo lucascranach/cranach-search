@@ -13,6 +13,9 @@ type Props = {
   subtitle?: string,
   text?: string,
   to?: string,
+  sortInfoYear?: number,
+  sortInfoPosition?: number,
+  sortNumber?: string,
   imgSrc?: string,
   imgAlt?: string,
   openInNewWindow?: boolean,
@@ -25,6 +28,9 @@ const ArtefactCard: FC<Props> = ({
   subtitle = '',
   text = '',
   to = '',
+  sortInfoYear = '',
+  sortInfoPosition = '',
+  sortNumber = '',
   imgSrc = '',
   imgAlt = '',
   openInNewWindow = false,
@@ -88,7 +94,9 @@ const ArtefactCard: FC<Props> = ({
             >
               <h2 className="artefact-card__title" dangerouslySetInnerHTML={{__html: title}}></h2>
               <p className="artefact-card__subtitle">{subtitle}</p>
-              <p className="artefact-card__text">{text}</p>
+            <p className="artefact-card__text">{text}</p>
+            <p className="artefact-card__text">Entry: {sortNumber}</p>
+            <p className="artefact-card__text">Calc: {sortInfoYear}{sortInfoPosition}</p>
             </a>
 
           </div>

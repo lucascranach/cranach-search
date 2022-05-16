@@ -21,6 +21,9 @@ export type ArtefactOverviewItem = {
   printProcess: string;
   imgSrc: string;
   to: string;
+  sortInfoYear?: number,
+  sortInfoPosition?: number,
+  sortNumber?: string,
   openInNewWindow: boolean;
   medium: string;
   _highlight?: Record<string, Array<string>>;
@@ -204,6 +207,9 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
           title={assembleTitleForCardView(item)}
           subtitle={assembleSubTitleForCardView(item)}
           text={assembleTextForCardView(item)}
+          sortNumber={item.sortNumber}
+          sortInfoYear={item.sortInfoYear}
+          sortInfoPosition={item.sortInfoPosition}
           to={item.to}
           imgSrc={item.imgSrc || ''}
           openInNewWindow={item.openInNewWindow}
