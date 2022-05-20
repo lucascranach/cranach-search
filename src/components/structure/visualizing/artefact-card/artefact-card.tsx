@@ -96,7 +96,7 @@ const ArtefactCard: FC<Props> = ({
               <p className="artefact-card__subtitle">{subtitle}</p>
             <p className="artefact-card__text">{text}</p>
             <p className="artefact-card__text">Entry: {sortNumber}</p>
-            <p className="artefact-card__text">Calc: {sortInfoYear}{sortInfoPosition}</p>
+            <p className="artefact-card__text">Year: {sortInfoYear} Pos: {sortInfoPosition}</p>
             </a>
 
           </div>
