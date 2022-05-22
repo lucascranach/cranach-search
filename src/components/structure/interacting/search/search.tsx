@@ -83,6 +83,7 @@ const Search: FC = () => {
           onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
           onKeyDown={ triggerFilterRequestOnEnter }
           onReset={ triggerFilterRequest }
+          resetable={true}
         ></TextInput>
 
         <Toggle
@@ -135,7 +136,7 @@ const Search: FC = () => {
         <Btn
           className="search-button"
           icon="search"
-          click={ () => globalSearch.triggerFilterRequest() }
+          click={ triggerFilterRequest }
         >{ t('find') }</Btn>
 
       </fieldset>
