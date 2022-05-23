@@ -71,6 +71,7 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     entityType: item.entity_type,
     title: item.title,
     date: item.dating,
+    repository: item.repository,
     owner: item.owner,
     classification: item.classification,
     printProcess: item.print_process,
@@ -256,6 +257,7 @@ export type GlobalSearchArtifact = {
   title: string;
   inventor: string;
   artist: string;
+  repository: string;
   owner: string;
   date: string;
   dimensions: string;
