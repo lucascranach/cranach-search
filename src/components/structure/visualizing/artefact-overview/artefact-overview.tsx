@@ -12,6 +12,7 @@ export type ArtefactOverviewItem = {
   entityType: string;
   objectName: string;
   title: string;
+  repository: string;
   owner: string;
   inventor: string;
   artist: string;
@@ -140,7 +141,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
       case GlobalSearchEntityType.GRAPHICS:
         return `${item.inventor}`;
     }
-    return `${item.owner}`;
+    return `${item.repository}`;
   }
 
   const assembleTextForListView = (item: ArtefactOverviewItem): string => {
@@ -150,7 +151,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   const assembleAdditionalText = (item: ArtefactOverviewItem): Array<string> => {
     const dimensions = item.dimensions ? item.dimensions : '';
     const dimensionList = dimensions.split(/\n/);
-    const owner = item.owner ? item.owner : '';
+    const owner = item.repository ? item.repository : '';
     return [dimensionList[0], owner];
   }
 
