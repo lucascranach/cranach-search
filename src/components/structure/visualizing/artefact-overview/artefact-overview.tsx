@@ -24,6 +24,7 @@ export type ArtefactOverviewItem = {
   to: string;
   openInNewWindow: boolean;
   medium: string;
+  searchSortingNumber: string,
   _highlight?: Record<string, Array<string>>;
 };
 
@@ -199,6 +200,7 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
       items.map(item => (<div
         key={item.id}
         className="overview-item"
+        data-sorting-number={item.searchSortingNumber}
       >
         {ArtefactOverviewType.CARD === viewType && <ArtefactCard
           id={item.id}

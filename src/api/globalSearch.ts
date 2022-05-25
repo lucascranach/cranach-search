@@ -81,6 +81,7 @@ const toArtefact = (item: any): GlobalSearchArtifact => {
     objectName: item.object_name,
     imgSrc: item.img_src,
     medium: getMedium(item),
+    searchSortingNumber: item.search_sorting_number,
     _highlight: item._highlight,
   }
 };
@@ -265,6 +266,7 @@ export type GlobalSearchArtifact = {
   printProcess: string;
   imgSrc: string;
   medium: string;
+  searchSortingNumber: string,
   _highlight?: Record<string, Array<string>>;
 }
 
