@@ -1,12 +1,24 @@
-import React from 'react';
-
+import React, { useContext } from 'react';
+import StoreContext from '../../../../store/StoreContext';
 import './logo.scss';
 
-export default () => (
-  <span
-    className="logo"
-    data-component="atoms/logo"
-  >
+export default () => {
+
+  const { root: { ui } } = useContext(StoreContext);
+
+  const cdaContentURL: string = ui.lang === 'de'
+    ? String(import.meta.env.VITE_CDA_CONTENT_URL_DE)
+    : String(import.meta.env.VITE_CDA_CONTENT_URL_EN);
+
+  return (
+    <a href={cdaContentURL}>
+
+    <span
+      className="logo"
+      data-component="atoms/logo"
+    >
     cda_&nbsp;
-  </span>
-);
+      </span>
+  </a>
+  )
+}
