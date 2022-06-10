@@ -1,7 +1,9 @@
 @import "../../../../style//000-abstracts/__abstracts-dir";
 
 .artefact-line {
+  position: relative;
   display: grid;
+  overflow: hidden;
   height: 100%;
   border-bottom: solid $border-stroke-weight-s $accent;
   background-color: $lighter;
@@ -10,6 +12,11 @@
   $self: &;
 
   &:hover {
+    #{$self}__favorite {
+      top: $xs !important;
+      opacity: 1 !important;
+    }
+
     #{$self}__content {
       background-color: $light;
     }
@@ -59,5 +66,32 @@
   &__master-data {
     color: $dark;
     line-height: $lh-loose;
+  }
+
+  &__favorite {
+    position: absolute;
+    top: $xs;
+    right: $xs;
+    aspect-ratio: 1/1;
+    background-color: $lighten-strongest;
+    border-radius: 50%;
+    color: $dark;
+    transition: transform $tr-fast, color $tr-fast, opacity $tr-medium, top $tr-medium;
+
+    &:hover,
+    &--is-active {
+      background-color: $accent;
+      color: $lightest;
+      cursor: pointer;
+    }
+
+    &--is-armed {
+      top: -100px;
+      opacity: 0;
+    }
+
+    &--is-active {
+      transform: scale(1);
+    }
   }
 }

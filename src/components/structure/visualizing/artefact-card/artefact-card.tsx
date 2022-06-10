@@ -1,9 +1,6 @@
-import React, { FC, useContext, useEffect } from 'react';
-
-import { observer } from 'mobx-react-lite';
+import React, { FC, useEffect, useState } from 'react';
 
 import Image from '../../../base/visualizing/image';
-import StoreContext from '../../../../store/StoreContext';
 
 import './artefact-card.scss';
 
@@ -16,6 +13,8 @@ type Props = {
   imgSrc?: string,
   imgAlt?: string,
   openInNewWindow?: boolean,
+  isFavorite?: boolean,
+  onFavoriteToggle?: () => void,
 }
 
 
@@ -28,31 +27,13 @@ const ArtefactCard: FC<Props> = ({
   imgSrc = '',
   imgAlt = '',
   openInNewWindow = false,
+  isFavorite = null,
+  onFavoriteToggle = (() => {}),
 }) => {
-
-  const { root: { collection } } = useContext(StoreContext);
-
-  let isStoredFavorite = !!(collection.collectionIncludesArtefact(id));
-
-  const toggleFav = () => {
-    if (isStoredFavorite) {
-      collection.removeArtefactFromCollection(id);
-    } else {
-      collection.addArtefactToCollection(id);
-    }
-  };
-
-  const bookmarkIcon = isStoredFavorite ? 'remove' : 'add';
-
-  const armFavIcons = () => {
-    const favIcons = document.querySelectorAll(".artefact-card__favorite");
-    favIcons.forEach(item => {
-      item.classList.add("artefact-card__favorite--is-armed");
-    });
-  }
+  const [isArmed, setIsArmed] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => { armFavIcons();}, 1000);
+    const timer = setTimeout(() => { setIsArmed(true); }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -60,6 +41,7 @@ const ArtefactCard: FC<Props> = ({
     <div
       className="artefact-card"
       data-component="structure/visualizing/artefact-card"
+      data-artefact-id={id}
     >
       <div className="card-image">
         <a
@@ -73,10 +55,10 @@ const ArtefactCard: FC<Props> = ({
             modifierWithBox={true}
           />
         </a>
-        <a
-          className={`artefact-card__favorite icon ${isStoredFavorite ? 'artefact-card__favorite--is-active' : ''}`}
-          onClick={toggleFav}
-        >{bookmarkIcon}</a>
+        {(isFavorite !== null) && (<a
+          className={`artefact-card__favorite icon ${isFavorite ? 'artefact-card__favorite--is-active' : ''} ${isArmed ? 'artefact-card__favorite--is-armed' : ''}`}
+          onClick={onFavoriteToggle || (() => {})}
+        >{isFavorite ? 'remove' : 'add'}</a>)}
       </div>
       {id
         && (
@@ -98,4 +80,4 @@ const ArtefactCard: FC<Props> = ({
   );
 };
 
-export default observer(ArtefactCard);
+export default ArtefactCard;
