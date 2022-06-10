@@ -21,7 +21,7 @@ export type {
   GlobalSearchFilterItem,
 } from '../../api/globalSearch';
 
-const MIN_LOWER_DATING_YEAR = 1500;
+const MIN_LOWER_DATING_YEAR = 1470;
 const MAX_UPPER_DATING_YEAR = 1601;
 const THRESOLD_UPPER_DATING_YEAR = 1600;
 
