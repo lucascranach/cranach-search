@@ -14,6 +14,7 @@
 | `npm run build` | Build the project; build can then be found in `/dist`        |
 | `npm run serve` | Serve the project build; build has to exist; see `npm run build` |
 | `npm run build:prod` | Build the project with path prefix defined in *package.json* |
+| `npm run build:preview` | Build the project with path prefix defined in *package.json* |
 
 ## Environment variables
 
