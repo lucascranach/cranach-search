@@ -55,7 +55,7 @@ const Dashboard: FC = () => {
       >
         <Navigation></Navigation>
         {globalSearch.loading && <Cloak />}
-        <ArtefactOverview
+        <ArtefactOverview.Overview
           viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
           items={overviewItems}
           handleArtefactAmountChange={ (amount: number) => globalSearch.setSize(amount) }

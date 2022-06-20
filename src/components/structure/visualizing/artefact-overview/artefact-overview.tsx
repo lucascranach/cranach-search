@@ -42,16 +42,10 @@ type OverviewProps = {
   handleArtefactAmountChange?: (amount: number) => void;
 }
 
-type SwitcherProps = {
-  viewType?: ArtefactOverviewType,
-  handleChange?: (view: ArtefactOverviewType) => void,
-  className?: string,
-}
-
 const DefaultViewType = ArtefactOverviewType.CARD;
 const maximumTitleLengthInWords = 10;
 
-const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
+const Overview: FC<OverviewProps> = ({
   items = [],
   viewType = DefaultViewType,
   handleArtefactAmountChange = () => {},
@@ -263,7 +257,13 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   );
 };
 
-ArtefactOverview.Switcher = ({
+type SwitcherProps = {
+  viewType?: ArtefactOverviewType,
+  handleChange?: (view: ArtefactOverviewType) => void,
+  className?: string,
+}
+
+const OverviewSwitcher: FC<SwitcherProps> = ({
   viewType = DefaultViewType,
   handleChange = () => { },
   className = '',
@@ -298,4 +298,9 @@ ArtefactOverview.Switcher = ({
   </Switcher>);
 };
 
-export default observer(ArtefactOverview);
+const ArtefactOverview = {
+  Overview: observer(Overview),
+  Switcher: observer(OverviewSwitcher),
+}
+
+export default ArtefactOverview;
