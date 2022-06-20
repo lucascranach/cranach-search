@@ -1,9 +1,11 @@
-import React, { FC, useRef, useEffect } from 'react';
+import React, { FC, useRef, useEffect, useContext } from 'react';
 import Switcher from '../../../base/interacting/switcher';
 import ArtefactCard from '../artefact-card';
 import ArtefactLine from '../artefact-line';
 
-import { GlobalSearchEntityType } from '../../../../store/StoreContext';
+import { observer } from 'mobx-react-lite';
+
+import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
 
 import './artefact-overview.scss';
 
@@ -40,20 +42,16 @@ type OverviewProps = {
   handleArtefactAmountChange?: (amount: number) => void;
 }
 
-type SwitcherProps = {
-  viewType?: ArtefactOverviewType,
-  handleChange?: (view: ArtefactOverviewType) => void,
-  className?: string,
-}
-
 const DefaultViewType = ArtefactOverviewType.CARD;
 const maximumTitleLengthInWords = 10;
 
-const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
+const Overview: FC<OverviewProps> = ({
   items = [],
   viewType = DefaultViewType,
   handleArtefactAmountChange = () => {},
 }) => {
+  const { root: { collection } } = useContext(StoreContext);
+
   const artefactOverviewElRef = useRef<HTMLDivElement | null>(null);
   const hasHighlightedText = (item: ArtefactOverviewItem, prop: keyof ArtefactOverviewItem): boolean => {
     return !!(item._highlight && item._highlight[prop])
@@ -179,6 +177,18 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
     handleArtefactAmountChange(suitableAmountOfArtefacts);
   }
 
+  const isFavorite = (id: string): boolean => {
+    return !!collection.collectionIncludesArtefact(id);
+  };
+
+  const toggleFavorite = (id: string): void => {
+    if (isFavorite(id)) {
+      collection.removeArtefactFromCollection(id);
+    } else {
+      collection.addArtefactToCollection(id);
+    }
+  };
+
   useEffect(() => {
     if (!artefactOverviewElRef.current) return;
 
@@ -210,16 +220,24 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
           to={item.to}
           imgSrc={item.imgSrc || ''}
           openInNewWindow={item.openInNewWindow}
+
+          isFavorite={isFavorite(item.id)}
+          onFavoriteToggle={() => toggleFavorite(item.id)}
         />
         }
 
         {ArtefactOverviewType.CARD_SMALL === viewType && <ArtefactCard
+          id={item.id}
           to={item.to}
           imgSrc={item.imgSrc || ''}
+
+          isFavorite={isFavorite(item.id)}
+          onFavoriteToggle={() => toggleFavorite(item.id)}
         />
         }
 
         {ArtefactOverviewType.LIST === viewType && <ArtefactLine
+          id={item.id}
           title={assembleTitleForListView(item)}
           subtitle={assembleSubTitleForListView(item)}
           text={assembleTextForListView(item)}
@@ -227,6 +245,9 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
 
           to={item.to}
           imgSrc={item.imgSrc || ''}
+
+          isFavorite={isFavorite(item.id)}
+          onFavoriteToggle={() => toggleFavorite(item.id)}
         />
         }
       </div>
@@ -236,7 +257,13 @@ const ArtefactOverview: FC<OverviewProps> & { Switcher: FC<SwitcherProps> } = ({
   );
 };
 
-ArtefactOverview.Switcher = ({
+type SwitcherProps = {
+  viewType?: ArtefactOverviewType,
+  handleChange?: (view: ArtefactOverviewType) => void,
+  className?: string,
+}
+
+const OverviewSwitcher: FC<SwitcherProps> = ({
   viewType = DefaultViewType,
   handleChange = () => { },
   className = '',
@@ -270,5 +297,10 @@ ArtefactOverview.Switcher = ({
     ))}
   </Switcher>);
 };
+
+const ArtefactOverview = {
+  Overview: observer(Overview),
+  Switcher: observer(OverviewSwitcher),
+}
 
 export default ArtefactOverview;
