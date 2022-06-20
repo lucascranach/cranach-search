@@ -172,7 +172,8 @@ const Search: FC = () => {
         <Accordion>
           <Accordion.Entry
             title={ t('Dating') }
-            isOpen={ false }
+            isOpen={ ui.filterItemIsExpanded('dating') }
+            onToggle={ (isOpen) => ui.setFilterItemExpandedState('dating', isOpen) }
           >
             <DatingRangeslider
               bounds={globalSearch.datingRangeBounds}
