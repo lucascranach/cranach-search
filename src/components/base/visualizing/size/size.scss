@@ -5,8 +5,11 @@
 
   &::before {
     display: inline-block;
-    margin-left: $xxs;
     color: $darken-strong;
     content: "#";
+  }
+
+  &:last-child::before{
+    margin-left: $xxs;
   }
 }
