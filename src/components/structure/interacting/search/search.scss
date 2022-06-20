@@ -59,6 +59,10 @@
   .search-result-info {
     margin-bottom: $l;
     font-weight: $fw-semibold;
+
+    p{
+      line-height: normal;
+    }
   }
 
   .filter-info-item {
@@ -72,6 +76,10 @@
     &__name {
       margin-left: $xs;
       line-height: $m;
+    }
+
+    .size{
+      margin-left: 0;
     }
   }
 
