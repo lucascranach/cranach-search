@@ -184,21 +184,31 @@ const Search: FC = () => {
 
           { mappedFiltersInfos.map(
               (item) => {
-                return (<Accordion.Entry key={ item.id } title={ item.name }>
+                return (<Accordion.Entry
+                  key={ item.id }
+                  title={ item.name }
+                  isOpen={ ui.filterItemIsExpanded(item.id) }
+                  onToggle={ (isOpen) => ui.setFilterItemExpandedState(item.id, isOpen) }
+                >
                   <TreeList
                     items={ item.children ?? [] }
+                    isOpenIf={ (treeListItem) => ui.filterItemIsExpanded(treeListItem.id) }
+                    onToggle={ (treeListItem, isOpen) => {
+                      /* Keeping track of the collapse state to, to stay collapsed on page refresh */
+                      ui.setFilterItemExpandedState(treeListItem.id, isOpen);
+                    }}
                     wrapComponent={
-                      (item, toggle) => (<span className={ `filter-info-item ${ (item.data?.count ?? 0) === 0 ? 'filter-info-item__inactive' : '' }` }>
+                      (treeListItem, toggle) => (<span className={ `filter-info-item ${ (treeListItem.data?.count ?? 0) === 0 ? 'filter-info-item__inactive' : '' }` }>
                         <Checkbox
                           className="filter-info-item__checkbox"
-                          checked={ globalSearch.filters.filterGroups.get(item.data?.groupKey as string)?.has(item.id) }
-                          onChange={ () => toggleFilterItemActiveStatus(item.data?.groupKey as string , item.id) }
+                          checked={ globalSearch.filters.filterGroups.get(treeListItem.data?.groupKey as string)?.has(treeListItem.id) }
+                          onChange={ () => toggleFilterItemActiveStatus(treeListItem.data?.groupKey as string , treeListItem.id) }
                         />
                         <span
                           className="filter-info-item__name"
-                          data-count={ item.data?.count }
+                          data-count={ treeListItem.data?.count }
                           onClick={ toggle }
-                        >{ item.name }<Size size={item.data?.count}/></span>
+                        >{ treeListItem.name }<Size size={treeListItem.data?.count}/></span>
                       </span>)
                     }
                   ></TreeList>

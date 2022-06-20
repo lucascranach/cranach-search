@@ -14,7 +14,9 @@ type Props = {
   items: TreeListItem[];
   className?: string;
   classNameOnClickable?: string;
-  wrapComponent?: (item: TreeListItem, toggle: () => void) => ReactElement;
+  wrapComponent?: (treeListItem: TreeListItem, toggle: () => boolean) => ReactElement;
+  isOpenIf?: (treeListItem: TreeListItem) => boolean;
+  onToggle?: (treeListItem: TreeListItem, isOpen: boolean) => void;
 };
 
 
@@ -23,16 +25,24 @@ const TreeList: FC<Props> = ({
   className = '',
   classNameOnClickable = '',
   wrapComponent = undefined,
+  isOpenIf = undefined,
+  onToggle = undefined,
 }) => (
   <ul
     className={ `tree-list ${className}` }
     data-component="structure/interacting/tree-list"
   >
     { items.map((item) => {
-      const [isOpen, setIsOpen] = useState(false);
+      const initialIsOpen = !!isOpenIf && isOpenIf(item);
+      const [isOpen, setIsOpen] = useState(initialIsOpen);
       const hasChildren = !!item.children && item.children.length > 0;
 
-      const toggle = () => hasChildren && setIsOpen(!isOpen);
+      const toggle = () => {
+        if (!hasChildren) return false;
+        if (onToggle) onToggle(item, !isOpen);
+        setIsOpen(!isOpen)
+        return !isOpen;
+      };
 
       return (<li key={ item.id } className={`tree-list__item ${ hasChildren ? 'tree-list__item--has-children' : '' } ${ isOpen ? 'tree-list__item--is-open' : '' }`}>
         <span
@@ -47,7 +57,13 @@ const TreeList: FC<Props> = ({
         >
           expand_more
         </span>)}
-        { isOpen && hasChildren && <TreeList items={ item.children || [] } wrapComponent={ wrapComponent } classNameOnClickable={classNameOnClickable}></TreeList> }
+        { isOpen && hasChildren && <TreeList
+          items={ item.children || [] }
+          wrapComponent={ wrapComponent }
+          classNameOnClickable={classNameOnClickable}
+          isOpenIf={isOpenIf}
+          onToggle={onToggle}
+        ></TreeList> }
       </li>);
     }) }
   </ul>

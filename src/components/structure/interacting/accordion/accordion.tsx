@@ -1,4 +1,4 @@
-import React, { FC, Dispatch, SetStateAction, useState } from 'react';
+import React, { FC } from 'react';
 
 import Toggle from "../../../base/interacting/toggle";
 
@@ -10,7 +10,7 @@ type Prop = {
 
 type EntryProp = {
   title: string,
-  toggle?: [boolean, Dispatch<SetStateAction<boolean>>],
+  onToggle?: (toggleTo: boolean) => void,
   isOpen?: boolean
 }
 
@@ -26,18 +26,14 @@ const Accordion: FC<Prop> & { Entry: FC<EntryProp> } = ({ children, className = 
 Accordion.Entry = ({
   title,
   children,
-  toggle = undefined,
+  onToggle = undefined,
   isOpen = false,
 }) => {
-  if (!toggle) {
-    toggle = useState(isOpen)
-  }
-
   return (<Toggle
       className="accordion-entry"
       title={title}
-      isOpen={toggle[0]}
-      onToggle={() => toggle && toggle[1](!toggle[0])}
+      isOpen={isOpen}
+      onToggle={onToggle}
     >
       { children }
     </Toggle>
