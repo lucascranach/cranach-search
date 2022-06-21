@@ -49,11 +49,12 @@ const Dashboard: FC = () => {
       className="dashboard"
       data-component="page/search"
     >
+      <Navigation></Navigation>
       <main
         className="main-content"
         ref={mainContentEl}
       >
-        <Navigation></Navigation>
+
         {globalSearch.loading && <Cloak />}
         <ArtefactOverview.Overview
           viewType={mapSelectedOverviewViewType(ui.overviewViewType)}

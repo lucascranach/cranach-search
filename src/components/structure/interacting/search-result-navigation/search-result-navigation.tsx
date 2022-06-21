@@ -103,7 +103,7 @@ const SearchResultNavigation: FC<Props> = ({
         </ul>
       }
       {maxResultPages > 1 &&
-        <ul className="pagination">
+        <ul className="pagination is-hidden-vp-small">
           {navItems.map(navItem => (
             <li
               className={navItem.className}

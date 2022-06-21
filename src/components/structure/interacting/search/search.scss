@@ -57,12 +57,17 @@
   }
 
   .search-result-info {
+    margin-left: -$s;
     margin-bottom: $l;
     font-weight: $fw-semibold;
 
     p{
       line-height: normal;
     }
+  }
+
+  .logo{
+    display: none;
   }
 
   .filter-info-item {
@@ -113,7 +118,7 @@
     bottom: 0;
     right: 0;
     padding: 0 $m $m $m;
-    background-color: $lighter;
+    background-color: $lightest;
     z-index: $level-overall-nav;
 
     .reset-button{
@@ -128,6 +133,28 @@
         background-color: $accent;
         color: $lightest;
       }
+    }
+  }
+
+}
+
+@media screen and (max-width: $vp-medium) {
+  .search{
+    width: auto;
+    padding: $s $m $l $m;
+
+    .logo{
+      display: block;
+      font-size: $l;
+      margin-bottom: $s;
+    }
+
+    .sticky-panel{
+      position: static;
+      bottom: inherit;
+      right: inherit;
+
+      padding: $m 0 $s 0;
     }
   }
 }

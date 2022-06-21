@@ -3,8 +3,11 @@
 .logo {
   display: block;
   padding-bottom: $xs;
-  color: $accent;
   font-size: $l;
+}
+
+.logo a{
+  color: $accent;
 }
 
 .reverse-navigation {

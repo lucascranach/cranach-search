@@ -11,14 +11,10 @@ export default () => {
     : String(import.meta.env.VITE_CDA_CONTENT_URL_EN);
 
   return (
-    <a href={cdaContentURL}>
-
-    <span
-      className="logo"
-      data-component="atoms/logo"
-    >
-    cda_&nbsp;
-      </span>
-  </a>
+    <div className="logo" data-component="atoms/logo">
+      <a href={cdaContentURL}>
+        cda_&nbsp;
+      </a>
+    </div>
   )
 }

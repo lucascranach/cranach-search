@@ -11,7 +11,7 @@ function App() {
     <Fragment>
       <div className="app page">
         <Dashboard></Dashboard>
-        <aside className={`sidebar ${isActiveSidebar}`}>
+        <aside className={`sidebar  ${isActiveSidebar}`}>
           <SecondaryNavigation />
           <Search />
           <MyCranach />

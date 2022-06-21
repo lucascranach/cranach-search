@@ -1,13 +1,9 @@
 @import "../../../../style/000-abstracts/__abstracts-dir";
 
 .main-navigation {
-  z-index: $level-overall-nav;
-  display: flex;
   min-height: $xl + $s;
   padding: $s 0;
   background-color: $lightest;
-
-  flex: 0 1 auto;
 
   .logo {
     padding: $s 0;
@@ -15,8 +11,6 @@
   }
 
   .menu {
-    flex: 1 0 auto;
-    padding: $s 0 $s $m;
 
     &__item {
       a {
@@ -35,11 +29,18 @@
       cursor: pointer;
     }
   }
+}
 
-  @media only screen and (min-width: $vp-large) {
+@media only screen and (min-width: $vp-medium) {
+
+  .main-navigation {
+    display: flex;
+
     .menu {
       display: flex;
-      flex-direction: row;
+
+      flex: 1 0 auto;
+      padding: $s 0 $s $m;
     }
 
     .menu .menu-item {
