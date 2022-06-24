@@ -2,6 +2,7 @@
 
 .size {
   color: $decoration;
+  white-space: nowrap;
 
   &::before {
     display: inline-block;
