@@ -7,6 +7,7 @@ import StoreContext from '../../../../store/StoreContext';
 
 type Props = {
   range?: number,
+  hasResults?: boolean,
 };
 
 const ARROW_LEFT = 'ArrowLeft';
@@ -84,36 +85,32 @@ const SearchResultNavigation: FC<Props> = ({
 
   return (
     <div className="pagination-wrap">
-      {maxResultPages > 1 &&
-        <ul className="pagination">
-          <li
-            className={firstIsActive
-              ? arrayToClassName([paginationClass, firstItemClass, clickableClass])
-              : arrayToClassName([paginationClass, firstItemClass])
-            }
-            onClick={() => { firstIsActive && globalSearch.setPagination(-1); }}
-          >&lt;</li>
-          <li
-            className={lastIsActive
-              ? arrayToClassName([paginationClass, lastItemClass, clickableClass])
-              : arrayToClassName([paginationClass, lastItemClass])
-            }
-            onClick={() => { lastIsActive && globalSearch.setPagination(1); }}
-          >&gt;</li>
-        </ul>
-      }
-      {maxResultPages > 1 &&
-        <ul className="pagination is-hidden-vp-small">
-          {navItems.map(navItem => (
-            <li
-              className={navItem.className}
-              key={navItem.pos}
-              onClick={() => { globalSearch.jumpToPagePos(navItem.pos) }}
-            >{navItem.text}</li>))
+      <ul className={`pagination ${maxResultPages === 0 ? 'pagination--hidden' : ''}`}>
+        <li
+          className={firstIsActive
+            ? arrayToClassName([paginationClass, firstItemClass, clickableClass])
+            : arrayToClassName([paginationClass, firstItemClass])
           }
+          onClick={() => { firstIsActive && globalSearch.setPagination(-1); }}
+        >&lt;</li>
+        <li
+          className={lastIsActive
+            ? arrayToClassName([paginationClass, lastItemClass, clickableClass])
+            : arrayToClassName([paginationClass, lastItemClass])
+          }
+          onClick={() => { lastIsActive && globalSearch.setPagination(1); }}
+        >&gt;</li>
+      </ul>
+      <ul className="pagination is-hidden-vp-small">
+        {navItems.map(navItem => (
+          <li
+            className={navItem.className}
+            key={navItem.pos}
+            onClick={() => { globalSearch.jumpToPagePos(navItem.pos) }}
+          >{navItem.text}</li>))
+        }
 
-        </ul>
-      }
+      </ul>
     </div>
   );
 };

@@ -2,11 +2,10 @@
 
 .dashboard {
   position: relative;
-  flex-basis: 0;
-  flex-grow: 999;
-
   display: flex;
+  flex-basis: 0;
   flex-direction: column;
+  flex-grow: 999;
 }
 
 @media screen and (max-width: $vp-medium) {
@@ -15,7 +14,12 @@
   }
 }
 
-.main-content{
-  overflow-y: scroll;
+.main-content {
   flex: 1 1 auto;
+  overflow-y: scroll;
+
+  &--non-scrollable {
+    position: relative;
+    overflow-y: hidden;
+  }
 }

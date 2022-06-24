@@ -7,6 +7,8 @@ export default () => (
     className="cloak"
     data-component="atoms/cloak"
   >
-    <span className="cloak__text">Loading ...</span>
+    <div className="cloak__throbber">
+      {Array(4).fill(0).map((_, i) => (<div key={i}></div>))}
+    </div>
   </div>
 );
