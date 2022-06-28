@@ -9,6 +9,7 @@ import Checkbox from '../../../base/interacting/checkbox';
 import TreeList, { TreeListItem } from '../tree-list';
 import Size from '../../../base/visualizing/size';
 import Toggle from '../../../base/interacting/toggle';
+import Logo from '../../../base/visualizing/logo';
 
 import translations from './translations.json';
 import './search.scss';
@@ -71,6 +72,7 @@ const Search: FC = () => {
       className={`search ${isActiveFilter}`}
       data-component="structure/interacting/search"
     >
+      <Logo />
       <div className="search-result-info">
         {hits === 1 && <p><Size size={hits} /> {t('work found')}</p>}
         {(hits > 1 || hits === 0) && <p><Size size={hits} /> { t('works found') }</p>}
@@ -143,17 +145,6 @@ const Search: FC = () => {
 
 
       <fieldset className="block">
-          {filterCount > 0 &&
-          <div className="sticky-panel">
-            <Btn
-              className="reset-button"
-              icon="delete_sweep"
-              click={ () => globalSearch.resetAllFilters() }
-            >{ t('reset filters') }</Btn>
-          </div>
-          }
-
-
         <div className="single-filter">
           {/* isBestOf */}
           <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
@@ -218,6 +209,16 @@ const Search: FC = () => {
             )
           }
         </Accordion>
+
+        {filterCount > 0 &&
+          <div className="sticky-panel">
+            <Btn
+              className="reset-button"
+              icon="delete_sweep"
+              click={ () => globalSearch.resetAllFilters() }
+            >{ t('reset filters') }</Btn>
+          </div>
+        }
       </fieldset>
     </div>
   );

@@ -40,7 +40,7 @@ const Navigation = () => {
 
   return (
     <nav
-      className="main-navigation"
+      className="main-navigation is-hidden-vp-small"
       role="navigation"
       aria-label="main navigation"
       data-component="structure/interacting/navigation"

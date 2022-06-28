@@ -20,12 +20,16 @@ const Dashboard: FC = () => {
   }, [])
 
   useEffect(() => {
-    if (!mainContentEl.current) return;
+    if (window.scrollY < window.innerHeight) return;
+    window.scrollTo({ behavior: 'smooth', top: 0 });
+  }, [globalSearch.flattenedSearchResultItems]);
 
+  useEffect(() => {
+    if (!mainContentEl.current || mainContentEl.current.scrollTop === 0) return;
     mainContentEl.current.scrollTo({ behavior: 'smooth', top: 0 });
   }, [mainContentEl, globalSearch.flattenedSearchResultItems]);
 
-  const getToUrlForArtifact = (entityType: GlobalSearchEntityType, id: string): string => {
+  const getToUrlForArtifact = (_: GlobalSearchEntityType, id: string): string => {
     const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
     return `${cdaBaseUrl}/${ui.lang}/${id}/`;
   };
@@ -49,11 +53,12 @@ const Dashboard: FC = () => {
       className="dashboard"
       data-component="page/search"
     >
+      <Navigation></Navigation>
       <main
         className="main-content"
         ref={mainContentEl}
       >
-        <Navigation></Navigation>
+
         {globalSearch.loading && <Cloak />}
         <ArtefactOverview.Overview
           viewType={mapSelectedOverviewViewType(ui.overviewViewType)}

@@ -5,10 +5,16 @@
 }
 
 .sidebar {
-
   position: relative;
   overflow-x: hidden;
   overflow-y: scroll;
   flex: 1 1 auto;
+}
 
+@media screen and (max-width: $vp-medium) {
+
+  .page{
+    height: auto;
+    flex-direction: column-reverse;
+  }
 }

@@ -57,7 +57,7 @@ const SecondaryNavigation = () => {
 
   return (
     <div
-      className={`secondary-navigation ${secondaryMenuStatus}`}
+      className={`secondary-navigation ${secondaryMenuStatus} is-hidden-vp-small`}
       role="navigation"
       aria-label="secondary navigation"
       data-component="structure/interacting/secondary-navigation"

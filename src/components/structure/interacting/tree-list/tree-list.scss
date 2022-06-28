@@ -1,8 +1,12 @@
 @import "../../../../style//000-abstracts/__abstracts-dir";
 
 .tree-list {
+  $fold-indicator-space: $l;
+
+  margin-right: $fold-indicator-space;
+
   .tree-list {
-    margin-left: $s;
+    margin: 0 0 0 $s;
   }
 
   &__item {
@@ -13,7 +17,7 @@
   &__item-fold-indicator {
     position: absolute;
     top: 0;
-    right: 0;
+    right: -$fold-indicator-space;
     background-color: $lightest;
     color: $accent;
     cursor: pointer;

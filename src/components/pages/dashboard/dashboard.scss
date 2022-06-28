@@ -9,6 +9,12 @@
   flex-direction: column;
 }
 
+@media screen and (max-width: $vp-medium) {
+  .dashboard {
+    display: block;
+  }
+}
+
 .main-content{
   overflow-y: scroll;
   flex: 1 1 auto;
