@@ -39,6 +39,7 @@ const Dashboard: FC = () => {
       ...item,
       to: getToUrlForArtifact(item.entityType, item.id),
       openInNewWindow: false,
+      imgSrc: item.imgSrc || (import.meta.env.BASE_URL + 'assets/no-image--trans.png'),
     }),
   );
 

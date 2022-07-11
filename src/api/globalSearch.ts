@@ -94,8 +94,11 @@ const getQueryStringForFiltersAndTerm = (
   const params: Record<string, string | number> = {
     language: langCode,
     'entity_type:neq': EntityType.DOCUMENTS,
-    'size_height:gt': 200, // 9000: 2; 8000: 129; 7000: 393
   };
+
+  if (import.meta.env.VITE_LIST_ARTEFACTS_WITHOUT_IMAGES === 'false') {
+    params['size_height:gt'] = 200; // 9000: 2; 8000: 129; 7000: 393
+  }
 
   if (filters.size) {
     params['size'] = filters.size;
