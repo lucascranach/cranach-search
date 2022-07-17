@@ -6,6 +6,7 @@ import ArtefactOverview, { ArtefactOverviewItem, ArtefactOverviewType } from '..
 import Cloak from '../../base/visualizing/cloak';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
 import Navigation from '../../structure/interacting/navigation';
+import ScrollTo from '../../base/interacting/scroll-to';
 import StoreContext, { GlobalSearchEntityType, UIOverviewViewType } from '../../../store/StoreContext';
 
 import './dashboard.scss';
@@ -67,6 +68,7 @@ const Dashboard: FC = () => {
         { globalSearch.loading && <Cloak /> }
       </main>
       <SearchResultNavigation></SearchResultNavigation>
+      <ScrollTo className="scroll-up" hideIf={ !ui.leftInitialViewArea }></ScrollTo>
     </div>
   );
 };
