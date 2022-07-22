@@ -50,6 +50,13 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     this.loadFromLocalStorage();
   }
 
+  /* Getters */
+
+  get searchUiLocalStorageKey(): string {
+    const { mode } = this.rootStore;
+    return CRANACH_SEARCH_LOCALSTORAGE_KEY + (mode ? `:${mode}` : '');
+  }
+
   /* Actions */
 
   setLanguage(lang: string) {
@@ -118,11 +125,11 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       idsOfExpandedFiltersInFilterTree: this.idsOfExpandedFiltersInFilterTree,
     }
 
-    window.localStorage.setItem(CRANACH_SEARCH_LOCALSTORAGE_KEY, JSON.stringify(item));
+    window.localStorage.setItem(this.searchUiLocalStorageKey, JSON.stringify(item));
   }
 
   loadFromLocalStorage() {
-    const rawItem = window.localStorage.getItem(CRANACH_SEARCH_LOCALSTORAGE_KEY);
+    const rawItem = window.localStorage.getItem(this.searchUiLocalStorageKey);
 
     if (!rawItem) return;
 

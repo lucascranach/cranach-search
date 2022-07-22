@@ -23,8 +23,14 @@ export default class Collection implements CollectionStoreInterface {
     this.readCollectionFromLocalStorage();
   }
 
+  /* Getters */
   get size() {
     return this.artefacts.length;
+  }
+
+  get collectionLocalStorageKey(): string {
+    const { mode } = this.rootStore;
+    return CRANACH_SEARCH_LOCALSTORAGE_KEY + (mode ? `:${mode}` : '');
   }
 
   /* Actions */
@@ -65,7 +71,7 @@ export default class Collection implements CollectionStoreInterface {
   }
 
   private readCollectionFromLocalStorage() {
-    const artefactsJSON = localStorage.getItem(CRANACH_SEARCH_LOCALSTORAGE_KEY);
+    const artefactsJSON = localStorage.getItem(this.collectionLocalStorageKey);
     if(artefactsJSON) {
       this.artefacts = <CollectionItem[]>JSON.parse(artefactsJSON);
     }
@@ -73,7 +79,7 @@ export default class Collection implements CollectionStoreInterface {
   }
 
   private storeCollectionToLocalStorage(): void {
-    localStorage.setItem(CRANACH_SEARCH_LOCALSTORAGE_KEY, JSON.stringify(this.artefacts));
+    localStorage.setItem(this.collectionLocalStorageKey, JSON.stringify(this.artefacts));
   }
 }
 
