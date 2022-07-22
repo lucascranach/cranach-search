@@ -30,8 +30,8 @@ const Dashboard: FC = () => {
   }, [mainContentEl, globalSearch.flattenedSearchResultItems]);
 
   const getToUrlForArtifact = (_: GlobalSearchEntityType, id: string): string => {
-    const cdaBaseUrl = import.meta.env.VITE_CDA_BASE_URL;
-    return `${cdaBaseUrl}/${ui.lang}/${id}/`;
+    const cdaArtefactUrlPattern = import.meta.env.VITE_CDA_ARTEFACT_URL as string;
+    return cdaArtefactUrlPattern.replace('{{lang}}', ui.lang).replace('{{id}}', id);
   };
 
   const overviewItems: ArtefactOverviewItem[] = globalSearch.flattenedSearchResultItems.map(
