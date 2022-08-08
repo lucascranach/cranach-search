@@ -56,16 +56,15 @@ const Dashboard: FC = () => {
     >
       <Navigation></Navigation>
       <main
-        className="main-content"
+        className={`main-content ${ globalSearch.loading ? 'main-content--non-scrollable' : '' }`}
         ref={mainContentEl}
       >
-
-        {globalSearch.loading && <Cloak />}
         <ArtefactOverview.Overview
           viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
           items={overviewItems}
           handleArtefactAmountChange={ (amount: number) => globalSearch.setSize(amount) }
         />
+        { globalSearch.loading && <Cloak /> }
       </main>
       <SearchResultNavigation></SearchResultNavigation>
     </div>

@@ -10,6 +10,12 @@
 .pagination {
   display: inline-block;
   margin-right: $s;
+  opacity: $op-full;
+
+  &--hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
 
   &__item {
     display: inline-flex;
