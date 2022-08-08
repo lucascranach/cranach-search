@@ -55,20 +55,6 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   }
 
   /* Computed values */
-  get scrollPositionNormed(): UIDimensionPositionsType {
-    const docEl = window.document.documentElement;
-    const horizontalDistance = docEl.clientWidth > 0
-      ? this.viewportDimensions.width / docEl.clientWidth
-      : 0;
-    const verticalDistance = docEl.clientHeight > 0
-      ? this.viewportDimensions.height / docEl.clientHeight
-      : 0;
-
-    return {
-      left: this.scrollPosition.left / horizontalDistance,
-      top: this.scrollPosition.top / verticalDistance,
-    };
-  }
 
   get leftInitialViewArea(): boolean {
     return this.scrollPosition.top > this.viewportDimensions.height;
@@ -304,7 +290,6 @@ export interface UIStoreInterface {
   additionalSearchInputsVisible: boolean;
   allowedLangs: Record<string, string>;
   scrollPosition: UIDimensionPositionsType;
-  scrollPositionNormed: UIDimensionPositionsType;
   leftInitialViewArea: boolean;
   setLanguage(lang: string): void;
   setSideBarContent(content: UISidebarContentType): void;
