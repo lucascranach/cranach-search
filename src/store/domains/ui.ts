@@ -260,7 +260,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       });
     };
 
-    window.addEventListener('scroll', handler, { passive: true });
+    window.addEventListener('resize', handler, { passive: true });
     handler();
   }
 }
