@@ -60,7 +60,7 @@ const ArtefactCard: FC<Props> = ({
           onClick={onFavoriteToggle || (() => {})}
         >{isFavorite ? 'remove' : 'add'}</a>)}
       </div>
-      {id
+      {(id && (title || subtitle || text))
         && (
           <div className="artefact-card__content">
             <a
