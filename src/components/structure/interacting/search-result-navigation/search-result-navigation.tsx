@@ -7,7 +7,6 @@ import StoreContext from '../../../../store/StoreContext';
 
 type Props = {
   range?: number,
-  hasResults?: boolean,
 };
 
 const ARROW_LEFT = 'ArrowLeft';
