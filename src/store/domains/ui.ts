@@ -26,6 +26,8 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   additionalSearchInputsVisible: boolean = false;
   allowedLangs: Record<string, string> = { de: 'DE', en: 'EN' };
   idsOfExpandedFiltersInFilterTree: string[] = [];
+  scrollPosition: UIDimensionPositionsType = { top: 0, left: 0 };
+  viewportDimensions: UIDimensionsType = { width: 0, height: 0 };
 
   constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
@@ -48,6 +50,14 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
 
     this.rootStore.routing.addObserver(this);
     this.loadFromLocalStorage();
+    this.bindToScroll();
+    this.bindToResize();
+  }
+
+  /* Computed values */
+
+  get leftInitialViewArea(): boolean {
+    return this.scrollPosition.top > this.viewportDimensions.height;
   }
 
   /* Getters */
@@ -177,6 +187,14 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     }
   }
 
+  setScrollPostion(scrollPosition: UIDimensionPositionsType) {
+    this.scrollPosition = scrollPosition;
+  }
+
+  setViewportDimensions(viewportDimensions: UIDimensionsType) {
+    this.viewportDimensions = viewportDimensions;
+  }
+
   private setRoutingForLanguage() {
     this.rootStore.routing.updateLanguageParam(this.lang);
   }
@@ -187,6 +205,49 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     } else {
       this.setLanguage(this.lang);
     }
+  }
+
+  private bindToScroll() {
+    let blocked = false;
+
+    const handler = () => {
+      if (blocked) return;
+
+      blocked = true;
+
+      requestAnimationFrame(() => {
+        const docEl = window.document.documentElement;
+        this.setScrollPostion({
+          left: docEl.scrollLeft,
+          top: docEl.scrollTop,
+        });
+        blocked = false;
+      });
+    };
+
+    window.addEventListener('scroll', handler, { passive: true });
+    handler();
+  }
+
+  private bindToResize() {
+    let blocked = false;
+
+    const handler = () => {
+      if (blocked) return;
+
+      blocked = true;
+
+      requestAnimationFrame(() => {
+        this.setViewportDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+        blocked = false;
+      });
+    };
+
+    window.addEventListener('resize', handler, { passive: true });
+    handler();
   }
 }
 
@@ -212,6 +273,14 @@ export enum UIOverviewViewType {
   CARD_SMALL = 'card-small',
   LIST = 'list',
 }
+export type UIDimensionsType = {
+   width: number,
+   height: number,
+}
+export type UIDimensionPositionsType = {
+   top: number,
+   left: number,
+}
 export interface UIStoreInterface {
   lang: string;
   sidebarContent: UISidebarContentType;
@@ -220,6 +289,8 @@ export interface UIStoreInterface {
   secondaryNavigationIsVisible: boolean;
   additionalSearchInputsVisible: boolean;
   allowedLangs: Record<string, string>;
+  scrollPosition: UIDimensionPositionsType;
+  leftInitialViewArea: boolean;
   setLanguage(lang: string): void;
   setSideBarContent(content: UISidebarContentType): void;
   setSideBarStatus(status: UISidebarStatusType): void;

@@ -6,11 +6,22 @@
   flex-basis: 0;
   flex-direction: column;
   flex-grow: 999;
+
+  .scroll-up {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    display: none;
+  }
 }
 
 @media screen and (max-width: $vp-medium) {
   .dashboard {
     display: block;
+
+    .scroll-up {
+      display: block;
+    }
   }
 }
 

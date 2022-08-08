@@ -1,0 +1,28 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+
+.scroll-to {
+  padding: $xs $xs;
+  border-width: 0;
+  background-color: $accent;
+  border-radius: 100%;
+  color: $lightest;
+  opacity: $op-full;
+  transition: opacity $tr-fast;
+
+  .icon {
+    font-size: $l;
+  }
+
+  &--hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:active {
+    background-color: darken($accent, 10%);
+  }
+}
