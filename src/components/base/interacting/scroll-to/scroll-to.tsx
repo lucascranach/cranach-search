@@ -27,7 +27,7 @@ const scrollTo: FC<Props> = ({
       data-component="base/interacting/scrollTo"
       onClick={ click }
     >
-      <i className="icon material-icons">arrow_drop_up</i>
+      <i className="icon">arrow_drop_up</i>
     </div>
   )
 };
