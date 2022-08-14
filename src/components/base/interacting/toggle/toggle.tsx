@@ -22,7 +22,7 @@ const toggle: FC<Props> = ({
       className="toggle-control"
       onClick={ () => onToggle(!isOpen) }
     >
-      <i className="icon material-icons">expand_more</i>
+      <i className="icon">expand_more</i>
     </span>
   </header>
   <main className="content">

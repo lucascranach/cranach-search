@@ -290,7 +290,7 @@ const OverviewSwitcher: FC<SwitcherProps> = ({
         key={type}
       >
         <i
-          className={`material-icons artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}`}
+          className={`icon artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}`}
           onClick={() => handleChange(type)}
         >{icon}</i>
       </Switcher.Item>

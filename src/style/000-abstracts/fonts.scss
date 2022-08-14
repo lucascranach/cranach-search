@@ -66,3 +66,15 @@
     url('/assets/fonts/IBMPlex-Sans/woff2/IBMPlexSans-Bold.woff2') format('woff2'),
     url('/assets/fonts/IBMPlex-Sans/ttf/IBMPlexSans-Bold.ttf') format('truetype');
 }
+
+/*
+ * Material Icons
+ */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src:
+    url('/assets/fonts/MaterialIcons/MaterialIcons-Regular.woff2') format('woff2'),
+    url('/assets/fonts/MaterialIcons/MaterialIcons-Regular.ttf') format('truetype');
+}

@@ -47,7 +47,7 @@ const Navigation = () => {
     >
       <Logo />
       <ul className="menu">
-        <li><i className="material-icons" /></li>
+        <li><i className="icon" /></li>
         {
           navStructure.map(item => (
             <li className="menu__item"

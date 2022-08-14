@@ -43,7 +43,7 @@ const TextInput: FC<Props> = ({
           disabled={ disabled }
         />
         { !disabled && resetable && (<span
-            className="reset-icon material-icons"
+            className="reset-icon icon"
             onClick={ () => {
               onChange('');
               onReset();
