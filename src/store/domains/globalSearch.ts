@@ -1,5 +1,5 @@
 
-import { reaction, makeAutoObservable } from 'mobx';
+import { reaction, makeAutoObservable, observable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import GlobalSearchAPI_, {
   GlobalSearchArtifact,
@@ -147,6 +147,19 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
     ].filter((item) => item).length;
   }
 
+  get searchMode(): GlobalSearchMode {
+    switch (this.filters.entityType) {
+      case EntityType.PAINTINGS:
+      case EntityType.GRAPHICS:
+      case EntityType.UNKNOWN:
+        return GlobalSearchMode.WORKS;
+
+      case EntityType.ARCHIVALS:
+        return GlobalSearchMode.ARCHIVALS;
+    }
+
+    return GlobalSearchMode.WORKS;
+  }
 
   /* Actions */
 
@@ -436,7 +449,7 @@ export default class GlobalSearch implements GlobalSearchStoreInterface, Routing
   }
 
   private handleRoutingNotificationForEntityType(value: string) {
-    if (Object.values(EntityType).includes(value as EntityType)){
+    if (Object.values(EntityType).includes(value as EntityType)) {
       this.filters.entityType = value as EntityType;
     }
   }
@@ -543,6 +556,11 @@ export interface FreeTextFields {
   inventoryNumber: string;
 }
 
+export enum GlobalSearchMode {
+  WORKS = 'works',
+  ARCHIVALS = 'archivals',
+}
+
 export interface GlobalSearchStoreInterface {
   loading: boolean;
   result: GlobalSearchResult | null;
@@ -550,6 +568,7 @@ export interface GlobalSearchStoreInterface {
   datingRangeBounds: [number, number];
   freetextFields: FreeTextFields;
   filters: FilterType;
+  searchMode: GlobalSearchMode;
   debounceWaitInMSecs: number;
   debounceHandler: undefined | number;
   flattenedSearchResultItems: GlobalSearchArtifact[];

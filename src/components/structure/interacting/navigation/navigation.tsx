@@ -26,6 +26,10 @@ const Navigation = () => {
       title: 'Paintings',
       filterValue: GlobalSearchEntityType.PAINTINGS,
     },
+    {
+      title: 'Archival Documents',
+      filterValue: GlobalSearchEntityType.ARCHIVALS,
+    },
     /*
     {
       title: 'Prints and Drawings',

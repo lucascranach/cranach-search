@@ -1,4 +1,4 @@
-import React, { FC, useContext, KeyboardEvent } from 'react';
+import React, { FC, useContext, KeyboardEvent, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Btn from '../../../base/interacting/btn';
@@ -66,6 +66,10 @@ const Search: FC = () => {
       triggerFilterRequest();
     }
   }
+
+  useEffect(() => {
+    console.log('GlobalSearchMode =>', globalSearch.searchMode);
+  }, [globalSearch.searchMode]);
 
   return (
     <div
