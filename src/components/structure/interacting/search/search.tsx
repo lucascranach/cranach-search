@@ -42,10 +42,6 @@ const Search: FC<Props> = ({
     }
   }
 
-  useEffect(() => {
-    console.log('GlobalSearchMode =>', globalSearch.searchMode);
-  }, [globalSearch.searchMode]);
-
   return (
     <div
       className={`search ${isActiveClassName}`}
