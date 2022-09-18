@@ -9,17 +9,16 @@ import Logo from '../../../base/visualizing/logo';
 import translations from './translations.json';
 import './search.scss';
 
-import StoreContext, {
-  UISidebarStatusType,
-  UISidebarContentType,
-} from '../../../../store/StoreContext';
+import StoreContext from '../../../../store/StoreContext';
 
 type Props = {
+  isActive: boolean,
   customFields: ReactNode | false,
   customFilters: ReactNode | false,
 };
 
 const Search: FC<Props> = ({
+  isActive = false,
   customFields = false,
   customFilters = false,
 }) => {
@@ -30,7 +29,7 @@ const Search: FC<Props> = ({
   const filterCount = globalSearch.amountOfActiveFilters;
   const hits = globalSearch.result?.meta.hits ?? 0;
 
-  const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search--is-active' : '';
+  const isActiveClassName = isActive ? 'search--is-active' : '';
 
   const triggerFilterRequest = () => {
     globalSearch.applyFreetextFields();
@@ -49,7 +48,7 @@ const Search: FC<Props> = ({
 
   return (
     <div
-      className={`search ${isActiveFilter}`}
+      className={`search ${isActiveClassName}`}
       data-component="structure/interacting/search"
     >
       <Logo />

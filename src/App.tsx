@@ -10,6 +10,8 @@ import SearchFiltersWorks from './components/variants/interacting/search-filters
 
 import StoreContext, {
   GlobalSearchMode,
+  UISidebarStatusType,
+  UISidebarContentType,
 } from './store/StoreContext';
 
 function App() {
@@ -43,10 +45,13 @@ function App() {
         <aside className={`sidebar  ${isActiveSidebar}`}>
           <SecondaryNavigation />
           <Search
+            isActive={ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER}
             customFields={customSearchFields}
             customFilters={customSearchFilters}
           ></Search>
-          <MyCranach />
+          <MyCranach
+            isActive={ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.MY_CRANACH}
+          ></MyCranach>
         </aside>
       </div>
     </Fragment>
