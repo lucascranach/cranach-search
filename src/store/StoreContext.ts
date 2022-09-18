@@ -3,11 +3,11 @@ import { configure } from 'mobx';
 
 import { RootStoreInterface } from './rootStore';
 
-export { GlobalSearchEntityType } from './domains/globalSearch';
+export { EntityType } from './domains/searchBase';
 export type {
   GlobalSearchFilterGroupItem,
   GlobalSearchFilterItem,
-} from './domains/globalSearch';
+} from './domains/searchBase';
 export { UISidebarContentType, UIOverviewViewType, UISidebarStatusType } from './domains/ui';
 
 configure({

@@ -22,11 +22,11 @@ const SearchResultNavigation: FC<Props> = ({
   const lastItemClass = `${paginationClass}--last-item`;
   const hiddenClass = `${paginationClass}--hidden`;
 
-  const { root: { globalSearch } } = useContext(StoreContext);
+  const { root: { searchBase } } = useContext(StoreContext);
   const {
     currentResultPagePos,
     maxResultPages,
-  } = globalSearch;
+  } = searchBase;
 
   const firstIsActive = currentResultPagePos > 0;
   const lastIsActive = currentResultPagePos < maxResultPages - 1;
@@ -69,18 +69,18 @@ const SearchResultNavigation: FC<Props> = ({
     const arrowNavigator = (e: KeyboardEvent) => {
       switch(e.code) {
         case ARROW_LEFT:
-          globalSearch.setPagination(-1);
+          searchBase.setPagination(-1);
           break;
 
         case ARROW_RIGHT:
-          globalSearch.setPagination(1);
+          searchBase.setPagination(1);
           break;
       }
     };
     document.body.addEventListener('keyup', arrowNavigator);
 
     return () => document.body.removeEventListener('keyup', arrowNavigator);
-  }, [globalSearch]);
+  }, [searchBase]);
 
   return (
     <div className="pagination-wrap">
@@ -90,14 +90,14 @@ const SearchResultNavigation: FC<Props> = ({
             ? arrayToClassName([paginationClass, firstItemClass, clickableClass])
             : arrayToClassName([paginationClass, firstItemClass])
           }
-          onClick={() => { firstIsActive && globalSearch.setPagination(-1); }}
+          onClick={() => { firstIsActive && searchBase.setPagination(-1); }}
         >&lt;</li>
         <li
           className={lastIsActive
             ? arrayToClassName([paginationClass, lastItemClass, clickableClass])
             : arrayToClassName([paginationClass, lastItemClass])
           }
-          onClick={() => { lastIsActive && globalSearch.setPagination(1); }}
+          onClick={() => { lastIsActive && searchBase.setPagination(1); }}
         >&gt;</li>
       </ul>
       <ul className="pagination is-hidden-vp-small">
@@ -105,7 +105,7 @@ const SearchResultNavigation: FC<Props> = ({
           <li
             className={navItem.className}
             key={navItem.pos}
-            onClick={() => { globalSearch.jumpToPagePos(navItem.pos) }}
+            onClick={() => { searchBase.jumpToPagePos(navItem.pos) }}
           >{navItem.text}</li>))
         }
 

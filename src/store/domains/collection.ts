@@ -35,7 +35,7 @@ export default class Collection implements CollectionStoreInterface {
 
   /* Actions */
   addArtefactToCollection(inventoryNumber: string) {
-    const matchingItem = this.rootStore.globalSearch.result?.items.find(item => item.id === inventoryNumber);
+    const matchingItem = this.rootStore.searchBase.result?.items.find(item => item.id === inventoryNumber);
 
     if (!matchingItem) return;
 
@@ -61,8 +61,9 @@ export default class Collection implements CollectionStoreInterface {
   showCollection() {
     const inventoryNumbers = this.artefacts.map(artefact => artefact.inventoryNumber);
 
-    this.rootStore.globalSearch.resetEntityType();
-    this.rootStore.globalSearch.triggerUserCollectionRequest(inventoryNumbers);
+    // TODO: do not depend on searchWorks
+    this.rootStore.searchWorks.resetEntityType();
+    this.rootStore.searchWorks.triggerUserCollectionRequest(inventoryNumbers);
     return true;
   }
 

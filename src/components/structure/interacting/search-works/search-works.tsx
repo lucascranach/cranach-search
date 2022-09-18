@@ -12,7 +12,7 @@ import Toggle from '../../../base/interacting/toggle';
 import Logo from '../../../base/visualizing/logo';
 
 import translations from './translations.json';
-import './search.scss';
+import './search-works.scss';
 
 import StoreContext, {
   GlobalSearchFilterGroupItem,
@@ -21,16 +21,16 @@ import StoreContext, {
   UISidebarContentType,
 } from '../../../../store/StoreContext';
 
-const Search: FC = () => {
-  const { root: { globalSearch, ui } } = useContext(StoreContext);
+const SearchWorks: FC = () => {
+  const { root: { searchBase, searchWorks, ui } } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Search', translations);
 
-  const filterCount = globalSearch.amountOfActiveFilters;
-  const hits = globalSearch.result?.meta.hits ?? 0;
+  const filterCount = searchWorks.amountOfActiveFilters;
+  const hits = searchBase.result?.meta.hits ?? 0;
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
-  const filterGroups = globalSearch.result?.filterGroups ?? [];
+  const filterGroups = searchBase.result?.filterGroups ?? [];
 
   const mapFilterGroupItemsToTreeList = (filters: GlobalSearchFilterGroupItem[]): TreeListItem[] => filters.map((filter) => ({
     id: filter.key,
@@ -51,14 +51,14 @@ const Search: FC = () => {
   const mappedFiltersInfos = mapFilterGroupItemsToTreeList(filterGroups);
 
   const toggleFilterItemActiveStatus = (groupKey: string, filterInfoId: string) => {
-     globalSearch.toggleFilterItemActiveStatus(groupKey, filterInfoId);
+     searchWorks.toggleFilterItemActiveStatus(groupKey, filterInfoId);
   };
 
-  const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search--is-active' : '';
+  const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search-works--is-active' : '';
 
   const triggerFilterRequest = () => {
-    globalSearch.applyFreetextFields();
-    globalSearch.triggerFilterRequest();
+    searchWorks.applyFreetextFields();
+    searchWorks.triggerFilterRequest();
   }
 
   const triggerFilterRequestOnEnter = (e: KeyboardEvent) => {
@@ -68,12 +68,12 @@ const Search: FC = () => {
   }
 
   useEffect(() => {
-    console.log('GlobalSearchMode =>', globalSearch.searchMode);
-  }, [globalSearch.searchMode]);
+    console.log('GlobalSearchMode =>', searchBase.searchMode);
+  }, [searchBase.searchMode]);
 
   return (
     <div
-      className={`search ${isActiveFilter}`}
+      className={`search-works ${isActiveFilter}`}
       data-component="structure/interacting/search"
     >
       <Logo />
@@ -85,8 +85,8 @@ const Search: FC = () => {
         <TextInput
           placeholder={t('Enter Search Keyword')}
           className="search-input"
-          value={ globalSearch.freetextFields.allFieldsTerm }
-          onChange={ allFieldsTerm => globalSearch.setFreetextFields({ allFieldsTerm }) }
+          value={ searchWorks.freetextFields.allFieldsTerm }
+          onChange={ allFieldsTerm => searchWorks.setFreetextFields({ allFieldsTerm }) }
           onKeyDown={ triggerFilterRequestOnEnter }
           onReset={ triggerFilterRequest }
           resetable={true}
@@ -102,8 +102,8 @@ const Search: FC = () => {
           <TextInput
             className="search-input"
             label={ t('Title') }
-            value={ globalSearch.freetextFields.title }
-            onChange={ title => globalSearch.setFreetextFields({ title }) }
+            value={ searchWorks.freetextFields.title }
+            onChange={ title => searchWorks.setFreetextFields({ title }) }
             onKeyDown={ triggerFilterRequestOnEnter }
             onReset={ triggerFilterRequest }
             resetable={true}
@@ -111,8 +111,8 @@ const Search: FC = () => {
 
           <TextInput
             className="search-input"
-            label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ globalSearch.freetextFields.FRNr }
-            onChange={ FRNr => globalSearch.setFreetextFields({ FRNr }) }
+            label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ searchWorks.freetextFields.FRNr }
+            onChange={ FRNr => searchWorks.setFreetextFields({ FRNr }) }
             onKeyDown={ triggerFilterRequestOnEnter }
             onReset={ triggerFilterRequest }
             resetable={true}
@@ -121,8 +121,8 @@ const Search: FC = () => {
           <TextInput
             className="search-input"
             label={ t('Location') }
-            value={ globalSearch.freetextFields.location }
-            onChange={ location => globalSearch.setFreetextFields({ location }) }
+            value={ searchWorks.freetextFields.location }
+            onChange={ location => searchWorks.setFreetextFields({ location }) }
             onKeyDown={ triggerFilterRequestOnEnter }
             onReset={ triggerFilterRequest }
             resetable={true}
@@ -131,8 +131,8 @@ const Search: FC = () => {
           <TextInput
             className="search-input"
             label={ t('CDA ID / Inventorynumber') }
-            value={ globalSearch.freetextFields.inventoryNumber }
-            onChange={ inventoryNumber => globalSearch.setFreetextFields({ inventoryNumber }) }
+            value={ searchWorks.freetextFields.inventoryNumber }
+            onChange={ inventoryNumber => searchWorks.setFreetextFields({ inventoryNumber }) }
             onKeyDown={ triggerFilterRequestOnEnter }
             onReset={ triggerFilterRequest }
             resetable={true}
@@ -151,16 +151,16 @@ const Search: FC = () => {
       <fieldset className="block">
         <div className="single-filter">
           {/* isBestOf */}
-          <span className={ `filter-info-item ${ (globalSearch.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
+          <span className={ `filter-info-item ${ (searchWorks.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
             <Checkbox
               className="filter-info-item__checkbox"
-              checked={ globalSearch.filters.isBestOf }
-              onChange={ () => globalSearch.setIsBestOf(!globalSearch.filters.isBestOf) }
+              checked={ searchWorks.filters.isBestOf }
+              onChange={ () => searchWorks.setIsBestOf(!searchWorks.filters.isBestOf) }
             />
             <span
               className="filter-info-item__name"
-              data-count={ globalSearch.bestOfFilter?.docCount ?? 0 }
-            >{ t('Masterpieces')}<Size size={ globalSearch.bestOfFilter?.docCount ?? 0 }/></span>
+              data-count={ searchWorks.bestOfFilter?.docCount ?? 0 }
+            >{ t('Masterpieces')}<Size size={ searchWorks.bestOfFilter?.docCount ?? 0 }/></span>
           </span>
         </div>
 
@@ -171,10 +171,10 @@ const Search: FC = () => {
             onToggle={ (isOpen) => ui.setFilterItemExpandedState('dating', isOpen) }
           >
             <DatingRangeslider
-              bounds={globalSearch.datingRangeBounds}
-              start={globalSearch.filters.dating.fromYear}
-              end={globalSearch.filters.dating.toYear}
-              onChange={ (start: number, end: number) => globalSearch.setDating(start, end) }
+              bounds={searchWorks.datingRangeBounds}
+              start={searchWorks.filters.dating.fromYear}
+              end={searchWorks.filters.dating.toYear}
+              onChange={ (start: number, end: number) => searchWorks.setDating(start, end) }
             ></DatingRangeslider>
           </Accordion.Entry>
 
@@ -197,7 +197,7 @@ const Search: FC = () => {
                       (treeListItem, toggle) => (<span className={ `filter-info-item ${ (treeListItem.data?.count ?? 0) === 0 ? 'filter-info-item__inactive' : '' }` }>
                         <Checkbox
                           className="filter-info-item__checkbox"
-                          checked={ globalSearch.filters.filterGroups.get(treeListItem.data?.groupKey as string)?.has(treeListItem.id) }
+                          checked={ searchWorks.filters.filterGroups.get(treeListItem.data?.groupKey as string)?.has(treeListItem.id) }
                           onChange={ () => toggleFilterItemActiveStatus(treeListItem.data?.groupKey as string , treeListItem.id) }
                         />
                         <span
@@ -219,7 +219,7 @@ const Search: FC = () => {
             <Btn
               className="reset-button"
               icon="delete_sweep"
-              click={ () => globalSearch.resetAllFilters() }
+              click={ () => searchWorks.resetAllFilters() }
             >{ t('reset filters') }</Btn>
           </div>
         }
@@ -228,4 +228,4 @@ const Search: FC = () => {
   );
 };
 
-export default observer(Search);
+export default observer(SearchWorks);

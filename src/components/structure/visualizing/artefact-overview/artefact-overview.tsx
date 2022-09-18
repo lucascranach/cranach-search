@@ -5,7 +5,7 @@ import ArtefactLine from '../artefact-line';
 
 import { observer } from 'mobx-react-lite';
 
-import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
+import StoreContext, { EntityType } from '../../../../store/StoreContext';
 
 import './artefact-overview.scss';
 
@@ -114,9 +114,9 @@ const Overview: FC<OverviewProps> = ({
 
   const assembleSubTitleForCardView = (item: ArtefactOverviewItem): string => {
     switch (item.entityType) {
-      case GlobalSearchEntityType.ARCHIVALS:
+      case EntityType.ARCHIVALS:
         return 'tbd';
-      case GlobalSearchEntityType.GRAPHICS:
+      case EntityType.GRAPHICS:
         return `${item.classification}, ${item.printProcess}`;
     }
     return cleanupRecord(item.medium);
@@ -124,9 +124,9 @@ const Overview: FC<OverviewProps> = ({
 
   const assembleSubTitleForListView = (item: ArtefactOverviewItem): string => {
     switch (item.entityType) {
-      case GlobalSearchEntityType.ARCHIVALS:
+      case EntityType.ARCHIVALS:
         return 'tbd';
-      case GlobalSearchEntityType.GRAPHICS:
+      case EntityType.GRAPHICS:
         return `${item.classification}, ${item.printProcess}`;
     }
 
@@ -135,9 +135,9 @@ const Overview: FC<OverviewProps> = ({
 
   const assembleTextForCardView = (item: ArtefactOverviewItem): string => {
     switch (item.entityType) {
-      case GlobalSearchEntityType.ARCHIVALS:
+      case EntityType.ARCHIVALS:
         return 'tbd';
-      case GlobalSearchEntityType.GRAPHICS:
+      case EntityType.GRAPHICS:
         return `${item.inventor}`;
     }
     return `${item.repository}`;

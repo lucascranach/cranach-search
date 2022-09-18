@@ -227,12 +227,12 @@ export default {
 };
 
 export enum EntityType {
-  GRAPHICS = 'GRAPHIC',
   PAINTINGS = 'PAINTING',
-  DOCUMENTS = 'DOCUMENT',
+  GRAPHICS = 'GRAPHIC',
   ARCHIVALS = 'ARCHIVAL',
+  DOCUMENTS = 'DOCUMENT',
   UNKNOWN = 'UNKNOWN',
-}
+};
 
 export type APIFilterType = {
   dating: {

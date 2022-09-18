@@ -7,39 +7,39 @@ import CategoryFilter from '../../../base/interacting/category-filter';
 import translations from './translations.json';
 import './navigation.scss';
 
-import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
+import StoreContext, { EntityType } from '../../../../store/StoreContext';
 
 
 const Navigation = () => {
-  const { root: { globalSearch, ui } } = useContext(StoreContext);
+  const { root: { searchWorks, ui } } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Navigation', translations);
 
-  const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => { return activeFilter === filterValue ? 'is-active' : '' }
+  const isActive = (activeFilter?: EntityType, filterValue?: EntityType) => { return activeFilter === filterValue ? 'is-active' : '' }
 
   const navStructure = [
     {
       title: 'All Objects',
-      filterValue: GlobalSearchEntityType.UNKNOWN,
+      filterValue: EntityType.UNKNOWN,
     },
     {
       title: 'Paintings',
-      filterValue: GlobalSearchEntityType.PAINTINGS,
+      filterValue: EntityType.PAINTINGS,
     },
     {
       title: 'Archival Documents',
-      filterValue: GlobalSearchEntityType.ARCHIVALS,
+      filterValue: EntityType.ARCHIVALS,
     },
     /*
     {
       title: 'Prints and Drawings',
-      filterValue: GlobalSearchEntityType.GRAPHICS,
+      filterValue: EntityType.GRAPHICS,
     },
     */
   ];
 
-  const triggerAction = (filterValue: GlobalSearchEntityType) => {
-    globalSearch.setEntityType(filterValue);
+  const triggerAction = (filterValue: EntityType) => {
+    searchWorks.setEntityType(filterValue);
   }
 
   return (
@@ -57,8 +57,9 @@ const Navigation = () => {
             <li className="menu__item"
               key={item.filterValue}
             >
+              { /* TODO: do not depend on searchWorks */ }
               <CategoryFilter
-                className={isActive(globalSearch.filters.entityType, item.filterValue)}
+                className={isActive(searchWorks.filters.entityType, item.filterValue)}
                 filterText={t(item.title)}
                 onClick={() => triggerAction(item.filterValue)}
               >
