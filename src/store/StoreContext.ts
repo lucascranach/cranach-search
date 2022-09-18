@@ -3,7 +3,10 @@ import { configure } from 'mobx';
 
 import { RootStoreInterface } from './rootStore';
 
-export { GlobalSearchEntityType } from './domains/globalSearch';
+export {
+  GlobalSearchEntityType,
+  GlobalSearchMode,
+} from './domains/globalSearch';
 export type {
   GlobalSearchFilterGroupItem,
   GlobalSearchFilterItem,

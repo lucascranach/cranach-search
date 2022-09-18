@@ -1,0 +1,30 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+
+// @use "sass:math";
+
+.search-fields-works {
+  z-index: $level-content;
+  height: 0;
+  margin-top: $m;
+  opacity: $op-medium;
+
+  .head .entry-title {
+    padding-top: 0;
+    text-align: right;
+  }
+
+  &.-open {
+    height: auto;
+    padding-bottom: $l;
+    opacity: 1;
+
+    .head .entry-title {
+      font-weight: $fw-semibold;
+      text-align: left;
+    }
+  }
+
+  .box {
+    padding: 0;
+  }
+}

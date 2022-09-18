@@ -1,17 +1,15 @@
-@use "sass:math";
-
 @import "../../../../style/000-abstracts/__abstracts-dir";
 
 .search {
   display: none;
-  padding:  $s + $s + $s $m $xxl $m;
   width: $sidebar-width;
+  padding: $s + $s + $s $m $xxl $m;
 
   &--is-active {
     display: block;
   }
 
-  &-button{
+  &-button {
     position: relative;
     z-index: $level-content-nav;
   }
@@ -52,109 +50,61 @@
     cursor: pointer;
   }
 
-  .single-filter {
-    margin-bottom: $m;
-  }
-
   .search-result-info {
-    margin-left: -$s;
     margin-bottom: $l;
+    margin-left: -$s;
     font-weight: $fw-semibold;
 
-    p{
+    p {
       line-height: normal;
     }
   }
 
-  .logo{
+  .logo {
     display: none;
   }
 
-  .filter-info-item {
-    display: flex;
-
-    &__inactive {
-      filter: grayscale(100%);
-      opacity: $op-medium;
-    }
-
-    &__name {
-      margin-left: $xs;
-      line-height: $m;
-    }
-
-  }
-
-  .advanced-search-toggle{
-    margin-top: $m;
-    opacity: $op-medium;
-    height: 0;
-    z-index: $level-content;
-
-    .head .entry-title{
-      padding-top: 0;
-      text-align: right;
-    }
-
-    &.-open{
-      opacity: 1;
-      height: auto;
-      padding-bottom: $l;
-
-      .head .entry-title{
-        text-align: left;
-        font-weight: $fw-semibold;
-      }
-    }
-
-    .box{
-      padding: 0;
-    }
-  }
-
-  .sticky-panel{
+  .sticky-panel {
     position: fixed;
-    width: $sidebar-width;
-    bottom: 0;
+    z-index: $level-overall-nav;
     right: 0;
+    bottom: 0;
+    width: $sidebar-width;
     padding: 0 $m $m $m;
     background-color: $lightest;
-    z-index: $level-overall-nav;
 
-    .reset-button{
-      font-weight: $fw-light;
-      background-color: $light;
-      color: $darkest;
-      transition: background-color $tr-fast, color $tr-fast;
+    .reset-button {
       height: $l;
       padding: 0 $s;
+      background-color: $light;
+      color: $darkest;
+      font-weight: $fw-light;
+      transition: background-color $tr-fast, color $tr-fast;
 
-      &:hover{
+      &:hover {
         background-color: $accent;
         color: $lightest;
       }
     }
   }
-
 }
 
 @media screen and (max-width: $vp-medium) {
-  .search{
+  .search {
     width: auto;
     padding: $s $m $l $m;
 
-    .logo{
+    .logo {
       display: block;
-      font-size: $l;
       margin-bottom: $s;
+      font-size: $l;
     }
 
-    .sticky-panel{
+    .sticky-panel {
       position: static;
-      bottom: inherit;
       right: inherit;
+      bottom: inherit;
       width: 100%;
-
       padding: $m 0 $s 0;
     }
   }

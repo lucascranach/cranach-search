@@ -2,23 +2,16 @@
   "de": {
     "Search archive": "Archiv durchsuchen",
     "all Fields": "alle Felder",
-    "Title": "Titel",
-    "{{catalogWorkReferenceNames}} No.": "{{catalogWorkReferenceNames}} Nr.",
-    "Location": "Standort",
-    "CDA ID / Inventorynumber": "CDA ID / Inventarnummer",
     "find": "finden",
     "Attribution": "Zuschreibung",
     "Kind": "Art",
-    "Dating": "Datierung",
     "Collection / Location": "Sammlung / Standort",
     "Examination Techniques": "Untersuchungstechniken",
     "work found": "Werk gefunden",
     "works found": "Werke gefunden",
     "Search": "Suche",
     "reset filters": "Filter zurücksetzen",
-    "Masterpieces": "Meisterwerke",
     "Filter by": "Filtern nach",
-    "Enter Search Keyword": "Suchwort eingeben",
-    "Advanced Search": "Erweiterte Suche"
+    "Enter Search Keyword": "Suchwort eingeben"
   }
 }

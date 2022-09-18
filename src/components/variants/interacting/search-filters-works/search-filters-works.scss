@@ -1,0 +1,21 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+
+.search-filters-works {
+  .single-filter {
+    margin-bottom: $m;
+  }
+
+  .filter-info-item {
+    display: flex;
+
+    &__inactive {
+      filter: grayscale(100%);
+      opacity: $op-medium;
+    }
+
+    &__name {
+      margin-left: $xs;
+      line-height: $m;
+    }
+  }
+}
