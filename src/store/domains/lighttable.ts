@@ -17,14 +17,14 @@ import {
 } from './routing';
 export { EntityType } from '../../api/globalSearch';
 export type {
-  GlobalSearchFilterGroupItem,
-  GlobalSearchFilterItem,
+  GlobalSearchFilterGroupItem as FilterGroupItem,
+  GlobalSearchFilterItem as FilterItem,
 } from '../../api/globalSearch';
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
 
-export default class SearchBase implements SearchBaseStoreInterface, RoutingObservableInterface {
+export default class Lighttable implements LighttableStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
   globalSearchAPI: GlobalSearchAPI;
 
@@ -47,7 +47,7 @@ export default class SearchBase implements SearchBaseStoreInterface, RoutingObse
 
   /* Computed */
 
-  get flattenedSearchResultItems(): GlobalSearchArtifact[] {
+  get flattenedResultItem(): GlobalSearchArtifact[] {
     return this.result?.items ?? [];
   }
 
@@ -61,18 +61,18 @@ export default class SearchBase implements SearchBaseStoreInterface, RoutingObse
     return Math.ceil(hits / this.pagination.size);
   }
 
-  get searchMode(): SearchMode {
+  get artefactMode(): ArtefactMode {
     switch (this.entityType) {
       case EntityType.PAINTINGS:
       case EntityType.GRAPHICS:
       case EntityType.UNKNOWN:
-        return SearchMode.WORKS;
+        return ArtefactMode.WORKS;
 
       case EntityType.ARCHIVALS:
-        return SearchMode.ARCHIVALS;
+        return ArtefactMode.ARCHIVALS;
     }
 
-    return SearchMode.WORKS;
+    return ArtefactMode.WORKS;
   }
 
   /* Actions */
@@ -169,12 +169,12 @@ export default class SearchBase implements SearchBaseStoreInterface, RoutingObse
 
 }
 
-export enum SearchMode {
+export enum ArtefactMode {
   WORKS = 'works',
   ARCHIVALS = 'archivals',
 }
 
-export interface SearchBaseStoreInterface {
+export interface LighttableStoreInterface {
   loading: boolean;
   result: GlobalSearchResult | null;
   error: string | null;
@@ -183,11 +183,11 @@ export interface SearchBaseStoreInterface {
     from: number;
   };
   entityType: EntityType;
-  flattenedSearchResultItems: GlobalSearchArtifact[];
+  flattenedResultItem: GlobalSearchArtifact[];
   currentResultPagePos: number;
   maxResultPages: number;
 
-  searchMode: SearchMode;
+  artefactMode: ArtefactMode;
 
   setSearchLoading(loading: boolean): void;
   setSearchResult(result: GlobalSearchResult | null): void;

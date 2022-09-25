@@ -22,11 +22,11 @@ const SearchResultNavigation: FC<Props> = ({
   const lastItemClass = `${paginationClass}--last-item`;
   const hiddenClass = `${paginationClass}--hidden`;
 
-  const { root: { searchBase } } = useContext(StoreContext);
+  const { root: { lighttable } } = useContext(StoreContext);
   const {
     currentResultPagePos,
     maxResultPages,
-  } = searchBase;
+  } = lighttable;
 
   const firstIsActive = currentResultPagePos > 0;
   const lastIsActive = currentResultPagePos < maxResultPages - 1;
@@ -69,18 +69,18 @@ const SearchResultNavigation: FC<Props> = ({
     const arrowNavigator = (e: KeyboardEvent) => {
       switch(e.code) {
         case ARROW_LEFT:
-          searchBase.setPagination(-1);
+          lighttable.setPagination(-1);
           break;
 
         case ARROW_RIGHT:
-          searchBase.setPagination(1);
+          lighttable.setPagination(1);
           break;
       }
     };
     document.body.addEventListener('keyup', arrowNavigator);
 
     return () => document.body.removeEventListener('keyup', arrowNavigator);
-  }, [searchBase]);
+  }, [lighttable]);
 
   return (
     <div className="pagination-wrap">
@@ -90,14 +90,14 @@ const SearchResultNavigation: FC<Props> = ({
             ? arrayToClassName([paginationClass, firstItemClass, clickableClass])
             : arrayToClassName([paginationClass, firstItemClass])
           }
-          onClick={() => { firstIsActive && searchBase.setPagination(-1); }}
+          onClick={() => { firstIsActive && lighttable.setPagination(-1); }}
         >&lt;</li>
         <li
           className={lastIsActive
             ? arrayToClassName([paginationClass, lastItemClass, clickableClass])
             : arrayToClassName([paginationClass, lastItemClass])
           }
-          onClick={() => { lastIsActive && searchBase.setPagination(1); }}
+          onClick={() => { lastIsActive && lighttable.setPagination(1); }}
         >&gt;</li>
       </ul>
       <ul className="pagination is-hidden-vp-small">
@@ -105,7 +105,7 @@ const SearchResultNavigation: FC<Props> = ({
           <li
             className={navItem.className}
             key={navItem.pos}
-            onClick={() => { searchBase.jumpToPagePos(navItem.pos) }}
+            onClick={() => { lighttable.jumpToPagePos(navItem.pos) }}
           >{navItem.text}</li>))
         }
 

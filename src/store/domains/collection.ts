@@ -35,7 +35,7 @@ export default class Collection implements CollectionStoreInterface {
 
   /* Actions */
   addArtefactToCollection(inventoryNumber: string) {
-    const matchingItem = this.rootStore.searchBase.result?.items.find(item => item.id === inventoryNumber);
+    const matchingItem = this.rootStore.lighttable.result?.items.find(item => item.id === inventoryNumber);
 
     if (!matchingItem) return;
 

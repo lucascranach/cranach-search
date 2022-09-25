@@ -15,7 +15,7 @@ import {
   ChangeAction as RoutingChangeAction,
   SearchQueryParamChange as RoutingSearchQueryParamChange,
 } from './routing';
-import { SearchBaseStoreInterface } from './searchBase';
+import { LighttableStoreInterface } from './lighttable';
 
 const MIN_LOWER_DATING_YEAR = 1470;
 const MAX_UPPER_DATING_YEAR = 1601;
@@ -62,7 +62,7 @@ const createInitialFilters = (): FilterType => ({
 
 export default class SearchWorks implements SearchWorksStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
-  searchBase: SearchBaseStoreInterface;
+  lighttable: LighttableStoreInterface;
   globalSearchAPI: GlobalSearchAPI;
 
   datingRangeBounds: [number, number] = DATING_RANGE_TOTAL_BOUNDS;
@@ -76,7 +76,7 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     makeAutoObservable(this);
 
     this.rootStore = rootStore;
-    this.searchBase = rootStore.searchBase;
+    this.lighttable = rootStore.lighttable;
     this.globalSearchAPI = globalSearchAPI;
     this.rootStore.routing.addObserver(this);
 
@@ -89,7 +89,7 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
   /* Computed */
 
   get bestOfFilter(): SingleFilter | null {
-    const isBestOfFilter = this.searchBase.result?.singleFilters.find((item) => item.id === 'is_best_of');
+    const isBestOfFilter = this.lighttable.result?.singleFilters.find((item) => item.id === 'is_best_of');
 
     if (!isBestOfFilter) { return null; }
 
@@ -161,13 +161,13 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
   }
 
   setSize(size: number) {
-    this.searchBase.setSize(size);
+    this.lighttable.setSize(size);
 
     this.triggerFilterRequest();
   }
 
   setFrom(from: number) {
-    this.searchBase.setFrom(from);
+    this.lighttable.setFrom(from);
   }
 
   setIsBestOf(isBestOf: boolean) {
@@ -218,10 +218,10 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
     this.debounceHandler = window.setTimeout(async () => {
       const { lang } = this.rootStore.ui;
-      this.searchBase.setSearchLoading(true);
+      this.lighttable.setSearchLoading(true);
 
       if (resetPagePos) {
-        this.searchBase.resetPagePos();
+        this.lighttable.resetPagePos();
       }
 
       try {
@@ -232,21 +232,21 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
             /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */
             toYear: (this.filters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.filters.dating.toYear : 0,
           },
-          size: this.searchBase.pagination.size,
-          from: this.searchBase.pagination.from,
+          size: this.lighttable.pagination.size,
+          from: this.lighttable.pagination.from,
         };
         const result = await this.globalSearchAPI.searchByFiltersAndTerm(
           updatedFilters,
           this.freetextFields,
           lang,
         );
-        this.searchBase.setSearchResult(result);
+        this.lighttable.setSearchResult(result);
 
         this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
       } catch(err: any) {
-        this.searchBase.setSearchFailed(err.toString());
+        this.lighttable.setSearchFailed(err.toString());
       } finally {
-        this.searchBase.setSearchLoading(false);
+        this.lighttable.setSearchLoading(false);
       }
     }, this.debounceWaitInMSecs);
   }
@@ -254,32 +254,32 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
   private async triggerExtendedFilterRequestForLocalStorage(filters: FilterType, lang: string): Promise<void> {
     const extendedFilters = {
       ...filters,
-      size: this.searchBase.pagination.size * 2,
-      from: this.searchBase.pagination.from,
+      size: this.lighttable.pagination.size * 2,
+      from: this.lighttable.pagination.from,
     };
     const resultForInAcrtefactNavigation = await this.globalSearchAPI.searchByFiltersAndTerm(
       extendedFilters,
       this.freetextFields,
       lang,
     );
-    this.searchBase.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
+    this.lighttable.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
   }
 
   triggerUserCollectionRequest(ids: string[]) {
 
     (async () => {
       const { lang } = this.rootStore.ui;
-      this.searchBase.setSearchLoading(true);
+      this.lighttable.setSearchLoading(true);
       try {
         const result = await this.globalSearchAPI.retrieveUserCollection(
           ids,
           lang,
         );
-        this.searchBase.setSearchResult(result);
+        this.lighttable.setSearchResult(result);
       } catch(err: any) {
-        this.searchBase.setSearchFailed(err.toString());
+        this.lighttable.setSearchFailed(err.toString());
       } finally {
-        this.searchBase.setSearchLoading(false);
+        this.lighttable.setSearchLoading(false);
       }
     })();
   }

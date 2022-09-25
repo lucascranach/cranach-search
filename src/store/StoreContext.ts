@@ -3,11 +3,11 @@ import { configure } from 'mobx';
 
 import { RootStoreInterface } from './rootStore';
 
-export { EntityType } from './domains/searchBase';
+export { EntityType } from './domains/lighttable';
 export type {
-  GlobalSearchFilterGroupItem,
-  GlobalSearchFilterItem,
-} from './domains/searchBase';
+  FilterGroupItem,
+  FilterItem,
+} from './domains/lighttable';
 export { UISidebarContentType, UIOverviewViewType, UISidebarStatusType } from './domains/ui';
 
 configure({

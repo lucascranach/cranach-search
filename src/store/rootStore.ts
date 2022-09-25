@@ -7,14 +7,14 @@ import UI, { UIStoreInterface } from './domains/ui';
 import Routing, { RoutingStoreInterface } from './domains/routing';
 import SearchWorks, { SearchWorksStoreInterface } from './domains/searchWorks';
 import Collection, { CollectionStoreInterface } from './domains/collection';
-import SearchBase, { SearchBaseStoreInterface } from './domains/searchBase';
+import Lighttable, { LighttableStoreInterface } from './domains/lighttable';
 
 export default class RootStore implements RootStoreInterface {
   public readonly mode;
   public ui: UIStoreInterface;
   public routing: RoutingStoreInterface;
   public collection: CollectionStoreInterface;
-  public searchBase: SearchBaseStoreInterface;
+  public lighttable: LighttableStoreInterface;
   public searchWorks: SearchWorksStoreInterface;
 
   constructor(history: History) {
@@ -26,7 +26,7 @@ export default class RootStore implements RootStoreInterface {
     this.routing = new Routing(this, history);
     this.ui = new UI(this);
     this.collection = new Collection(this);
-    this.searchBase = new SearchBase(this, globalSearchAPI);
+    this.lighttable = new Lighttable(this, globalSearchAPI);
     this.searchWorks = new SearchWorks(this, globalSearchAPI);
   }
 }
@@ -35,7 +35,7 @@ export interface RootStoreInterface {
   mode: string,
   ui: UIStoreInterface,
   routing: RoutingStoreInterface,
-  searchBase: SearchBaseStoreInterface,
+  lighttable: LighttableStoreInterface,
   collection: CollectionStoreInterface,
   searchWorks: SearchWorksStoreInterface,
 }

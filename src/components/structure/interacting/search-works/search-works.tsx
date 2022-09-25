@@ -15,30 +15,30 @@ import translations from './translations.json';
 import './search-works.scss';
 
 import StoreContext, {
-  GlobalSearchFilterGroupItem,
-  GlobalSearchFilterItem,
+  FilterGroupItem,
+  FilterItem,
   UISidebarStatusType,
   UISidebarContentType,
 } from '../../../../store/StoreContext';
 
 const SearchWorks: FC = () => {
-  const { root: { searchBase, searchWorks, ui } } = useContext(StoreContext);
+  const { root: { lighttable, searchWorks, ui } } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Search', translations);
 
   const filterCount = searchWorks.amountOfActiveFilters;
-  const hits = searchBase.result?.meta.hits ?? 0;
+  const hits = lighttable.result?.meta.hits ?? 0;
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
-  const filterGroups = searchBase.result?.filterGroups ?? [];
+  const filterGroups = lighttable.result?.filterGroups ?? [];
 
-  const mapFilterGroupItemsToTreeList = (filters: GlobalSearchFilterGroupItem[]): TreeListItem[] => filters.map((filter) => ({
+  const mapFilterGroupItemsToTreeList = (filters: FilterGroupItem[]): TreeListItem[] => filters.map((filter) => ({
     id: filter.key,
     name: filter.text,
     children: mapFilterItemToTreeList(filter.children, filter.key),
   }));
 
-  const mapFilterItemToTreeList = (filters: GlobalSearchFilterItem[], groupKey: string): TreeListItem[] => filters.map((filter) => ({
+  const mapFilterItemToTreeList = (filters: FilterItem[], groupKey: string): TreeListItem[] => filters.map((filter) => ({
     id: filter.id,
     name: filter.text,
     children: mapFilterItemToTreeList(filter.children, groupKey),
@@ -68,8 +68,8 @@ const SearchWorks: FC = () => {
   }
 
   useEffect(() => {
-    console.log('GlobalSearchMode =>', searchBase.searchMode);
-  }, [searchBase.searchMode]);
+    console.log('GlobalSearchMode =>', lighttable.artefactMode);
+  }, [lighttable.artefactMode]);
 
   return (
     <div
