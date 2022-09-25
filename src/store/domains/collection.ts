@@ -61,9 +61,8 @@ export default class Collection implements CollectionStoreInterface {
   showCollection() {
     const inventoryNumbers = this.artefacts.map(artefact => artefact.inventoryNumber);
 
-    // TODO: do not depend on searchWorks
-    this.rootStore.searchWorks.resetEntityType();
-    this.rootStore.searchWorks.triggerUserCollectionRequest(inventoryNumbers);
+    // TODO: implement collection output for different entity types / artifact kinds
+
     return true;
   }
 

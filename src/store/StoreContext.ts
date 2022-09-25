@@ -3,12 +3,19 @@ import { configure } from 'mobx';
 
 import { RootStoreInterface } from './rootStore';
 
-export { EntityType } from './domains/lighttable';
 export type {
   FilterGroupItem,
   FilterItem,
 } from './domains/lighttable';
-export { UISidebarContentType, UIOverviewViewType, UISidebarStatusType } from './domains/ui';
+export {
+  EntityType,
+} from './domains/lighttable';
+export {
+  UISidebarContentType,
+  UIOverviewViewType,
+  UISidebarStatusType,
+  UIArtifactKind,
+} from './domains/ui';
 
 configure({
   useProxies: 'never',

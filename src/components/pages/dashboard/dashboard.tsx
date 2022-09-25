@@ -7,18 +7,17 @@ import Cloak from '../../base/visualizing/cloak';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
 import Navigation from '../../structure/interacting/navigation';
 import ScrollTo from '../../base/interacting/scroll-to';
-import StoreContext, { EntityType, UIOverviewViewType } from '../../../store/StoreContext';
+import StoreContext, { UIOverviewViewType, EntityType } from '../../../store/StoreContext';
 
 import './dashboard.scss';
 
 const Dashboard: FC = () => {
-  const { root: { lighttable, searchWorks, ui } } = useContext(StoreContext);
+  const { root: { lighttable, ui } } = useContext(StoreContext);
 
   const mainContentEl = useRef<HTMLElement|null>(null);
 
   useEffect(() => {
-    // TODO: decide which search store should be initially triggered
-    searchWorks.triggerFilterRequest(false);
+    lighttable.fetch();
   }, [])
 
   useEffect(() => {

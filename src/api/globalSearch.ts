@@ -116,8 +116,8 @@ const getQueryStringForFiltersAndTerm = (
     params['dating_end:lte'] = filters.dating.toYear;
   }
 
-  if (filters.entityType !== EntityType.UNKNOWN) {
-    params['entity_type:eq'] = filters.entityType;
+  if (!filters.entityTypes.has(EntityType.UNKNOWN)) {
+    params['entity_type:eq'] = Array.from(filters.entityTypes).join(',');
   }
 
   if (filters.isBestOf) {
@@ -241,7 +241,7 @@ export type APIFilterType = {
   },
   size: number,
   from: number,
-  entityType: EntityType,
+  entityTypes: Set<EntityType>,
   filterGroups: Map<string, Set<string>>,
   isBestOf: boolean,
 };

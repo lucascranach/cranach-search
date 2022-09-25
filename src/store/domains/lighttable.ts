@@ -1,9 +1,12 @@
 
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import GlobalSearchAPI_, {
+  EntityType,
   GlobalSearchArtifact,
   GlobalSearchResult,
+} from '../../api/globalSearch';
+export  {
   EntityType,
 } from '../../api/globalSearch';
 import type {
@@ -13,13 +16,13 @@ import type {
 import {
   NotificationType as RoutingNotificationType,
   ChangeAction as RoutingChangeAction,
-  SearchQueryParamChange as RoutingSearchQueryParamChange,
 } from './routing';
-export { EntityType } from '../../api/globalSearch';
 export type {
   GlobalSearchFilterGroupItem as FilterGroupItem,
   GlobalSearchFilterItem as FilterItem,
 } from '../../api/globalSearch';
+import { UIArtifactKind as LighttableArtifactKind } from './ui';
+export { UIArtifactKind as LighttableArtifactKind } from './ui';
 
 type GlobalSearchAPI = typeof GlobalSearchAPI_;
 
@@ -27,6 +30,7 @@ type GlobalSearchAPI = typeof GlobalSearchAPI_;
 export default class Lighttable implements LighttableStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
   globalSearchAPI: GlobalSearchAPI;
+  providers: LighttableProviderInterface[] = [];
 
   loading: boolean = false;
   result: GlobalSearchResult | null = null;
@@ -35,7 +39,9 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     size: 60,
     from: 0,
   };
-  entityType: EntityType = EntityType.UNKNOWN;
+
+  fetchDebounceWaitInMSecs: number = 500;
+  fetchDebounceHandler: undefined | number = undefined;
 
   constructor(rootStore: RootStoreInterface, globalSearchAPI: GlobalSearchAPI) {
     makeAutoObservable(this);
@@ -61,8 +67,54 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     return Math.ceil(hits / this.pagination.size);
   }
 
+  get entityTypes(): Set<EntityType> {
+    const artifactKindToEntityTypeMap: Record<LighttableArtifactKind, EntityType[]> = {
+      [LighttableArtifactKind.WORKS]: [EntityType.PAINTINGS, EntityType.GRAPHICS],
+      [LighttableArtifactKind.PAINTINGS]: [EntityType.PAINTINGS],
+      [LighttableArtifactKind.ARCHIVALS]: [EntityType.ARCHIVALS],
+    };
+
+    const { artifactKind } = this.rootStore.ui;
+
+    const mappedEntityTypes = artifactKind in artifactKindToEntityTypeMap
+      ? artifactKindToEntityTypeMap[artifactKind]
+      : [EntityType.UNKNOWN];
+
+    return new Set(mappedEntityTypes);
+  }
+
 
   /* Actions */
+
+  fetch() {
+    const supportingProvider = this.providers.find(
+      (provider) => provider.supportsArtifactKind(this.rootStore.ui.artifactKind),
+    );
+
+    if (!supportingProvider) {
+      this.setResult(null);
+      return;
+    }
+
+    clearTimeout(this.fetchDebounceHandler);
+    this.fetchDebounceHandler = undefined;
+
+    this.fetchDebounceHandler = window.setTimeout(async () => {
+      this.setResultLoading(true);
+
+      try {
+        await supportingProvider.triggerRequest();
+      } catch(err: any) {
+        this.setResultFetchingFailed(err.toString());
+      } finally {
+        this.setResultLoading(false);
+      }
+    }, this.fetchDebounceWaitInMSecs);
+  }
+
+  registerProvider(provider: LighttableProviderInterface) {
+    this.providers.push(provider);
+  }
 
   setResultLoading(loading: boolean) {
     this.loading = loading;
@@ -152,8 +204,15 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
     this.setFrom(gatedPagePos * this.pagination.size);
     this.updateRoutingForPage();
+    this.fetch();
   }
 
+}
+
+export interface LighttableProviderInterface {
+  triggerRequest(): Promise<void>;
+
+  supportsArtifactKind(artifactKind: LighttableArtifactKind): boolean;
 }
 
 export interface LighttableStoreInterface {
@@ -164,11 +223,13 @@ export interface LighttableStoreInterface {
     size: number;
     from: number;
   };
-  entityType: EntityType;
   flattenedResultItem: GlobalSearchArtifact[];
   currentResultPagePos: number;
   maxResultPages: number;
+  entityTypes: Set<EntityType>;
 
+  fetch(): void;
+  registerProvider(provider: LighttableProviderInterface): void;
   setResultLoading(loading: boolean): void;
   setResult(result: GlobalSearchResult | null): void;
   resetResult(): void;

@@ -1,9 +1,8 @@
 
-import { reaction, makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import GlobalSearchAPI_, {
   GlobalSearchResult,
-  EntityType,
 } from '../../api/globalSearch';
 import type {
   ObserverInterface as RoutingObservableInterface,
@@ -14,7 +13,11 @@ import {
   ChangeAction as RoutingChangeAction,
   SearchQueryParamChange as RoutingSearchQueryParamChange,
 } from './routing';
-import { LighttableStoreInterface } from './lighttable';
+import {
+  LighttableStoreInterface,
+  LighttableProviderInterface,
+  LighttableArtifactKind,
+} from './lighttable';
 
 const MIN_LOWER_DATING_YEAR = 1470;
 const MAX_UPPER_DATING_YEAR = 1601;
@@ -29,7 +32,6 @@ export type FilterType = {
     fromYear: number,
     toYear: number,
   },
-  entityType: EntityType,
   filterGroups: Map<string, Set<string>>,
   isBestOf: boolean,
 };
@@ -53,13 +55,12 @@ const createInitialFilters = (): FilterType => ({
     fromYear: MIN_LOWER_DATING_YEAR,
     toYear: MAX_UPPER_DATING_YEAR,
   },
-  entityType: EntityType.UNKNOWN,
   filterGroups: new Map(),
   isBestOf: false,
 });
 
 
-export default class SearchWorks implements SearchWorksStoreInterface, RoutingObservableInterface {
+export default class SearchWorks implements SearchWorksStoreInterface, RoutingObservableInterface, LighttableProviderInterface {
   rootStore: RootStoreInterface;
   lighttable: LighttableStoreInterface;
   globalSearchAPI: GlobalSearchAPI;
@@ -68,21 +69,15 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
   freetextFields: FreeTextFields = createInitialFreeTexts();
   filters: FilterType = createInitialFilters();
 
-  debounceWaitInMSecs: number = 500;
-  debounceHandler: undefined | number = undefined;
-
   constructor(rootStore: RootStoreInterface, globalSearchAPI: GlobalSearchAPI) {
     makeAutoObservable(this);
 
     this.rootStore = rootStore;
     this.lighttable = rootStore.lighttable;
     this.globalSearchAPI = globalSearchAPI;
-    this.rootStore.routing.addObserver(this);
 
-    reaction(
-      () => this.rootStore.ui.lang,
-      () => this.triggerFilterRequest(),
-    );
+    this.rootStore.routing.addObserver(this);
+    this.lighttable.registerProvider(this);
   }
 
   /* Computed */
@@ -99,7 +94,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     };
   }
 
-
   get amountOfActiveFilters() {
     const curr = this.filters;
     const init = createInitialFilters();
@@ -109,7 +103,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
     // TODO: const sizeChanged = curr.size !== init.size;
     // TODO: const fromChanged = curr.from !== init.from;
-    const entityTypeChanged = curr.entityType !== init.entityType;
     const filterGroupsChanged = curr.filterGroups.size !== init.filterGroups.size;
     const isBestOfChanged = curr.isBestOf !== init.isBestOf;
 
@@ -117,7 +110,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       datingChanged,
       // TODO: sizeChanged,
       // TODO: fromChanged,
-      entityTypeChanged,
       filterGroupsChanged,
       isBestOfChanged,
     ].filter((item) => item).length;
@@ -141,10 +133,10 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
     const artefactIds = result.items.map(item => {
       const { id } = item;
-      const { entityType } = item;
       const pattern = `.*${id}`;
       const imgSrc = item.imgSrc.replace(pattern, id);
-      return { id, imgSrc, entityType }
+      const entityType = Array.from(this.rootStore.lighttable.entityTypes).join(',');
+      return { id, imgSrc, entityType, }
     });
 
     const artefactIdsJson = JSON.stringify(artefactIds);
@@ -202,52 +194,44 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     this.triggerFilterRequest();
   }
 
-  setEntityType(entityType: EntityType) {
-    this.filters.entityType = entityType;
-    this.updateRoutingForEntityType();
-    this.triggerFilterRequest();
+  async triggerFilterRequest(resetPagePos: boolean = true) {
+    const { lang } = this.rootStore.ui;
+
+    if (resetPagePos) {
+      this.lighttable.resetPagePos();
+    }
+
+    const updatedFilters = {
+      ...this.filters,
+      dating: {
+        ...this.filters.dating,
+        /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */
+        toYear: (this.filters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.filters.dating.toYear : 0,
+      },
+      size: this.lighttable.pagination.size,
+      from: this.lighttable.pagination.from,
+      entityTypes: this.rootStore.lighttable.entityTypes,
+    };
+
+    return this.globalSearchAPI.searchByFiltersAndTerm(
+      updatedFilters,
+      this.freetextFields,
+      lang,
+    ).then((result) => {
+      this.lighttable.setResult(result);
+      this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
+      this.lighttable.setResultLoading(false);
+    });
   }
 
-  resetEntityType() {
-    this.filters.entityType = EntityType.UNKNOWN;
+  async triggerRequest(): Promise<void> {
+      return this.triggerFilterRequest(false);
   }
 
-  triggerFilterRequest(resetPagePos: boolean = true) {
-    clearTimeout(this.debounceHandler);
+  supportsArtifactKind(artifactKind: LighttableArtifactKind) {
+    const supportedArtifactKinds = new Set([LighttableArtifactKind.WORKS, LighttableArtifactKind.PAINTINGS]);
 
-    this.debounceHandler = window.setTimeout(async () => {
-      const { lang } = this.rootStore.ui;
-      this.lighttable.setResultLoading(true);
-
-      if (resetPagePos) {
-        this.lighttable.resetPagePos();
-      }
-
-      try {
-        const updatedFilters = {
-          ...this.filters,
-          dating: {
-            ...this.filters.dating,
-            /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */
-            toYear: (this.filters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.filters.dating.toYear : 0,
-          },
-          size: this.lighttable.pagination.size,
-          from: this.lighttable.pagination.from,
-        };
-        const result = await this.globalSearchAPI.searchByFiltersAndTerm(
-          updatedFilters,
-          this.freetextFields,
-          lang,
-        );
-        this.lighttable.setResult(result);
-
-        this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
-      } catch(err: any) {
-        this.lighttable.setResultFetchingFailed(err.toString());
-      } finally {
-        this.lighttable.setResultLoading(false);
-      }
-    }, this.debounceWaitInMSecs);
+    return supportedArtifactKinds.has(artifactKind);
   }
 
   private async triggerExtendedFilterRequestForLocalStorage(filters: FilterType, lang: string): Promise<void> {
@@ -255,6 +239,7 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       ...filters,
       size: this.lighttable.pagination.size * 2,
       from: this.lighttable.pagination.from,
+      entityTypes: this.rootStore.lighttable.entityTypes,
     };
     const resultForInAcrtefactNavigation = await this.globalSearchAPI.searchByFiltersAndTerm(
       extendedFilters,
@@ -262,25 +247,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       lang,
     );
     this.lighttable.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
-  }
-
-  triggerUserCollectionRequest(ids: string[]) {
-
-    (async () => {
-      const { lang } = this.rootStore.ui;
-      this.lighttable.setResultLoading(true);
-      try {
-        const result = await this.globalSearchAPI.retrieveUserCollection(
-          ids,
-          lang,
-        );
-        this.lighttable.setResult(result);
-      } catch(err: any) {
-        this.lighttable.setResultFetchingFailed(err.toString());
-      } finally {
-        this.lighttable.setResultLoading(false);
-      }
-    })();
   }
 
   notify(notification: RoutingNotificationInterface) {
@@ -291,10 +257,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
           switch (name) {
             case 'filters':
               this.handleRoutingNotificationForFilterGroups(value);
-              break;
-
-            case 'kind':
-              this.handleRoutingNotificationForEntityType(value);
               break;
 
             case 'from_year':
@@ -353,17 +315,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
         this.filters.filterGroups.set(groupKey, new Set(filterIds.split(',')));
       }
     });
-  }
-
-  private updateRoutingForEntityType() {
-    const kind = this.filters.entityType;
-    this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['kind', kind]]]);
-  }
-
-  private handleRoutingNotificationForEntityType(value: string) {
-    if (Object.values(EntityType).includes(value as EntityType)) {
-      this.filters.entityType = value as EntityType;
-    }
   }
 
   private updateRoutingForDating() {
@@ -452,7 +403,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
   }
 
   private updateAllFilterRoutings() {
-    this.updateRoutingForEntityType();
     this.updateRoutingForDating();
     this.updateRoutingForIsBestOf();
     this.updateRoutingForFilterGroups();
@@ -471,22 +421,17 @@ export interface SearchWorksStoreInterface {
   datingRangeBounds: [number, number];
   freetextFields: FreeTextFields;
   filters: FilterType;
-  debounceWaitInMSecs: number;
-  debounceHandler: undefined | number;
   amountOfActiveFilters: number;
 
   bestOfFilter: SingleFilter | null;
 
   setFreetextFields(fields: Partial<FreeTextFields>): void;
   setDating(fromYear: number, toYear: number): void;
-  setEntityType(entityType: EntityType): void;
   setSize(size: number): void;
   setFrom(from: number): void;
   setIsBestOf(isBestOf: boolean): void;
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
   triggerFilterRequest(resetPagePos?: boolean): void;
-  triggerUserCollectionRequest(ids: string[]): void;
-  resetEntityType(): void;
   applyFreetextFields(): void;
   resetAllFilters(): void;
 }
