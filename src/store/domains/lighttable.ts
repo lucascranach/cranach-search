@@ -61,35 +61,22 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     return Math.ceil(hits / this.pagination.size);
   }
 
-  get artefactMode(): ArtefactMode {
-    switch (this.entityType) {
-      case EntityType.PAINTINGS:
-      case EntityType.GRAPHICS:
-      case EntityType.UNKNOWN:
-        return ArtefactMode.WORKS;
-
-      case EntityType.ARCHIVALS:
-        return ArtefactMode.ARCHIVALS;
-    }
-
-    return ArtefactMode.WORKS;
-  }
 
   /* Actions */
 
-  setSearchLoading(loading: boolean) {
+  setResultLoading(loading: boolean) {
     this.loading = loading;
   }
 
-  setSearchResult(result: GlobalSearchResult | null) {
+  setResult(result: GlobalSearchResult | null) {
     this.result = result;
   }
 
-  resetSearchResult() {
+  resetResult() {
     this.result = null;
   }
 
-  setSearchFailed(error: string | null) {
+  setResultFetchingFailed(error: string | null) {
     this.error = error;
   }
 
@@ -169,11 +156,6 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
 }
 
-export enum ArtefactMode {
-  WORKS = 'works',
-  ARCHIVALS = 'archivals',
-}
-
 export interface LighttableStoreInterface {
   loading: boolean;
   result: GlobalSearchResult | null;
@@ -187,14 +169,12 @@ export interface LighttableStoreInterface {
   currentResultPagePos: number;
   maxResultPages: number;
 
-  artefactMode: ArtefactMode;
-
-  setSearchLoading(loading: boolean): void;
-  setSearchResult(result: GlobalSearchResult | null): void;
-  resetSearchResult(): void;
+  setResultLoading(loading: boolean): void;
+  setResult(result: GlobalSearchResult | null): void;
+  resetResult(): void;
   setPagination(relativePagePos: number): void;
   jumpToPagePos(pagePos: number): void;
-  setSearchFailed(error: string | null): void;
+  setResultFetchingFailed(error: string | null): void;
   setSize(size: number): void;
   setFrom(from: number): void;
   resetPagePos(): void;

@@ -67,10 +67,6 @@ const SearchWorks: FC = () => {
     }
   }
 
-  useEffect(() => {
-    console.log('GlobalSearchMode =>', lighttable.artefactMode);
-  }, [lighttable.artefactMode]);
-
   return (
     <div
       className={`search-works ${isActiveFilter}`}

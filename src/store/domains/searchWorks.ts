@@ -2,7 +2,6 @@
 import { reaction, makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import GlobalSearchAPI_, {
-  GlobalSearchArtifact,
   GlobalSearchResult,
   EntityType,
 } from '../../api/globalSearch';
@@ -218,7 +217,7 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
     this.debounceHandler = window.setTimeout(async () => {
       const { lang } = this.rootStore.ui;
-      this.lighttable.setSearchLoading(true);
+      this.lighttable.setResultLoading(true);
 
       if (resetPagePos) {
         this.lighttable.resetPagePos();
@@ -240,13 +239,13 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
           this.freetextFields,
           lang,
         );
-        this.lighttable.setSearchResult(result);
+        this.lighttable.setResult(result);
 
         this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
       } catch(err: any) {
-        this.lighttable.setSearchFailed(err.toString());
+        this.lighttable.setResultFetchingFailed(err.toString());
       } finally {
-        this.lighttable.setSearchLoading(false);
+        this.lighttable.setResultLoading(false);
       }
     }, this.debounceWaitInMSecs);
   }
@@ -269,17 +268,17 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
     (async () => {
       const { lang } = this.rootStore.ui;
-      this.lighttable.setSearchLoading(true);
+      this.lighttable.setResultLoading(true);
       try {
         const result = await this.globalSearchAPI.retrieveUserCollection(
           ids,
           lang,
         );
-        this.lighttable.setSearchResult(result);
+        this.lighttable.setResult(result);
       } catch(err: any) {
-        this.lighttable.setSearchFailed(err.toString());
+        this.lighttable.setResultFetchingFailed(err.toString());
       } finally {
-        this.lighttable.setSearchLoading(false);
+        this.lighttable.setResultLoading(false);
       }
     })();
   }
