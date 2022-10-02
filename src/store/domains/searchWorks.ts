@@ -131,22 +131,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     this.updateRoutingForFreetextFields();
   }
 
-  storeSearchResultInLocalStorage(result: GlobalSearchResult | null) {
-    if (result === null) return;
-
-    const artefactIds = result.items.map(item => {
-      const { id } = item;
-      const pattern = `.*${id}`;
-      const imgSrc = item.imgSrc.replace(pattern, id);
-      const entityType = Array.from(this.rootStore.lighttable.entityTypes).join(',');
-      return { id, imgSrc, entityType, }
-    });
-
-    const artefactIdsJson = JSON.stringify(artefactIds);
-
-    localStorage.setItem('searchResult', artefactIdsJson);
-  }
-
   setDating(fromYear: number, toYear: number) {
     this.filters.dating.fromYear = fromYear;
     this.filters.dating.toYear = toYear;
@@ -249,7 +233,7 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       this.freetextFields,
       lang,
     );
-    this.lighttable.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
+    this.lighttable.storeSearchResultInLocalStorage('searchResult', resultForInAcrtefactNavigation);
   }
 
   notify(notification: RoutingNotificationInterface) {

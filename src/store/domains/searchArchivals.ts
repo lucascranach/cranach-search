@@ -225,7 +225,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
       extendedFilters,
       lang,
     );
-    this.lighttable.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
+    this.lighttable.storeSearchResultInLocalStorage('searchResult:archivals', resultForInAcrtefactNavigation);
   }
 
   notify(notification: RoutingNotificationInterface) {

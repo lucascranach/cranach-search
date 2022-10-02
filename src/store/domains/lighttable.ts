@@ -180,7 +180,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     }
   }
 
-  storeSearchResultInLocalStorage(result: GlobalSearchResult | null) {
+  storeSearchResultInLocalStorage(key: string, result: GlobalSearchResult | null) {
     if (result === null) return;
 
     const artefactIds = result.items.map(item => {
@@ -193,7 +193,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
     const artefactIdsJson = JSON.stringify(artefactIds);
 
-    localStorage.setItem('searchResult', artefactIdsJson);
+    localStorage.setItem(key, artefactIdsJson);
   }
 
   resetPagePos() {
@@ -250,5 +250,5 @@ export interface LighttableStoreInterface {
   setSize(size: number): void;
   setFrom(from: number): void;
   resetPagePos(): void;
-  storeSearchResultInLocalStorage(result: GlobalSearchResult | null): void;
+  storeSearchResultInLocalStorage(key: string, result: GlobalSearchResult | null): void;
 }
