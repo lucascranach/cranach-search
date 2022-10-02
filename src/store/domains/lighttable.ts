@@ -1,14 +1,16 @@
 
-import { makeAutoObservable, reaction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
-import GlobalSearchAPI_, {
+import {
   EntityType,
   GlobalSearchArtifact,
   GlobalSearchResult,
-} from '../../api/globalSearch';
-export  {
-  EntityType,
-} from '../../api/globalSearch';
+} from '../../api/types';
+export { EntityType } from '../../api/types';
+export type {
+  GlobalSearchFilterGroupItem as FilterGroupItem,
+  GlobalSearchFilterItem as FilterItem,
+} from '../../api/types';
 import type {
   ObserverInterface as RoutingObservableInterface,
   NotificationInterface as RoutingNotificationInterface,
@@ -17,19 +19,11 @@ import {
   NotificationType as RoutingNotificationType,
   ChangeAction as RoutingChangeAction,
 } from './routing';
-export type {
-  GlobalSearchFilterGroupItem as FilterGroupItem,
-  GlobalSearchFilterItem as FilterItem,
-} from '../../api/globalSearch';
 import { UIArtifactKind as LighttableArtifactKind } from './ui';
 export { UIArtifactKind as LighttableArtifactKind } from './ui';
 
-type GlobalSearchAPI = typeof GlobalSearchAPI_;
-
-
 export default class Lighttable implements LighttableStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
-  globalSearchAPI: GlobalSearchAPI;
   providers: LighttableProviderInterface[] = [];
 
   loading: boolean = false;
@@ -45,11 +39,10 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
   private previousProvider: LighttableProviderInterface | null = null;
 
-  constructor(rootStore: RootStoreInterface, globalSearchAPI: GlobalSearchAPI) {
+  constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
 
     this.rootStore = rootStore;
-    this.globalSearchAPI = globalSearchAPI;
     this.rootStore.routing.addObserver(this);
   }
 

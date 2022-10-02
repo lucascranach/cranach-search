@@ -3,12 +3,12 @@ import { configure } from 'mobx';
 
 import { RootStoreInterface } from './rootStore';
 
+export {
+  EntityType,
+} from './domains/lighttable';
 export type {
   FilterGroupItem,
   FilterItem,
-} from './domains/lighttable';
-export {
-  EntityType,
 } from './domains/lighttable';
 export {
   UISidebarContentType,

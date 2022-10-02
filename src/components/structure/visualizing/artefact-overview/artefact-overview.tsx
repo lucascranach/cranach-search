@@ -115,7 +115,7 @@ const Overview: FC<OverviewProps> = ({
   const assembleSubTitleForCardView = (item: ArtefactOverviewItem): string => {
     switch (item.entityType) {
       case EntityType.ARCHIVALS:
-        return 'tbd';
+        return '';
       case EntityType.GRAPHICS:
         return `${item.classification}, ${item.printProcess}`;
     }
@@ -125,7 +125,7 @@ const Overview: FC<OverviewProps> = ({
   const assembleSubTitleForListView = (item: ArtefactOverviewItem): string => {
     switch (item.entityType) {
       case EntityType.ARCHIVALS:
-        return 'tbd';
+        return '';
       case EntityType.GRAPHICS:
         return `${item.classification}, ${item.printProcess}`;
     }
@@ -136,7 +136,7 @@ const Overview: FC<OverviewProps> = ({
   const assembleTextForCardView = (item: ArtefactOverviewItem): string => {
     switch (item.entityType) {
       case EntityType.ARCHIVALS:
-        return 'tbd';
+        return '';
       case EntityType.GRAPHICS:
         return `${item.inventor}`;
     }

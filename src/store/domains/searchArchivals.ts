@@ -1,7 +1,7 @@
 
 import { makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
-import WorksSearchAPI_ from '../../api/works';
+import ArchivalsSearchAPI_ from '../../api/archivals';
 import { GlobalSearchResult } from '../../api/types';
 import type {
   ObserverInterface as RoutingObservableInterface,
@@ -22,7 +22,7 @@ const MIN_LOWER_DATING_YEAR = 1470;
 const MAX_UPPER_DATING_YEAR = 1601;
 const THRESOLD_UPPER_DATING_YEAR = 1600;
 
-type WorksSearchAPI = typeof WorksSearchAPI_;
+type ArchivalsSearchAPI = typeof ArchivalsSearchAPI_;
 
 export const DATING_RANGE_TOTAL_BOUNDS: [number, number] = [MIN_LOWER_DATING_YEAR, THRESOLD_UPPER_DATING_YEAR];
 
@@ -43,10 +43,6 @@ export type SingleFilter = {
 
 const createInitialFreeTexts = (): FreeTextFields => ({
   allFieldsTerm: '',
-  title: '',
-  FRNr: '',
-  location: '',
-  inventoryNumber: '',
 });
 
 const createInitialFilters = (): FilterType => ({
@@ -59,21 +55,21 @@ const createInitialFilters = (): FilterType => ({
 });
 
 
-export default class SearchWorks implements SearchWorksStoreInterface, RoutingObservableInterface, LighttableProviderInterface {
+export default class SearchArchivals implements SearchArchivalsStoreInterface, RoutingObservableInterface, LighttableProviderInterface {
   rootStore: RootStoreInterface;
   lighttable: LighttableStoreInterface;
-  worksSearchAPI: WorksSearchAPI;
+  archivalsSearchAPI: ArchivalsSearchAPI;
 
   datingRangeBounds: [number, number] = DATING_RANGE_TOTAL_BOUNDS;
   freetextFields: FreeTextFields = createInitialFreeTexts();
   filters: FilterType = createInitialFilters();
 
-  constructor(rootStore: RootStoreInterface, worksSearchAPI: WorksSearchAPI) {
+  constructor(rootStore: RootStoreInterface, archivalsSearchAPI: ArchivalsSearchAPI) {
     makeAutoObservable(this);
 
     this.rootStore = rootStore;
     this.lighttable = rootStore.lighttable;
-    this.worksSearchAPI = worksSearchAPI;
+    this.archivalsSearchAPI = archivalsSearchAPI;
 
     this.rootStore.routing.addObserver(this);
     // SearchWorks is a lightable provider (pushes search results to the lighttable);
@@ -84,18 +80,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
   }
 
   /* Computed */
-
-  get bestOfFilter(): SingleFilter | null {
-    const isBestOfFilter = this.lighttable.result?.singleFilters.find((item) => item.id === 'is_best_of');
-
-    if (!isBestOfFilter) { return null; }
-
-    return {
-      name: 'Best of',
-      id: isBestOfFilter.id,
-      docCount: isBestOfFilter.doc_count,
-    };
-  }
 
   get amountOfActiveFilters() {
     const curr = this.filters;
@@ -164,12 +148,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     this.lighttable.setFrom(from);
   }
 
-  setIsBestOf(isBestOf: boolean) {
-    this.filters.isBestOf = isBestOf;
-    this.updateRoutingForIsBestOf();
-    this.triggerFilterRequest();
-  }
-
   checkFilterItemActiveStatus(groupKey: string, filterItemId: string) {
     const groupSet = this.filters.filterGroups.get(groupKey);
 
@@ -216,9 +194,8 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       entityTypes: this.rootStore.lighttable.entityTypes,
     };
 
-    return this.worksSearchAPI.searchByFiltersAndTerm(
+    return this.archivalsSearchAPI.searchByFilters(
       updatedFilters,
-      this.freetextFields,
       lang,
     ).then((result) => {
       this.lighttable.setResult(result);
@@ -232,7 +209,7 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
   }
 
   supportsArtifactKind(artifactKind: LighttableArtifactKind) {
-    const supportedArtifactKinds = new Set([LighttableArtifactKind.WORKS, LighttableArtifactKind.PAINTINGS]);
+    const supportedArtifactKinds = new Set([LighttableArtifactKind.ARCHIVALS]);
 
     return supportedArtifactKinds.has(artifactKind);
   }
@@ -244,9 +221,8 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       from: this.lighttable.pagination.from,
       entityTypes: this.rootStore.lighttable.entityTypes,
     };
-    const resultForInAcrtefactNavigation = await this.worksSearchAPI.searchByFiltersAndTerm(
+    const resultForInAcrtefactNavigation = await this.archivalsSearchAPI.searchByFilters(
       extendedFilters,
-      this.freetextFields,
       lang,
     );
     this.lighttable.storeSearchResultInLocalStorage(resultForInAcrtefactNavigation);
@@ -334,7 +310,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
     const keyMap: Record<string, string> = {
       'allFieldsTerm': 'search_term',
-      'inventoryNumber': 'inventory_number',
     };
 
     Object.entries(this.freetextFields).forEach(([key, value]) => {
@@ -390,18 +365,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       case 'search_term':
         this.freetextFields.allFieldsTerm = value;
         break;
-
-      case 'title':
-        this.freetextFields.title = value;
-        break;
-
-      case 'location':
-        this.freetextFields.location = value;
-        break;
-
-      case 'inventory_number':
-        this.freetextFields.inventoryNumber = value;
-        break;
     }
   }
 
@@ -414,27 +377,21 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
 export interface FreeTextFields {
   allFieldsTerm: string;
-  title: string;
-  FRNr: string;
-  location: string;
-  inventoryNumber: string;
 }
 
-export interface SearchWorksStoreInterface {
+export interface SearchArchivalsStoreInterface {
   datingRangeBounds: [number, number];
-  freetextFields: FreeTextFields;
+  freetextFields: FreeTextFields
   filters: FilterType;
   amountOfActiveFilters: number;
 
-  bestOfFilter: SingleFilter | null;
-
   setFreetextFields(fields: Partial<FreeTextFields>): void;
+  applyFreetextFields(): void;
   setDating(fromYear: number, toYear: number): void;
   setSize(size: number): void;
   setFrom(from: number): void;
-  setIsBestOf(isBestOf: boolean): void;
+  checkFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
   triggerFilterRequest(resetPagePos?: boolean): void;
-  applyFreetextFields(): void;
   resetAllFilters(): void;
 }

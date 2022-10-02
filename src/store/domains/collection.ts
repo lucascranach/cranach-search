@@ -1,6 +1,6 @@
 
 import { makeAutoObservable } from 'mobx';
-import { EntityType } from '../../api/globalSearch';
+import { EntityType } from '../../api/types';
 import { RootStoreInterface } from '../rootStore';
 
 const CRANACH_SEARCH_LOCALSTORAGE_KEY = 'collection';

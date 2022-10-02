@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import Dashboard from './components/pages/dashboard';
-import SearchWorks from './components/structure/interacting/search-works';
+import Search from './components/structure/interacting/search';
 import MyCranach from './components/structure/interacting/my-cranach';
 import SecondaryNavigation from './components/structure/interacting/secondary-navigation';
 
@@ -13,7 +13,7 @@ function App() {
         <Dashboard></Dashboard>
         <aside className={`sidebar  ${isActiveSidebar}`}>
           <SecondaryNavigation />
-          <SearchWorks />
+          <Search />
           <MyCranach />
         </aside>
       </div>

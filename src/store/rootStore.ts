@@ -1,13 +1,15 @@
 import { makeAutoObservable } from 'mobx';
 import { History } from 'history';
 
-import globalSearchAPI from '../api/globalSearch';
+import WorksAPI from '../api/works';
+import ArchivalsAPI from '../api/archivals';
 
 import UI, { UIStoreInterface } from './domains/ui';
 import Routing, { RoutingStoreInterface } from './domains/routing';
 import SearchWorks, { SearchWorksStoreInterface } from './domains/searchWorks';
 import Collection, { CollectionStoreInterface } from './domains/collection';
 import Lighttable, { LighttableStoreInterface } from './domains/lighttable';
+import SearchArchivals, { SearchArchivalsStoreInterface } from './domains/searchArchivals';
 
 export default class RootStore implements RootStoreInterface {
   public readonly mode;
@@ -16,6 +18,7 @@ export default class RootStore implements RootStoreInterface {
   public collection: CollectionStoreInterface;
   public lighttable: LighttableStoreInterface;
   public searchWorks: SearchWorksStoreInterface;
+  public searchArchivals: SearchArchivalsStoreInterface;
 
   constructor(history: History) {
     makeAutoObservable(this);
@@ -26,8 +29,9 @@ export default class RootStore implements RootStoreInterface {
     this.routing = new Routing(this, history);
     this.ui = new UI(this);
     this.collection = new Collection(this);
-    this.lighttable = new Lighttable(this, globalSearchAPI);
-    this.searchWorks = new SearchWorks(this, globalSearchAPI);
+    this.lighttable = new Lighttable(this);
+    this.searchWorks = new SearchWorks(this, WorksAPI);
+    this.searchArchivals = new SearchArchivals(this, ArchivalsAPI);
   }
 }
 
@@ -38,4 +42,5 @@ export interface RootStoreInterface {
   lighttable: LighttableStoreInterface,
   collection: CollectionStoreInterface,
   searchWorks: SearchWorksStoreInterface,
+  searchArchivals: SearchArchivalsStoreInterface,
 }
