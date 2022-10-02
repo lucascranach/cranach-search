@@ -95,6 +95,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
     if (!supportingProvider) {
       this.setResult(null);
+      this.resetPagePos();
       return;
     }
 
