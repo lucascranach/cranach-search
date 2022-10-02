@@ -77,6 +77,10 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     this.globalSearchAPI = globalSearchAPI;
 
     this.rootStore.routing.addObserver(this);
+    // SearchWorks is a lightable provider (pushes search results to the lighttable);
+    //  we need to register it as a provider in lighttable, so lighttable can decide
+    //  which store is responsible for a certain artifact and can provide search results
+    //  for that kind
     this.lighttable.registerProvider(this);
   }
 
