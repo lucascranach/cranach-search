@@ -93,7 +93,6 @@ const getQueryStringForFiltersAndTerm = (
 ): string => {
   const params: Record<string, string | number> = {
     language: langCode,
-    'entity_type:neq': EntityType.DOCUMENTS,
   };
 
   if (import.meta.env.VITE_LIST_ARTEFACTS_WITHOUT_IMAGES === 'false') {
