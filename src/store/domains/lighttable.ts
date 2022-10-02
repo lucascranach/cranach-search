@@ -43,6 +43,8 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
   fetchDebounceWaitInMSecs: number = 500;
   fetchDebounceHandler: undefined | number = undefined;
 
+  private previousProvider: LighttableProviderInterface | null = null;
+
   constructor(rootStore: RootStoreInterface, globalSearchAPI: GlobalSearchAPI) {
     makeAutoObservable(this);
 
@@ -83,19 +85,28 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     return new Set(mappedEntityTypes);
   }
 
+  get currentProvider(): LighttableProviderInterface | null {
+    return this.providers.find(
+      (provider) => provider.supportsArtifactKind(this.rootStore.ui.artifactKind),
+    ) || null;
+  }
+
 
   /* Actions */
 
   fetch() {
     // The first provider matching the currently selected artifact kind,
     // is used to request search results for that kind of artifact
-    const supportingProvider = this.providers.find(
-      (provider) => provider.supportsArtifactKind(this.rootStore.ui.artifactKind),
-    );
+    const { currentProvider } = this;
 
-    if (!supportingProvider) {
+    if (this.previousProvider !== currentProvider) {
+      this.previousProvider = currentProvider;
       this.setResult(null);
       this.resetPagePos();
+    }
+
+
+    if (!currentProvider) {
       return;
     }
 
@@ -110,7 +121,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
         // the results directly in the lighttable store via a 'setResult'-call;
         // a provider is always able to set the result, because of filters
         // being selected triggering a new search
-        await supportingProvider.triggerRequest();
+        await currentProvider.triggerRequest();
       } catch(err: any) {
         this.setResultFetchingFailed(err.toString());
       } finally {
