@@ -37,8 +37,6 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
   fetchDebounceWaitInMSecs: number = 500;
   fetchDebounceHandler: undefined | number = undefined;
 
-  private previousProvider: LighttableProviderInterface | null = null;
-
   constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
 
@@ -92,13 +90,6 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     // is used to request search results for that kind of artifact
     const { currentProvider } = this;
 
-    if (this.previousProvider !== currentProvider) {
-      this.previousProvider = currentProvider;
-      this.setResult(null);
-      this.resetPagePos();
-    }
-
-
     if (!currentProvider) {
       return;
     }
@@ -121,6 +112,10 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
         this.setResultLoading(false);
       }
     }, this.fetchDebounceWaitInMSecs);
+  }
+
+  reset() {
+    this.resetPagePos();
   }
 
   registerProvider(provider: LighttableProviderInterface) {
@@ -157,7 +152,6 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     if (relativePagePos === 0) return;
 
     const pagePos = (this.pagination.from + (this.pagination.size * relativePagePos)) / this.pagination.size;
-
     this.updatePagePos(pagePos);
   }
 
@@ -201,9 +195,8 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
   }
 
   private updateRoutingForPage() {
-    const page = (this.pagination.from / this.pagination.size) + 1;
-    const action = (page !== 0) ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
-    this.rootStore.routing.updateSearchQueryParams([[action, ['page', page.toString()]]]);
+    const page = this.currentResultPagePos + 1;
+    this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['page', page.toString()]]]);
   }
 
   private handleRoutingNotificationForPage(value: string) {
@@ -224,6 +217,7 @@ export interface LighttableProviderInterface {
   triggerRequest(): Promise<void>;
 
   supportsArtifactKind(artifactKind: LighttableArtifactKind): boolean;
+  resetAllFilters(): void;
 }
 
 export interface LighttableStoreInterface {
@@ -238,8 +232,10 @@ export interface LighttableStoreInterface {
   currentResultPagePos: number;
   maxResultPages: number;
   entityTypes: Set<EntityType>;
+  currentProvider: LighttableProviderInterface | null;
 
   fetch(): void;
+  reset(): void;
   registerProvider(provider: LighttableProviderInterface): void;
   setResultLoading(loading: boolean): void;
   setResult(result: GlobalSearchResult | null): void;

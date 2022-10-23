@@ -7,12 +7,8 @@ import {
 
 import {
   querify,
+  apiConfiguration,
 } from './utils';
-
-const host = import.meta.env.VITE_SEARCH_API_URL;
-const authUser = import.meta.env.VITE_AUTH_USER;
-const authPass = import.meta.env.VITE_AUTH_PASS;
-
 
 const assembleResultData = (resultset: any): GlobalSearchResult => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
@@ -25,27 +21,6 @@ const getMedium = (item: any):string => {
   const mediumList = medium.split(/\n/);
   return medium ? mediumList[0] : '';
 }
-
-const toArtefact = (item: any): GlobalSearchArtifact => {
-  return {
-    id: item.inventory_number,
-    entityType: item.entity_type,
-    title: item.title,
-    date: item.dating,
-    repository: item.repository,
-    owner: item.owner,
-    classification: item.classification,
-    printProcess: '',
-    inventor: '',
-    artist: '',
-    dimensions: item.dimensions,
-    objectName: item.object_name,
-    imgSrc: item.img_src,
-    medium: getMedium(item),
-    searchSortingNumber: item.search_sorting_number,
-    _highlight: item._highlight,
-  }
-};
 
 const getQueryStringForFilters = (
   filters: ArchivalsAPIFilterType,
@@ -96,31 +71,10 @@ const searchByFilters = async (
   return null;
 };
 
-const retrieveUserCollection = async (
-  ids: string[],
-  langCode: string
-): Promise<GlobalSearchResult | null> => {
-
-  const params: Record<string, string | number> = {
-    language: langCode,
-    'inventory_number:eq': ids.join(','),
-  };
-
-  const queryParams = querify(params);
-
-  try {
-    return await executeQuery(queryParams);
-  } catch (err) {
-    console.error(err);
-  }
-
-  return null;
-};
-
 const executeQuery = async (
   queryParams: string
 ): Promise<GlobalSearchResult | null> => {
-
+  const { host, authUser, authPass } = apiConfiguration;
   const authString = btoa(`${authUser}:${authPass}`);
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
@@ -143,9 +97,28 @@ const executeQuery = async (
 export default {
   getQueryStringForFilters,
   searchByFilters,
-  retrieveUserCollection,
 };
 
+export const toArtefact = (item: any): GlobalSearchArtifact => {
+  return {
+    id: item.inventory_number,
+    entityType: item.entity_type,
+    title: item.title,
+    date: item.dating,
+    repository: item.repository,
+    owner: item.owner,
+    classification: item.classification,
+    printProcess: '',
+    inventor: '',
+    artist: '',
+    dimensions: item.dimensions,
+    objectName: item.object_name,
+    imgSrc: item.img_src,
+    medium: getMedium(item),
+    searchSortingNumber: item.search_sorting_number,
+    _highlight: item._highlight,
+  }
+};
 
 export type ArchivalsAPIFilterType = {
   dating: {

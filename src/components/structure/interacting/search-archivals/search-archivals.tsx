@@ -152,7 +152,10 @@ const SearchArchivals: FC = () => {
             <Btn
               className="reset-button"
               icon="delete_sweep"
-              click={ () => searchArchivals.resetAllFilters() }
+              click={ () => {
+                searchArchivals.resetAllFilters();
+                searchArchivals.triggerFilterRequest();
+              } }
             >{ t('reset filters') }</Btn>
           </div>
         }

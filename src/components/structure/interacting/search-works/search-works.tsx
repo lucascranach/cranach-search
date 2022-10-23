@@ -215,7 +215,10 @@ const SearchWorks: FC = () => {
             <Btn
               className="reset-button"
               icon="delete_sweep"
-              click={ () => searchWorks.resetAllFilters() }
+              click={ () => {
+                searchWorks.resetAllFilters();
+                searchWorks.triggerFilterRequest();
+              } }
             >{ t('reset filters') }</Btn>
           </div>
         }

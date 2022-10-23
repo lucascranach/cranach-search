@@ -3,6 +3,7 @@ import { History } from 'history';
 
 import WorksAPI from '../api/works';
 import ArchivalsAPI from '../api/archivals';
+import CollectionAPI from '../api/collection';
 
 import UI, { UIStoreInterface } from './domains/ui';
 import Routing, { RoutingStoreInterface } from './domains/routing';
@@ -28,7 +29,7 @@ export default class RootStore implements RootStoreInterface {
       : '';
     this.routing = new Routing(this, history);
     this.ui = new UI(this);
-    this.collection = new Collection(this);
+    this.collection = new Collection(this, CollectionAPI);
     this.lighttable = new Lighttable(this);
     this.searchWorks = new SearchWorks(this, WorksAPI);
     this.searchArchivals = new SearchArchivals(this, ArchivalsAPI);

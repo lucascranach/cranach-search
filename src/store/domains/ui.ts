@@ -117,7 +117,14 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   }
 
   setArtifactKind(artifactKind: UIArtifactKind): void {
+    if (this.artifactKind === artifactKind) return;
+
+    // Clear current lighttable
+    this.rootStore.lighttable.currentProvider?.resetAllFilters();
+
     this.artifactKind = artifactKind;
+    this.rootStore.routing.resetSearchQueryParams();
+    this.rootStore.lighttable.reset();
     this.rootStore.lighttable.fetch();
     this.updateRoutingForArtifactKind();
   }
@@ -314,9 +321,9 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     if (this.artifactKind in artifactKindStringMap) {
       const kind = artifactKindStringMap[this.artifactKind];
 
-      this.rootStore.routing.updateSearchQueryParams(
-        [[RoutingChangeAction.ADD, ['kind', kind]]],
-      );
+      this.rootStore.routing.updateSearchQueryParams([
+        [RoutingChangeAction.ADD, ['kind', kind]],
+      ]);
     }
   }
 }

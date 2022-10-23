@@ -2,7 +2,6 @@
 import { makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import WorksSearchAPI_ from '../../api/works';
-import { GlobalSearchResult } from '../../api/types';
 import type {
   ObserverInterface as RoutingObservableInterface,
   NotificationInterface as RoutingNotificationInterface,
@@ -272,7 +271,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     this.filters = createInitialFilters();
 
     this.updateAllFilterRoutings();
-    this.triggerFilterRequest();
   }
 
   private updateRoutingForFilterGroups() {
@@ -311,6 +309,8 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
       [RoutingChangeAction.ADD, ['to_year', toYear <= THRESOLD_UPPER_DATING_YEAR ? toYear.toString() : 'max']],
     ]);
+
+    this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.CLEAR_ALL]]);
   }
 
   private updateRoutingForFreetextFields() {

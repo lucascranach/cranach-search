@@ -2,6 +2,9 @@
 import { makeAutoObservable } from 'mobx';
 import { EntityType } from '../../api/types';
 import { RootStoreInterface } from '../rootStore';
+import CollectionAPI_ from '../../api/collection';
+
+type CollectionAPI = typeof CollectionAPI_;
 
 const CRANACH_SEARCH_LOCALSTORAGE_KEY = 'collection';
 
@@ -15,11 +18,13 @@ interface CollectionItem {
 export default class Collection implements CollectionStoreInterface {
   rootStore: RootStoreInterface;
   artefacts: CollectionItem[] = [];
+  collectionAPI: CollectionAPI;
 
-  constructor(rootStore: RootStoreInterface) {
+  constructor(rootStore: RootStoreInterface, collectionAPI: CollectionAPI) {
     makeAutoObservable(this);
 
     this.rootStore = rootStore;
+    this.collectionAPI = collectionAPI;
     this.readCollectionFromLocalStorage();
   }
 
@@ -58,12 +63,22 @@ export default class Collection implements CollectionStoreInterface {
     return true;
   }
 
-  showCollection() {
+  async showCollection() {
     const inventoryNumbers = this.artefacts.map(artefact => artefact.inventoryNumber);
 
-    // TODO: implement collection output for different entity types / artifact kinds
+    if (inventoryNumbers.length === 0) {
+      this.rootStore.lighttable.setResult(null);
+      return;
+    }
 
-    return true;
+    const { lang } = this.rootStore.ui;
+    this.rootStore.lighttable.setResultLoading(true);
+    const result = await this.collectionAPI.getByInventoryNumbers(
+      inventoryNumbers,
+      lang,
+    );
+    this.rootStore.lighttable.setResult(result);
+    this.rootStore.lighttable.setResultLoading(false);
   }
 
   collectionIncludesArtefact(inventoryNumber: string): boolean {
