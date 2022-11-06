@@ -16,12 +16,6 @@ const assembleResultData = (resultset: any): GlobalSearchResult => {
   return { items, filterGroups: [], singleFilters: [], meta };
 }
 
-const getMedium = (item: any):string => {
-  const medium = item.medium;
-  const mediumList = medium.split(/\n/);
-  return medium ? mediumList[0] : '';
-}
-
 const getQueryStringForFilters = (
   filters: ArchivalsAPIFilterType,
   langCode: string
@@ -114,7 +108,7 @@ export const toArtefact = (item: any): GlobalSearchArtifact => {
     dimensions: item.dimensions,
     objectName: item.object_name,
     imgSrc: item.img_src,
-    medium: getMedium(item),
+    medium: '',
     searchSortingNumber: item.search_sorting_number,
     _highlight: item._highlight,
   }
