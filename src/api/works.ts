@@ -2,8 +2,8 @@ import {
   EntityType,
   GlobalSearchFilterGroupItem,
   GlobalSearchFilterItem,
-  GlobalSearchResult,
   GlobalSearchArtifact,
+  GlobalSearchResponse,
 } from './types';
 
 import {
@@ -47,12 +47,19 @@ const mapSingleFilters = (filters: any): GlobalSearchFilterItem[] => {
   return singleFilters;
 }
 
-const assembleResultData = (resultset: any): GlobalSearchResult => {
+const assembleResultData = (resultset: any): GlobalSearchResponse => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
   const filterGroups = mapFilterGroups(resultset.data.filters);
   const singleFilters = mapSingleFilters(resultset.data.filters);
   const meta = resultset.data.meta;
-  return { items, filterGroups, singleFilters, meta };
+  return {
+    result: { items, meta },
+    filters: {
+      groups: filterGroups,
+      flatGroups: [],
+      single: singleFilters,
+    },
+  };
 }
 
 const getInventor = (item: any):string => {
@@ -144,7 +151,7 @@ const searchByFiltersAndTerm = async (
   filters: WorksAPIFilterType,
   freetextFields: WorksAPIFreetextFieldsType,
   langCode: string
-): Promise<GlobalSearchResult | null> => {
+): Promise<GlobalSearchResponse | null> => {
   const queryParams = getQueryStringForFiltersAndTerm(
     filters,
     freetextFields,
@@ -162,7 +169,7 @@ const searchByFiltersAndTerm = async (
 
 const executeQuery = async (
   queryParams: string
-): Promise<GlobalSearchResult | null> => {
+): Promise<GlobalSearchResponse | null> => {
   const { host, authUser, authPass } = apiConfiguration;
   const authString = btoa(`${authUser}:${authPass}`);
   const headers = new Headers();
@@ -170,7 +177,7 @@ const executeQuery = async (
 
   try {
     const resp = await fetch(
-      `${host}/?${queryParams}`,
+      `${host}/works?${queryParams}`,
       { method: 'GET', headers: headers },
     );
     const bodyJSON = await resp.json();

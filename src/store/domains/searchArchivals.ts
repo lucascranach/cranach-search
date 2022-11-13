@@ -4,6 +4,10 @@ import type { RootStoreInterface } from '../rootStore';
 import ArchivalsSearchAPI_ from '../../api/archivals';
 import { GlobalSearchResult } from '../../api/types';
 import type {
+  GlobalSearchFilterGroupItem as FilterGroupItem,
+  GlobalSearchFilterItem as FilterItem,
+} from '../../api/types';
+import type {
   ObserverInterface as RoutingObservableInterface,
   NotificationInterface as RoutingNotificationInterface,
 } from './routing';
@@ -24,6 +28,12 @@ const THRESOLD_UPPER_DATING_YEAR = 1600;
 
 type ArchivalsSearchAPI = typeof ArchivalsSearchAPI_;
 
+interface SearchArchivalsFilters {
+  groups: FilterGroupItem[];
+  flatGroups: FilterGroupItem[];
+  single: FilterItem[];
+}
+
 export const DATING_RANGE_TOTAL_BOUNDS: [number, number] = [MIN_LOWER_DATING_YEAR, THRESOLD_UPPER_DATING_YEAR];
 
 export type FilterType = {
@@ -34,12 +44,6 @@ export type FilterType = {
   filterGroups: Map<string, Set<string>>,
   isBestOf: boolean,
 };
-
-export type SingleFilter = {
-  id: string,
-  name: string,
-  docCount: number,
-}
 
 const createInitialFreeTexts = (): FreeTextFields => ({
   allFieldsTerm: '',
@@ -62,7 +66,12 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
 
   datingRangeBounds: [number, number] = DATING_RANGE_TOTAL_BOUNDS;
   freetextFields: FreeTextFields = createInitialFreeTexts();
-  filters: FilterType = createInitialFilters();
+  selectedFilters: FilterType = createInitialFilters();
+  filters: SearchArchivalsFilters = {
+    groups: [],
+    flatGroups: [],
+    single: [],
+  };
 
   constructor(rootStore: RootStoreInterface, archivalsSearchAPI: ArchivalsSearchAPI) {
     makeAutoObservable(this);
@@ -82,7 +91,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
   /* Computed */
 
   get amountOfActiveFilters() {
-    const curr = this.filters;
+    const curr = this.selectedFilters;
     const init = createInitialFilters();
 
     const datingChanged = curr.dating.fromYear !== init.dating.fromYear
@@ -111,6 +120,10 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
     };
   }
 
+  setFilters(filters: SearchArchivalsFilters) {
+    this.filters = filters;
+  }
+
   applyFreetextFields() {
     this.updateRoutingForFreetextFields();
   }
@@ -132,8 +145,8 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
   }
 
   setDating(fromYear: number, toYear: number) {
-    this.filters.dating.fromYear = fromYear;
-    this.filters.dating.toYear = toYear;
+    this.selectedFilters.dating.fromYear = fromYear;
+    this.selectedFilters.dating.toYear = toYear;
     this.updateRoutingForDating();
     this.triggerFilterRequest();
   }
@@ -149,13 +162,13 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
   }
 
   checkFilterItemActiveStatus(groupKey: string, filterItemId: string) {
-    const groupSet = this.filters.filterGroups.get(groupKey);
+    const groupSet = this.selectedFilters.filterGroups.get(groupKey);
 
     return !!groupSet && groupSet.has(filterItemId);
   }
 
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string) {
-    const groupSet = this.filters.filterGroups.get(groupKey);
+    const groupSet = this.selectedFilters.filterGroups.get(groupKey);
 
     if (groupSet) {
       if (groupSet.has(filterItemId)) {
@@ -165,10 +178,10 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
       }
 
       if (groupSet.size === 0) {
-        this.filters.filterGroups.delete(groupKey);
+        this.selectedFilters.filterGroups.delete(groupKey);
       }
     } else {
-      this.filters.filterGroups.set(groupKey, new Set([filterItemId]));
+      this.selectedFilters.filterGroups.set(groupKey, new Set([filterItemId]));
     }
 
     this.updateRoutingForFilterGroups();
@@ -183,11 +196,11 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
     }
 
     const updatedFilters = {
-      ...this.filters,
+      ...this.selectedFilters,
       dating: {
-        ...this.filters.dating,
+        ...this.selectedFilters.dating,
         /* resetting dating.toYear, if it is over the upper threshold -> we want all results between dating.fromYear and now */
-        toYear: (this.filters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.filters.dating.toYear : 0,
+        toYear: (this.selectedFilters.dating.toYear <= THRESOLD_UPPER_DATING_YEAR) ? this.selectedFilters.dating.toYear : 0,
       },
       size: this.lighttable.pagination.size,
       from: this.lighttable.pagination.from,
@@ -197,10 +210,13 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
     return this.archivalsSearchAPI.searchByFilters(
       updatedFilters,
       lang,
-    ).then((result) => {
-      this.lighttable.setResult(result);
-      this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
+    ).then((response) => {
+      if (response) {
+        this.lighttable.setResult(response.result);
+        this.setFilters(response.filters);
+      }
       this.lighttable.setResultLoading(false);
+      this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
     });
   }
 
@@ -221,11 +237,11 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
       from: this.lighttable.pagination.from,
       entityTypes: this.rootStore.lighttable.entityTypes,
     };
-    const resultForInAcrtefactNavigation = await this.archivalsSearchAPI.searchByFilters(
+    const responseForInArtefactNavigation = await this.archivalsSearchAPI.searchByFilters(
       extendedFilters,
       lang,
     );
-    this.lighttable.storeSearchResultInLocalStorage('searchResult:archivals', resultForInAcrtefactNavigation);
+    this.lighttable.storeSearchResultInLocalStorage('searchResult:archivals', responseForInArtefactNavigation?.result ?? null);
   }
 
   notify(notification: RoutingNotificationInterface) {
@@ -261,7 +277,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
 
   resetAllFilters() {
     this.datingRangeBounds = DATING_RANGE_TOTAL_BOUNDS;
-    this.filters = createInitialFilters();
+    this.selectedFilters = createInitialFilters();
 
     this.updateAllFilterRoutings();
     this.triggerFilterRequest();
@@ -270,12 +286,12 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
   private updateRoutingForFilterGroups() {
     const routingActions: RoutingSearchQueryParamChange = [];
 
-    if (this.filters.filterGroups.size === 0) {
+    if (this.selectedFilters.filterGroups.size === 0) {
       routingActions.push([RoutingChangeAction.REMOVE, ['filters', '']]);
     }
 
-    const payload = Array.from(this.filters.filterGroups.entries()).reduce<string[]>((acc, [groupKey, _]) => {
-      const stringifiedGroupValue = Array.from(this.filters.filterGroups.get(groupKey) || new Set()).join(',');
+    const payload = Array.from(this.selectedFilters.filterGroups.entries()).reduce<string[]>((acc, [groupKey, _]) => {
+      const stringifiedGroupValue = Array.from(this.selectedFilters.filterGroups.get(groupKey) || new Set()).join(',');
       return acc.concat([`${groupKey}:${stringifiedGroupValue}`]);
     }, []);
 
@@ -291,13 +307,13 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
       const [groupKey, filterIds = ''] = groupStr.split(':').map(item => item.trim());
 
       if (filterIds.length > 0) {
-        this.filters.filterGroups.set(groupKey, new Set(filterIds.split(',')));
+        this.selectedFilters.filterGroups.set(groupKey, new Set(filterIds.split(',')));
       }
     });
   }
 
   private updateRoutingForDating() {
-    const { fromYear, toYear } = this.filters.dating;
+    const { fromYear, toYear } = this.selectedFilters.dating;
 
     this.rootStore.routing.updateSearchQueryParams([
       [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
@@ -325,7 +341,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
   private handleRoutingNotificationForDating(name: string, value: string) {
     switch (name) {
       case 'from_year':
-        this.filters.dating.fromYear = Math.max(
+        this.selectedFilters.dating.fromYear = Math.max(
           Math.min(
             parseInt(value, 10),
             DATING_RANGE_TOTAL_BOUNDS[1],
@@ -336,9 +352,9 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
 
       case 'to_year':
         if (value === 'max') {
-          this.filters.dating.toYear = THRESOLD_UPPER_DATING_YEAR + 1;
+          this.selectedFilters.dating.toYear = THRESOLD_UPPER_DATING_YEAR + 1;
         } else {
-          this.filters.dating.toYear = Math.max(
+          this.selectedFilters.dating.toYear = Math.max(
             Math.min(
               parseInt(value, 10),
               DATING_RANGE_TOTAL_BOUNDS[1],
@@ -351,13 +367,13 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
   }
 
   private updateRoutingForIsBestOf() {
-    const action = this.filters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
+    const action = this.selectedFilters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
     this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
   }
 
 
   private handleRoutingNotificationForIsBestOf(value: string) {
-    this.filters.isBestOf = (value === '1');
+    this.selectedFilters.isBestOf = (value === '1');
   }
 
   private handleRoutingNotificationForFreetext(name: string, value: string) {
@@ -382,7 +398,8 @@ export interface FreeTextFields {
 export interface SearchArchivalsStoreInterface {
   datingRangeBounds: [number, number];
   freetextFields: FreeTextFields
-  filters: FilterType;
+  selectedFilters: FilterType;
+  filters: SearchArchivalsFilters;
   amountOfActiveFilters: number;
 
   setFreetextFields(fields: Partial<FreeTextFields>): void;

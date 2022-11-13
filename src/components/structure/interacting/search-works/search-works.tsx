@@ -30,7 +30,7 @@ const SearchWorks: FC = () => {
   const hits = lighttable.result?.meta.hits ?? 0;
   const catalogWorkReferenceNames = 'Friedländer, Rosenberg (1978)';
 
-  const filterGroups = lighttable.result?.filterGroups ?? [];
+  const filterGroups = searchWorks.filters.groups ?? [];
 
   const mapFilterGroupItemsToTreeList = (filters: FilterGroupItem[]): TreeListItem[] => filters.map((filter) => ({
     id: filter.key,
@@ -150,8 +150,8 @@ const SearchWorks: FC = () => {
           <span className={ `filter-info-item ${ (searchWorks.bestOfFilter?.docCount) === 0 ? 'filter-info-item__inactive' : '' }` }>
             <Checkbox
               className="filter-info-item__checkbox"
-              checked={ searchWorks.filters.isBestOf }
-              onChange={ () => searchWorks.setIsBestOf(!searchWorks.filters.isBestOf) }
+              checked={ searchWorks.selectedFilters.isBestOf }
+              onChange={ () => searchWorks.setIsBestOf(!searchWorks.selectedFilters.isBestOf) }
             />
             <span
               className="filter-info-item__name"
@@ -168,8 +168,8 @@ const SearchWorks: FC = () => {
           >
             <DatingRangeslider
               bounds={searchWorks.datingRangeBounds}
-              start={searchWorks.filters.dating.fromYear}
-              end={searchWorks.filters.dating.toYear}
+              start={searchWorks.selectedFilters.dating.fromYear}
+              end={searchWorks.selectedFilters.dating.toYear}
               onChange={ (start: number, end: number) => searchWorks.setDating(start, end) }
             ></DatingRangeslider>
           </Accordion.Entry>
@@ -193,7 +193,7 @@ const SearchWorks: FC = () => {
                       (treeListItem, toggle) => (<span className={ `filter-info-item ${ (treeListItem.data?.count ?? 0) === 0 ? 'filter-info-item__inactive' : '' }` }>
                         <Checkbox
                           className="filter-info-item__checkbox"
-                          checked={ searchWorks.filters.filterGroups.get(treeListItem.data?.groupKey as string)?.has(treeListItem.id) }
+                          checked={ searchWorks.selectedFilters.filterGroups.get(treeListItem.data?.groupKey as string)?.has(treeListItem.id) }
                           onChange={ () => toggleFilterItemActiveStatus(treeListItem.data?.groupKey as string , treeListItem.id) }
                         />
                         <span

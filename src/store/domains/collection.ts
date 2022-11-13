@@ -73,11 +73,11 @@ export default class Collection implements CollectionStoreInterface {
 
     const { lang } = this.rootStore.ui;
     this.rootStore.lighttable.setResultLoading(true);
-    const result = await this.collectionAPI.getByInventoryNumbers(
+    const response = await this.collectionAPI.getByInventoryNumbers(
       inventoryNumbers,
       lang,
     );
-    this.rootStore.lighttable.setResult(result);
+    this.rootStore.lighttable.setResult(response.result);
     this.rootStore.lighttable.setResultLoading(false);
   }
 

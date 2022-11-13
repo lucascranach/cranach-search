@@ -1,8 +1,10 @@
 
 import {
   EntityType,
-  GlobalSearchResult,
   GlobalSearchArtifact,
+  GlobalSearchResponse,
+  GlobalSearchFilterItem,
+  GlobalSearchFilterGroupItem,
 } from './types';
 
 import {
@@ -10,10 +12,38 @@ import {
   apiConfiguration,
 } from './utils';
 
-const assembleResultData = (resultset: any): GlobalSearchResult => {
+const mapFilterFlatGroupsItem = (filter: any): GlobalSearchFilterItem => {
+  return {
+    id: filter.value,
+    text: filter.display_value,
+    doc_count: filter.doc_count,
+    is_available: filter.is_available,
+    children: [],
+  };
+};
+
+const mapFilterFlatGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
+  return [
+    'institution',
+  ].map((filterName) => ({
+    key: filterName,
+    text: filterName,
+    children: (filters[filterName].values || []).map(mapFilterFlatGroupsItem),
+  }));
+};
+
+const assembleResultData = (resultset: any): GlobalSearchResponse => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
+  const filterFlatGroups = mapFilterFlatGroups(resultset.data.filters);
   const meta = resultset.data.meta;
-  return { items, filterGroups: [], singleFilters: [], meta };
+  return {
+    result: { items, meta },
+    filters: {
+      groups: [],
+      flatGroups: filterFlatGroups,
+      single: [],
+    },
+  };
 }
 
 const getQueryStringForFilters = (
@@ -44,13 +74,20 @@ const getQueryStringForFilters = (
     params['entity_type:eq'] = Array.from(filters.entityTypes).join(',');
   }
 
+  if (filters.filterGroups.has('institution')) {
+    const repositoryValues = Array.from(filters.filterGroups.get('institution') || []);
+    if (repositoryValues.length) {
+      params['institution:eq'] = repositoryValues.join(',');
+    }
+  }
+
   return querify(params);
 };
 
 const searchByFilters = async (
   filters: ArchivalsAPIFilterType,
   langCode: string
-): Promise<GlobalSearchResult | null> => {
+): Promise<GlobalSearchResponse | null> => {
   const queryParams = getQueryStringForFilters(
     filters,
     langCode,
@@ -67,7 +104,7 @@ const searchByFilters = async (
 
 const executeQuery = async (
   queryParams: string
-): Promise<GlobalSearchResult | null> => {
+): Promise<GlobalSearchResponse | null> => {
   const { host, authUser, authPass } = apiConfiguration;
   const authString = btoa(`${authUser}:${authPass}`);
   const headers = new Headers();
@@ -122,4 +159,5 @@ export type ArchivalsAPIFilterType = {
   size: number,
   from: number,
   entityTypes: Set<EntityType>,
+  filterGroups: Map<string, Set<string>>,
 };

@@ -28,11 +28,14 @@ const SearchArchivals: FC = () => {
   const filterCount = searchArchivals.amountOfActiveFilters;
   const hits = lighttable.result?.meta.hits ?? 0;
 
-  const filterGroups = lighttable.result?.filterGroups ?? [];
+  const filterFlatGroups = searchArchivals.filters.flatGroups ?? [];
+  const filterFlatGroupsTranslationMap: Record<string, string> = {
+    institution: 'Institutions',
+  };
 
   const mapFilterGroupItemsToTreeList = (filters: FilterGroupItem[]): TreeListItem[] => filters.map((filter) => ({
     id: filter.key,
-    name: filter.text,
+    name: t(filterFlatGroupsTranslationMap[filter.key] || filter.text),
     children: mapFilterItemToTreeList(filter.children, filter.key),
   }));
 
@@ -46,7 +49,7 @@ const SearchArchivals: FC = () => {
     },
   }));
 
-  const mappedFiltersInfos = mapFilterGroupItemsToTreeList(filterGroups);
+  const mappedFiltersFlatInfos = mapFilterGroupItemsToTreeList(filterFlatGroups);
 
   const toggleFilterItemActiveStatus = (groupKey: string, filterInfoId: string) => {
      searchArchivals.toggleFilterItemActiveStatus(groupKey, filterInfoId);
@@ -105,13 +108,13 @@ const SearchArchivals: FC = () => {
           >
             <DatingRangeslider
               bounds={searchArchivals.datingRangeBounds}
-              start={searchArchivals.filters.dating.fromYear}
-              end={searchArchivals.filters.dating.toYear}
+              start={searchArchivals.selectedFilters.dating.fromYear}
+              end={searchArchivals.selectedFilters.dating.toYear}
               onChange={ (start: number, end: number) => searchArchivals.setDating(start, end) }
             ></DatingRangeslider>
           </Accordion.Entry>
 
-          { mappedFiltersInfos.map(
+          { mappedFiltersFlatInfos.map(
               (item) => {
                 return (<Accordion.Entry
                   key={ item.id }
@@ -130,7 +133,7 @@ const SearchArchivals: FC = () => {
                       (treeListItem, toggle) => (<span className={ `filter-info-item ${ (treeListItem.data?.count ?? 0) === 0 ? 'filter-info-item__inactive' : '' }` }>
                         <Checkbox
                           className="filter-info-item__checkbox"
-                          checked={ searchArchivals.filters.filterGroups.get(treeListItem.data?.groupKey as string)?.has(treeListItem.id) }
+                          checked={ searchArchivals.selectedFilters.filterGroups.get(treeListItem.data?.groupKey as string)?.has(treeListItem.id) }
                           onChange={ () => toggleFilterItemActiveStatus(treeListItem.data?.groupKey as string , treeListItem.id) }
                         />
                         <span

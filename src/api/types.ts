@@ -53,9 +53,16 @@ export type GlobalSearchFilterGroupItem = {
 
 export type GlobalSearchResult = {
   items: GlobalSearchArtifact[];
-  filterGroups: GlobalSearchFilterGroupItem[];
-  singleFilters: GlobalSearchFilterItem[];
   meta: {
     hits: number;
+  };
+}
+
+export type GlobalSearchResponse = {
+  result: GlobalSearchResult;
+  filters: {
+    groups: GlobalSearchFilterGroupItem[];
+    flatGroups: GlobalSearchFilterGroupItem[];
+    single: GlobalSearchFilterItem[];
   };
 }

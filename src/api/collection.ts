@@ -1,7 +1,7 @@
 import {
   EntityType,
-  GlobalSearchResult,
   GlobalSearchArtifact,
+  GlobalSearchResponse,
 } from './types';
 
 import {
@@ -12,10 +12,17 @@ import {
 import { toArtefact as mapWorkToArtefact } from './works';
 import { toArtefact as mapArchivalToArtefact } from './archivals';
 
-const assembleResultData = (resultset: any): GlobalSearchResult => {
+const assembleResultData = (resultset: any): GlobalSearchResponse => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
   const meta = resultset.data.meta;
-  return { items, filterGroups: [], singleFilters: [], meta };
+  return {
+    result: { items, meta },
+    filters: {
+      groups: [],
+      flatGroups: [],
+      single: [],
+    },
+  };
 }
 
 const toArtefact = (item: any): GlobalSearchArtifact => {
@@ -47,7 +54,7 @@ const getQueryString = (
 const getByInventoryNumbers = async (
   inventoryNumbers: string[],
   langCode: string,
-): Promise<GlobalSearchResult | null> => {
+): Promise<GlobalSearchResponse | null> => {
 
   const queryParams = getQueryString(
     inventoryNumbers,
@@ -66,7 +73,7 @@ const getByInventoryNumbers = async (
 
 const executeQuery = async (
   queryParams: string
-): Promise<GlobalSearchResult | null> => {
+): Promise<GlobalSearchResponse | null> => {
   const { host, authUser, authPass } = apiConfiguration;
   const authString = btoa(`${authUser}:${authPass}`);
   const headers = new Headers();
