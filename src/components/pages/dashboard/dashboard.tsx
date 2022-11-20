@@ -48,6 +48,7 @@ const Dashboard: FC = () => {
     [UIOverviewViewType.CARD]: ArtefactOverviewType.CARD,
     [UIOverviewViewType.CARD_SMALL]: ArtefactOverviewType.CARD_SMALL,
     [UIOverviewViewType.LIST]: ArtefactOverviewType.LIST,
+    [UIOverviewViewType.TABLE]: ArtefactOverviewType.TABLE,
   })[type];
 
   return (
