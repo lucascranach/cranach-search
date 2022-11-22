@@ -42,7 +42,6 @@ export type FilterType = {
     toYear: number,
   },
   filterGroups: Map<string, Set<string>>,
-  isBestOf: boolean,
 };
 
 const createInitialFreeTexts = (): FreeTextFields => ({
@@ -55,7 +54,6 @@ const createInitialFilters = (): FilterType => ({
     toYear: MAX_UPPER_DATING_YEAR,
   },
   filterGroups: new Map(),
-  isBestOf: false,
 });
 
 
@@ -97,17 +95,11 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
     const datingChanged = curr.dating.fromYear !== init.dating.fromYear
       || curr.dating.toYear !== init.dating.toYear;
 
-    // TODO: const sizeChanged = curr.size !== init.size;
-    // TODO: const fromChanged = curr.from !== init.from;
     const filterGroupsChanged = curr.filterGroups.size !== init.filterGroups.size;
-    const isBestOfChanged = curr.isBestOf !== init.isBestOf;
 
     return [
       datingChanged,
-      // TODO: sizeChanged,
-      // TODO: fromChanged,
       filterGroupsChanged,
-      isBestOfChanged,
     ].filter((item) => item).length;
   }
 
@@ -259,14 +251,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
               this.handleRoutingNotificationForDating(name, value);
               break;
 
-            case 'is_best_of':
-              this.handleRoutingNotificationForIsBestOf(value);
-              break;
-
             case 'search_term':
-            case 'title':
-            case 'location':
-            case 'inventory_number':
               this.handleRoutingNotificationForFreetext(name, value);
               break;
           }
@@ -366,15 +351,6 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
     }
   }
 
-  private updateRoutingForIsBestOf() {
-    const action = this.selectedFilters.isBestOf ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE;
-    this.rootStore.routing.updateSearchQueryParams([[action, ['is_best_of', '1']]]);
-  }
-
-
-  private handleRoutingNotificationForIsBestOf(value: string) {
-    this.selectedFilters.isBestOf = (value === '1');
-  }
 
   private handleRoutingNotificationForFreetext(name: string, value: string) {
     switch(name) {
@@ -386,7 +362,6 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
 
   private updateAllFilterRoutings() {
     this.updateRoutingForDating();
-    this.updateRoutingForIsBestOf();
     this.updateRoutingForFilterGroups();
   }
 }
