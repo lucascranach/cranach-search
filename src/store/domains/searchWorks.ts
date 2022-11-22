@@ -118,15 +118,11 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     const datingChanged = curr.dating.fromYear !== init.dating.fromYear
       || curr.dating.toYear !== init.dating.toYear;
 
-    // TODO: const sizeChanged = curr.size !== init.size;
-    // TODO: const fromChanged = curr.from !== init.from;
     const filterGroupsChanged = curr.filterGroups.size !== init.filterGroups.size;
     const isBestOfChanged = curr.isBestOf !== init.isBestOf;
 
     return [
       datingChanged,
-      // TODO: sizeChanged,
-      // TODO: fromChanged,
       filterGroupsChanged,
       isBestOfChanged,
     ].filter((item) => item).length;
