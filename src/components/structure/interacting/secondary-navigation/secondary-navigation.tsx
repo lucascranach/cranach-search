@@ -12,7 +12,7 @@ import StoreContext, { UIOverviewViewType, UISidebarContentType, UISidebarStatus
 
 
 const SecondaryNavigation = () => {
-  const { root: { ui, collection, searchWorks } } = useContext(StoreContext);
+  const { root: { ui, collection, lighttable } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Navigation', translations);
 
   const toggleSecondaryMenu = () => {
@@ -33,8 +33,7 @@ const SecondaryNavigation = () => {
 
   const showFilter = () => {
     ui.setSideBarContent(UISidebarContentType.FILTER);
-    // TODO: do not depend on import and usage of searchworks
-    searchWorks.triggerFilterRequest();
+    lighttable.fetch();
   }
 
   const hideSidebar = () => {
