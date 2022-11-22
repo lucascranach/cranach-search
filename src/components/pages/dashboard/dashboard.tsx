@@ -7,35 +7,35 @@ import Cloak from '../../base/visualizing/cloak';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
 import Navigation from '../../structure/interacting/navigation';
 import ScrollTo from '../../base/interacting/scroll-to';
-import StoreContext, { GlobalSearchEntityType, UIOverviewViewType } from '../../../store/StoreContext';
+import StoreContext, { UIOverviewViewType, EntityType } from '../../../store/StoreContext';
 
 import './dashboard.scss';
 
 const Dashboard: FC = () => {
-  const { root: { globalSearch, ui } } = useContext(StoreContext);
+  const { root: { lighttable, ui } } = useContext(StoreContext);
 
   const mainContentEl = useRef<HTMLElement|null>(null);
 
   useEffect(() => {
-    globalSearch.triggerFilterRequest(false);
+    lighttable.fetch();
   }, [])
 
   useEffect(() => {
     if (window.scrollY < window.innerHeight) return;
     window.scrollTo({ behavior: 'smooth', top: 0 });
-  }, [globalSearch.flattenedSearchResultItems]);
+  }, [lighttable.flattenedResultItem]);
 
   useEffect(() => {
     if (!mainContentEl.current || mainContentEl.current.scrollTop === 0) return;
     mainContentEl.current.scrollTo({ behavior: 'smooth', top: 0 });
-  }, [mainContentEl, globalSearch.flattenedSearchResultItems]);
+  }, [mainContentEl, lighttable.flattenedResultItem]);
 
-  const getToUrlForArtifact = (_: GlobalSearchEntityType, id: string): string => {
+  const getToUrlForArtifact = (_: EntityType, id: string): string => {
     const cdaArtefactUrlPattern = import.meta.env.VITE_CDA_ARTEFACT_URL as string;
     return cdaArtefactUrlPattern.replace('{{lang}}', ui.lang).replace('{{id}}', id);
   };
 
-  const overviewItems: ArtefactOverviewItem[] = globalSearch.flattenedSearchResultItems.map(
+  const overviewItems: ArtefactOverviewItem[] = lighttable.flattenedResultItem.map(
     (item) => ({
       ...item,
       to: getToUrlForArtifact(item.entityType, item.id),
@@ -57,15 +57,15 @@ const Dashboard: FC = () => {
     >
       <Navigation></Navigation>
       <main
-        className={`main-content ${ globalSearch.loading ? 'main-content--non-scrollable' : '' }`}
+        className={`main-content ${ lighttable.loading ? 'main-content--non-scrollable' : '' }`}
         ref={mainContentEl}
       >
         <ArtefactOverview.Overview
           viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
           items={overviewItems}
-          handleArtefactAmountChange={ (amount: number) => globalSearch.setSize(amount) }
+          handleArtefactAmountChange={ (amount: number) => lighttable.setSize(amount) }
         />
-        { globalSearch.loading && <Cloak /> }
+        { lighttable.loading && <Cloak /> }
       </main>
       <SearchResultNavigation></SearchResultNavigation>
       <ScrollTo className="scroll-up" hideIf={ !ui.leftInitialViewArea }></ScrollTo>

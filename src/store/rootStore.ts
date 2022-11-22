@@ -1,19 +1,25 @@
 import { makeAutoObservable } from 'mobx';
 import { History } from 'history';
 
-import globalSearchAPI from '../api/globalSearch';
+import WorksAPI from '../api/works';
+import ArchivalsAPI from '../api/archivals';
+import CollectionAPI from '../api/collection';
 
 import UI, { UIStoreInterface } from './domains/ui';
 import Routing, { RoutingStoreInterface } from './domains/routing';
-import GlobalSearch, { GlobalSearchStoreInterface } from './domains/globalSearch';
+import SearchWorks, { SearchWorksStoreInterface } from './domains/searchWorks';
 import Collection, { CollectionStoreInterface } from './domains/collection';
+import Lighttable, { LighttableStoreInterface } from './domains/lighttable';
+import SearchArchivals, { SearchArchivalsStoreInterface } from './domains/searchArchivals';
 
 export default class RootStore implements RootStoreInterface {
   public readonly mode;
   public ui: UIStoreInterface;
   public routing: RoutingStoreInterface;
-  public globalSearch: GlobalSearchStoreInterface;
   public collection: CollectionStoreInterface;
+  public lighttable: LighttableStoreInterface;
+  public searchWorks: SearchWorksStoreInterface;
+  public searchArchivals: SearchArchivalsStoreInterface;
 
   constructor(history: History) {
     makeAutoObservable(this);
@@ -23,8 +29,10 @@ export default class RootStore implements RootStoreInterface {
       : '';
     this.routing = new Routing(this, history);
     this.ui = new UI(this);
-    this.globalSearch = new GlobalSearch(this, globalSearchAPI);
-    this.collection = new Collection(this);
+    this.collection = new Collection(this, CollectionAPI);
+    this.lighttable = new Lighttable(this);
+    this.searchWorks = new SearchWorks(this, WorksAPI);
+    this.searchArchivals = new SearchArchivals(this, ArchivalsAPI);
   }
 }
 
@@ -32,6 +40,8 @@ export interface RootStoreInterface {
   mode: string,
   ui: UIStoreInterface,
   routing: RoutingStoreInterface,
-  globalSearch: GlobalSearchStoreInterface,
+  lighttable: LighttableStoreInterface,
   collection: CollectionStoreInterface,
+  searchWorks: SearchWorksStoreInterface,
+  searchArchivals: SearchArchivalsStoreInterface,
 }

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 import i18n from 'i18next';
 import {
   initReactI18next,
@@ -11,6 +11,7 @@ import type {
 } from './routing';
 import {
   NotificationType as RoutingNotificationType,
+  ChangeAction as RoutingChangeAction,
 } from './routing';
 import { RootStoreInterface } from '../rootStore';
 
@@ -19,6 +20,7 @@ const CRANACH_SEARCH_LOCALSTORAGE_KEY = 'cranachSearchUI';
 export default class UI implements UIStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface
   lang: string = 'de';
+  artifactKind: UIArtifactKind = UIArtifactKind.WORKS;
   sidebarContent: UISidebarContentType = UISidebarContentType.FILTER;
   sidebarStatus: UISidebarStatusType = UISidebarStatusType.MAXIMIZED;
   overviewViewType: UIOverviewViewType = UIOverviewViewType.CARD;
@@ -52,6 +54,11 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     this.loadFromLocalStorage();
     this.bindToScroll();
     this.bindToResize();
+
+    reaction(
+      () => this.lang,
+      () => this.rootStore.lighttable.fetch(),
+    );
   }
 
   /* Computed values */
@@ -107,6 +114,23 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   setAdditionalSearchInputsVisible(isVisible: boolean) {
     this.additionalSearchInputsVisible = isVisible;
     this.updateLocalStorage();
+  }
+
+  setArtifactKind(artifactKind: UIArtifactKind): void {
+    if (this.artifactKind === artifactKind) return;
+
+    // Clear current lighttable
+    this.rootStore.lighttable.currentProvider?.resetAllFilters();
+
+    this.artifactKind = artifactKind;
+    this.rootStore.routing.resetSearchQueryParams();
+    this.rootStore.lighttable.reset();
+    this.rootStore.lighttable.fetch();
+    this.updateRoutingForArtifactKind();
+  }
+
+  resetArtifactKind(): void {
+    this.artifactKind = UIArtifactKind.WORKS;
   }
 
   filterItemIsExpanded(filterItemId: string): boolean {
@@ -184,6 +208,16 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
           }
         });
         break;
+
+      case RoutingNotificationType.SEARCH_INIT:
+      case RoutingNotificationType.SEARCH_CHANGE:
+        notification.params.forEach(([name, value]) => {
+          switch (name) {
+            case 'kind':
+              this.handleRoutingNotificationKind(value);
+              return;
+          }
+        });
     }
   }
 
@@ -249,6 +283,49 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     window.addEventListener('resize', handler, { passive: true });
     handler();
   }
+
+  private handleRoutingNotificationKind(value: string) {
+    switch (value) {
+      case 'works':
+        this.artifactKind = UIArtifactKind.WORKS;
+        break;
+
+      case 'paintings':
+        this.artifactKind = UIArtifactKind.PAINTINGS;
+        break;
+
+      case 'archivals':
+        this.artifactKind = UIArtifactKind.ARCHIVALS;
+        break;
+
+      default:
+        this.artifactKind = UIArtifactKind.WORKS;
+
+        // Needed to be backwards compatible / support old kind values
+        if (value === 'PAINTINGS') {
+          this.artifactKind = UIArtifactKind.PAINTINGS;
+        }
+
+        // Keep the routing info updated to use the new values
+        this.updateRoutingForArtifactKind();
+    }
+  }
+
+  private updateRoutingForArtifactKind() {
+    const artifactKindStringMap: Record<UIArtifactKind, string> = {
+      [UIArtifactKind.WORKS]: 'works',
+      [UIArtifactKind.PAINTINGS]: 'paintings',
+      [UIArtifactKind.ARCHIVALS]: 'archivals',
+    };
+
+    if (this.artifactKind in artifactKindStringMap) {
+      const kind = artifactKindStringMap[this.artifactKind];
+
+      this.rootStore.routing.updateSearchQueryParams([
+        [RoutingChangeAction.ADD, ['kind', kind]],
+      ]);
+    }
+  }
 }
 
 type StorageItemType = {
@@ -281,8 +358,17 @@ export type UIDimensionPositionsType = {
    top: number,
    left: number,
 }
+export enum UIArtifactKind {
+  PAINTINGS = 1 << 1,
+  GRAPHICS = 1 << 2,
+  WORKS = PAINTINGS | GRAPHICS,
+
+
+  ARCHIVALS = 1 << 3,
+}
 export interface UIStoreInterface {
   lang: string;
+  artifactKind: UIArtifactKind;
   sidebarContent: UISidebarContentType;
   sidebarStatus: UISidebarStatusType;
   overviewViewType: UIOverviewViewType;
@@ -297,6 +383,8 @@ export interface UIStoreInterface {
   setOverviewViewType(type: UIOverviewViewType): void;
   setSecondaryNavigationIsVisible(isVisible: boolean): void;
   setAdditionalSearchInputsVisible(isVisible: boolean): void;
+  setArtifactKind(artifactKind: UIArtifactKind): void;
+  resetArtifactKind(): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
   filterItemIsExpanded(filterItemId: string): boolean;
   setFilterItemExpandedState(filterItemId: string, collapseState: boolean): void;

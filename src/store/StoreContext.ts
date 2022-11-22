@@ -3,12 +3,19 @@ import { configure } from 'mobx';
 
 import { RootStoreInterface } from './rootStore';
 
-export { GlobalSearchEntityType } from './domains/globalSearch';
+export {
+  EntityType,
+} from './domains/lighttable';
 export type {
-  GlobalSearchFilterGroupItem,
-  GlobalSearchFilterItem,
-} from './domains/globalSearch';
-export { UISidebarContentType, UIOverviewViewType, UISidebarStatusType } from './domains/ui';
+  FilterGroupItem,
+  FilterItem,
+} from './domains/lighttable';
+export {
+  UISidebarContentType,
+  UIOverviewViewType,
+  UISidebarStatusType,
+  UIArtifactKind,
+} from './domains/ui';
 
 configure({
   useProxies: 'never',

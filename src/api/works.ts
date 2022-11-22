@@ -1,9 +1,15 @@
+import {
+  EntityType,
+  GlobalSearchFilterGroupItem,
+  GlobalSearchFilterItem,
+  GlobalSearchArtifact,
+  GlobalSearchResponse,
+} from './types';
 
-const querify = (obj: Record<string, string | number>) => Object.entries(obj).map(([name, value]) => `${name}=${encodeURIComponent(value)}`).join('&');
-
-const host = import.meta.env.VITE_SEARCH_API_URL;
-const authUser = import.meta.env.VITE_AUTH_USER;
-const authPass = import.meta.env.VITE_AUTH_PASS;
+import {
+  querify,
+  apiConfiguration,
+} from './utils';
 
 const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   return [
@@ -41,12 +47,19 @@ const mapSingleFilters = (filters: any): GlobalSearchFilterItem[] => {
   return singleFilters;
 }
 
-const assembleResultData = (resultset: any): GlobalSearchResult => {
+const assembleResultData = (resultset: any): GlobalSearchResponse => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
   const filterGroups = mapFilterGroups(resultset.data.filters);
   const singleFilters = mapSingleFilters(resultset.data.filters);
   const meta = resultset.data.meta;
-  return { items, filterGroups, singleFilters, meta };
+  return {
+    result: { items, meta },
+    filters: {
+      groups: filterGroups,
+      flatGroups: [],
+      single: singleFilters,
+    },
+  };
 }
 
 const getInventor = (item: any):string => {
@@ -65,35 +78,13 @@ const getMedium = (item: any):string => {
   return medium ? mediumList[0] : '';
 }
 
-const toArtefact = (item: any): GlobalSearchArtifact => {
-  return {
-    id: item.inventory_number,
-    entityType: item.entity_type,
-    title: item.title,
-    date: item.dating,
-    repository: item.repository,
-    owner: item.owner,
-    classification: item.classification,
-    printProcess: item.print_process,
-    inventor: getInventor(item),
-    artist: getArtist(item),
-    dimensions: item.dimensions,
-    objectName: item.object_name,
-    imgSrc: item.img_src,
-    medium: getMedium(item),
-    searchSortingNumber: item.search_sorting_number,
-    _highlight: item._highlight,
-  }
-};
-
 const getQueryStringForFiltersAndTerm = (
-  filters: APIFilterType,
-  freetextFields: APIFreetextFieldsType,
+  filters: WorksAPIFilterType,
+  freetextFields: WorksAPIFreetextFieldsType,
   langCode: string
 ): string => {
   const params: Record<string, string | number> = {
     language: langCode,
-    'entity_type:neq': EntityType.DOCUMENTS,
   };
 
   if (import.meta.env.VITE_LIST_ARTEFACTS_WITHOUT_IMAGES === 'false') {
@@ -116,8 +107,8 @@ const getQueryStringForFiltersAndTerm = (
     params['dating_end:lte'] = filters.dating.toYear;
   }
 
-  if (filters.entityType !== EntityType.UNKNOWN) {
-    params['entity_type:eq'] = filters.entityType;
+  if (!filters.entityTypes.has(EntityType.UNKNOWN)) {
+    params['entity_type:eq'] = Array.from(filters.entityTypes).join(',');
   }
 
   if (filters.isBestOf) {
@@ -157,10 +148,10 @@ const getQueryStringForFiltersAndTerm = (
 };
 
 const searchByFiltersAndTerm = async (
-  filters: APIFilterType,
-  freetextFields: APIFreetextFieldsType,
+  filters: WorksAPIFilterType,
+  freetextFields: WorksAPIFreetextFieldsType,
   langCode: string
-): Promise<GlobalSearchResult | null> => {
+): Promise<GlobalSearchResponse | null> => {
   const queryParams = getQueryStringForFiltersAndTerm(
     filters,
     freetextFields,
@@ -176,38 +167,17 @@ const searchByFiltersAndTerm = async (
   return null;
 };
 
-const retrieveUserCollection = async (
-  ids: string[],
-  langCode: string
-): Promise<GlobalSearchResult | null> => {
-
-  const params: Record<string, string | number> = {
-    language: langCode,
-    'inventory_number:eq': ids.join(','),
-  };
-
-  const queryParams = querify(params);
-
-  try {
-    return await executeQuery(queryParams);
-  } catch (err) {
-    console.error(err);
-  }
-
-  return null;
-};
-
 const executeQuery = async (
   queryParams: string
-): Promise<GlobalSearchResult | null> => {
-
+): Promise<GlobalSearchResponse | null> => {
+  const { host, authUser, authPass } = apiConfiguration;
   const authString = btoa(`${authUser}:${authPass}`);
   const headers = new Headers();
   headers.set('Authorization', 'Basic ' + authString);
 
   try {
     const resp = await fetch(
-      `${host}/?${queryParams}`,
+      `${host}/works?${queryParams}`,
       { method: 'GET', headers: headers },
     );
     const bodyJSON = await resp.json();
@@ -223,75 +193,46 @@ const executeQuery = async (
 export default {
   getQueryStringForFiltersAndTerm,
   searchByFiltersAndTerm,
-  retrieveUserCollection,
 };
 
-export enum EntityType {
-  GRAPHICS = 'GRAPHIC',
-  PAINTINGS = 'PAINTING',
-  DOCUMENTS = 'DOCUMENT',
-  ARCHIVALS = 'ARCHIVAL',
-  UNKNOWN = 'UNKNOWN',
-}
+export const toArtefact = (item: any): GlobalSearchArtifact => {
+  return {
+    id: item.inventory_number,
+    entityType: item.entity_type,
+    title: item.title,
+    date: item.dating,
+    repository: item.repository,
+    owner: item.owner,
+    classification: item.classification,
+    printProcess: item.print_process,
+    inventor: getInventor(item),
+    artist: getArtist(item),
+    dimensions: item.dimensions,
+    objectName: item.object_name,
+    imgSrc: item.img_src,
+    medium: getMedium(item),
+    searchSortingNumber: item.search_sorting_number,
+    _highlight: item._highlight,
+  }
+};
 
-export type APIFilterType = {
+export type WorksAPIFilterType = {
   dating: {
     fromYear: number,
     toYear: number,
   },
   size: number,
   from: number,
-  entityType: EntityType,
+  entityTypes: Set<EntityType>,
   filterGroups: Map<string, Set<string>>,
   isBestOf: boolean,
 };
 
-export type APIFreetextFieldsType = {
+
+export type WorksAPIFreetextFieldsType = {
   allFieldsTerm: string,
   title: string,
   FRNr: string,
   location: string,
   inventoryNumber: string,
 };
-
-export type GlobalSearchArtifact = {
-  id: string;
-  objectName: string;
-  entityType: EntityType,
-  title: string;
-  inventor: string;
-  artist: string;
-  repository: string;
-  owner: string;
-  date: string;
-  dimensions: string;
-  classification: string;
-  printProcess: string;
-  imgSrc: string;
-  medium: string;
-  searchSortingNumber: string,
-  _highlight?: Record<string, Array<string>>;
-}
-
-export type GlobalSearchFilterItem = {
-  id: string;
-  text: string;
-  doc_count: number;
-  is_available: boolean;
-  children: GlobalSearchFilterItem[];
-}
-
-export type GlobalSearchFilterGroupItem = {
-  key: string,
-  text: string;
-  children: GlobalSearchFilterItem[];
-}
-
-export type GlobalSearchResult = {
-  items: GlobalSearchArtifact[];
-  filterGroups: GlobalSearchFilterGroupItem[];
-  singleFilters: GlobalSearchFilterItem[];
-  meta: {
-    hits: number;
-  };
-}

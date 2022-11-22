@@ -101,14 +101,14 @@ export default class Routing implements RoutingStoreInterface {
 
   updateSearchQueryParams(change: SearchQueryParamChange) {
     const currentSearchParams = this.searchParams;
-    const updatedSearchParams = change.reduce((acc, [action, [name, value]]) => {
+    const updatedSearchParams = change.reduce((acc, [action, [name, value] = ['', '']]) => {
       switch (action) {
         case ChangeAction.ADD:
-          currentSearchParams.set(name, value);
+          acc.set(name, value);
           break;
 
         case ChangeAction.REMOVE:
-          currentSearchParams.delete(name);
+          acc.delete(name);
           break;
       }
 
@@ -118,6 +118,17 @@ export default class Routing implements RoutingStoreInterface {
     this.disableNotify = true;
     this.history.replace({
       search: Array.from(updatedSearchParams).length ? `?${updatedSearchParams.toString()}` : '',
+    });
+    this.storeQueryParamsInLocalStorage();
+    this.disableNotify = false;
+  }
+
+  resetSearchQueryParams() {
+    const emptySearchParams = new URLSearchParams();
+
+    this.disableNotify = true;
+    this.history.replace({
+      search: Array.from(emptySearchParams).length ? `?${emptySearchParams.toString()}` : '',
     });
     this.storeQueryParamsInLocalStorage();
     this.disableNotify = false;
@@ -168,6 +179,7 @@ export interface RoutingStoreInterface {
   addObserver: (observer: ObserverInterface) => void;
   updateLanguageParam: (langCode: string) => void;
   updateSearchQueryParams: (change: SearchQueryParamChange) => void;
+  resetSearchQueryParams: () => void;
 }
 
 export enum NotificationType {
@@ -182,7 +194,7 @@ export enum ChangeAction {
   REMOVE = 'REMOVE',
 }
 
-export type SearchQueryParamChange = [ChangeAction, [string, string]][];
+export type SearchQueryParamChange = [ChangeAction, [string, string]?][];
 
 export interface NotificationInterface {
   type: NotificationType,

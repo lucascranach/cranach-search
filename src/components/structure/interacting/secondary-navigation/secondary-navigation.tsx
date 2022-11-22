@@ -12,7 +12,7 @@ import StoreContext, { UIOverviewViewType, UISidebarContentType, UISidebarStatus
 
 
 const SecondaryNavigation = () => {
-  const { root: { ui, collection, globalSearch } } = useContext(StoreContext);
+  const { root: { ui, collection, lighttable } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Navigation', translations);
 
   const toggleSecondaryMenu = () => {
@@ -33,7 +33,7 @@ const SecondaryNavigation = () => {
 
   const showFilter = () => {
     ui.setSideBarContent(UISidebarContentType.FILTER);
-    globalSearch.triggerFilterRequest();
+    lighttable.fetch();
   }
 
   const hideSidebar = () => {

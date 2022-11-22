@@ -7,35 +7,39 @@ import CategoryFilter from '../../../base/interacting/category-filter';
 import translations from './translations.json';
 import './navigation.scss';
 
-import StoreContext, { GlobalSearchEntityType } from '../../../../store/StoreContext';
+import StoreContext, { UIArtifactKind } from '../../../../store/StoreContext';
 
 
 const Navigation = () => {
-  const { root: { globalSearch, ui } } = useContext(StoreContext);
+  const { root: { ui } } = useContext(StoreContext);
 
   const { t } = ui.useTranslation('Navigation', translations);
 
-  const isActive = (activeFilter?: GlobalSearchEntityType, filterValue?: GlobalSearchEntityType) => { return activeFilter === filterValue ? 'is-active' : '' }
+  const isActive = (activeFilter?: UIArtifactKind, filterValue?: UIArtifactKind) => { return activeFilter === filterValue ? 'is-active' : '' }
 
   const navStructure = [
     {
       title: 'All Objects',
-      filterValue: GlobalSearchEntityType.UNKNOWN,
+      kind: UIArtifactKind.WORKS,
     },
     {
       title: 'Paintings',
-      filterValue: GlobalSearchEntityType.PAINTINGS,
+      kind: UIArtifactKind.PAINTINGS,
+    },
+    {
+      title: 'Archival Documents',
+      kind: UIArtifactKind.ARCHIVALS,
     },
     /*
     {
       title: 'Prints and Drawings',
-      filterValue: GlobalSearchEntityType.GRAPHICS,
+      entityTypes: new Set([EntityType.GRAPHICS]),
     },
     */
   ];
 
-  const triggerAction = (filterValue: GlobalSearchEntityType) => {
-    globalSearch.setEntityType(filterValue);
+  const triggerAction = (kind: UIArtifactKind) => {
+    ui.setArtifactKind(kind);
   }
 
   return (
@@ -51,12 +55,13 @@ const Navigation = () => {
         {
           navStructure.map(item => (
             <li className="menu__item"
-              key={item.filterValue}
+              key={item.title}
             >
+              { /* TODO: do not depend on searchWorks */ }
               <CategoryFilter
-                className={isActive(globalSearch.filters.entityType, item.filterValue)}
+                className={isActive(ui.artifactKind, item.kind)}
                 filterText={t(item.title)}
-                onClick={() => triggerAction(item.filterValue)}
+                onClick={() => triggerAction(item.kind)}
               >
               </CategoryFilter>
             </li>
