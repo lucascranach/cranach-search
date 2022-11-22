@@ -77,7 +77,7 @@ export default class Collection implements CollectionStoreInterface {
       inventoryNumbers,
       lang,
     );
-    this.rootStore.lighttable.setResult(response.result);
+    this.rootStore.lighttable.setResult(response?.result || null);
     this.rootStore.lighttable.setResultLoading(false);
   }
 

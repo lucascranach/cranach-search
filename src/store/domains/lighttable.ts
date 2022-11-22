@@ -7,6 +7,10 @@ import {
   GlobalSearchResult,
 } from '../../api/types';
 export { EntityType } from '../../api/types';
+export type {
+  GlobalSearchFilterGroupItem as FilterGroupItem,
+  GlobalSearchFilterItem as FilterItem,
+} from '../../api/types';
 import type {
   ObserverInterface as RoutingObservableInterface,
   NotificationInterface as RoutingNotificationInterface,
