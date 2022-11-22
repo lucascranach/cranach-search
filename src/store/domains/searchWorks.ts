@@ -331,8 +331,6 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
       [RoutingChangeAction.ADD, ['to_year', toYear <= THRESOLD_UPPER_DATING_YEAR ? toYear.toString() : 'max']],
     ]);
-
-    this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.CLEAR_ALL]]);
   }
 
   private updateRoutingForFreetextFields() {

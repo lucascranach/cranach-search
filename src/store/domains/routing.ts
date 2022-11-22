@@ -192,7 +192,6 @@ export enum NotificationType {
 export enum ChangeAction {
   ADD = 'ADD',
   REMOVE = 'REMOVE',
-  CLEAR_ALL = 'CLEAR_ALL',
 }
 
 export type SearchQueryParamChange = [ChangeAction, [string, string]?][];
