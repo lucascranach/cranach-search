@@ -2,29 +2,37 @@
 @import "../../../../style//000-abstracts/mixins";
 
 .artefact-overview {
-  display: grid;
   align-content: flex-start;
-  padding-bottom: $xxl;
-  gap: $s;
   height: 100%;
+  padding-bottom: $xxl;
 
-  @include grid-auto-columns();
+  &--is-grid {
+    display: grid;
+    gap: $s;
 
-  &[data-active-view="card-small"] {
-    column-gap: $xxs !important;
-    row-gap: $xxs !important;
-    @include grid-auto-columns-small();
+
+    @include grid-auto-columns();
+
+    &[data-active-view="card-small"] {
+      column-gap: $xxs !important;
+      row-gap: $xxs !important;
+      @include grid-auto-columns-small();
+    }
+
+    &[data-active-view="list"] {
+      display: grid;
+      padding: $xs;
+      column-gap: $xs !important;
+      row-gap: $xs !important;
+
+      @include grid-even-columns($vp-xlarge, 2);
+      @include grid-even-columns($vp-xxlarge, 3);
+      @include grid-even-columns($vp-4xlarge, 4);
+    }
   }
 
-  &[data-active-view="list"] {
-    display: grid;
-    padding: $xs;
-    column-gap: $xs !important;
-    row-gap: $xs !important;
+  &--is-table {
 
-    @include grid-even-columns($vp-xlarge, 2);
-    @include grid-even-columns($vp-xxlarge, 3);
-    @include grid-even-columns($vp-4xlarge, 4);
   }
 
   &-switcher {

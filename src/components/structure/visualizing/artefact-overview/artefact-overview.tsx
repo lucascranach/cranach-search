@@ -2,11 +2,13 @@ import React, { FC, useRef, useEffect, useContext } from 'react';
 import Switcher from '../../../base/interacting/switcher';
 import ArtefactCard from '../artefact-card';
 import ArtefactLine from '../artefact-line';
+import ArtefactTable, { Props as ArtefactTableProps } from '../artefact-table';
 
 import { observer } from 'mobx-react-lite';
 
-import StoreContext, { EntityType } from '../../../../store/StoreContext';
+import StoreContext, { EntityType, UIArtifactKind } from '../../../../store/StoreContext';
 
+import translations from './translations.json';
 import './artefact-overview.scss';
 
 export type ArtefactOverviewItem = {
@@ -34,6 +36,7 @@ export enum ArtefactOverviewType {
   CARD = 'card',
   CARD_SMALL = 'card-small',
   LIST = 'list',
+  TABLE = 'table',
 }
 
 type OverviewProps = {
@@ -50,7 +53,9 @@ const Overview: FC<OverviewProps> = ({
   viewType = DefaultViewType,
   handleArtefactAmountChange = () => {},
 }) => {
-  const { root: { collection } } = useContext(StoreContext);
+  const { root: { collection, ui } } = useContext(StoreContext);
+
+  const { t } = ui.useTranslation('ArtefactOverview', translations);
 
   const artefactOverviewElRef = useRef<HTMLDivElement | null>(null);
   const hasHighlightedText = (item: ArtefactOverviewItem, prop: keyof ArtefactOverviewItem): boolean => {
@@ -189,6 +194,55 @@ const Overview: FC<OverviewProps> = ({
     }
   };
 
+  const tableData = ((artifactKind: UIArtifactKind, items: ArtefactOverviewItem[]): Pick<ArtefactTableProps, 'head' | 'items'> => {
+    if (items.length === 0) {
+      return {
+        head: [],
+        items: [],
+      };
+    }
+
+    if ([UIArtifactKind.WORKS, UIArtifactKind.PAINTINGS].includes(artifactKind)) {
+      return {
+        head: [
+          { fieldName: 'title', text: t('Title') },
+          { fieldName: 'artist', text: t('Artist'), options: { noWrap: true } },
+          { fieldName: 'medium', text: t('Medium') },
+          { fieldName: 'repository', text: t('Repository') },
+          { fieldName: 'date', text: t('Date'), options: { noWrap: true } },
+        ],
+        items: items.map((item) => ({
+          id: item.id,
+          to: item.to,
+          imgSrc: item.imgSrc,
+          imgAlt: '',
+          date: item.date,
+          title: item.title,
+          medium: item.medium,
+          artist: item.artist,
+          repository: item.repository,
+          isFavorite: isFavorite(item.id),
+        })),
+      };
+    }
+
+    return {
+      head: [
+        { fieldName: 'date', text: t('Date'), options: { noWrap: true } },
+        { fieldName: 'summary', text: t('Summary'), options: { forceColumnTextWrap: true } },
+      ],
+      items: items.map((item) => ({
+        id: item.id,
+        to: item.to,
+        imgSrc: item.imgSrc,
+        imgAlt: '',
+        date: item.date,
+        summary: item.title,
+        isFavorite: isFavorite(item.id),
+      })),
+    };
+  })(ui.artifactKind, items);
+
   useEffect(() => {
     if (!artefactOverviewElRef.current) return;
 
@@ -202,12 +256,20 @@ const Overview: FC<OverviewProps> = ({
 
   return (<div
     ref={ artefactOverviewElRef }
-    className="artefact-overview"
+    className={`artefact-overview ${ ArtefactOverviewType.TABLE === viewType ? 'artefact-overview--is-table' : 'artefact-overview--is-grid' }`}
     data-component="structure/visualizing/artefact-overview"
     data-active-view={viewType}
   >
     {
-      items.map(item => (<div
+      ArtefactOverviewType.TABLE === viewType && <ArtefactTable
+        head={ tableData.head }
+        items={ tableData.items }
+        onFavoriteToggle={toggleFavorite}
+      ></ArtefactTable>
+    }
+
+    {
+      ArtefactOverviewType.TABLE !== viewType && items.map(item => (<div
         key={item.id}
         className="overview-item"
         data-sorting-number={item.searchSortingNumber}
@@ -272,15 +334,19 @@ const OverviewSwitcher: FC<SwitcherProps> = ({
   const allViewEntries = [
     {
       type: ArtefactOverviewType.CARD,
-      icon: 'view_column',
+      icon: 'view_module',
     },
     {
       type: ArtefactOverviewType.CARD_SMALL,
-      icon: 'view_module',
+      icon: 'view_comfy',
     },
     {
       type: ArtefactOverviewType.LIST,
       icon: 'view_list',
+    },
+    {
+      type: ArtefactOverviewType.TABLE,
+      icon: 'view_headline',
     },
   ];
 
@@ -291,8 +357,9 @@ const OverviewSwitcher: FC<SwitcherProps> = ({
       >
         <i
           className={`icon artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}`}
+          data-icon={icon}
           onClick={() => handleChange(type)}
-        >{icon}</i>
+        ></i>
       </Switcher.Item>
     ))}
   </Switcher>);

@@ -349,6 +349,7 @@ export enum UIOverviewViewType {
   CARD = 'card',
   CARD_SMALL = 'card-small',
   LIST = 'list',
+  TABLE = 'table',
 }
 export type UIDimensionsType = {
    width: number,

@@ -46,6 +46,7 @@ const SecondaryNavigation = () => {
     [UIOverviewViewType.CARD]: ArtefactOverviewType.CARD,
     [UIOverviewViewType.CARD_SMALL]: ArtefactOverviewType.CARD_SMALL,
     [UIOverviewViewType.LIST]: ArtefactOverviewType.LIST,
+    [UIOverviewViewType.TABLE]: ArtefactOverviewType.TABLE,
   };
 
   /* We also need a map to map back from ArtefactOverview enum values to UIOverviewViewType enum values */
@@ -53,6 +54,7 @@ const SecondaryNavigation = () => {
     [ArtefactOverviewType.CARD]: UIOverviewViewType.CARD,
     [ArtefactOverviewType.CARD_SMALL]: UIOverviewViewType.CARD_SMALL,
     [ArtefactOverviewType.LIST]: UIOverviewViewType.LIST,
+    [ArtefactOverviewType.TABLE]: UIOverviewViewType.TABLE,
   }
 
   return (
