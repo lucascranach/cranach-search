@@ -26,6 +26,14 @@
         vertical-align: middle;
         background-color: $lighter;
         border-bottom: solid $border-stroke-weight-s $accent;
+
+        & .text-value {
+          display: inline-block;
+
+          &.wrap {
+            width: 80ch;
+          }
+        }
       }
 
       #{$self}__image-field {

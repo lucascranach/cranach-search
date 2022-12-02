@@ -20,6 +20,7 @@ export type Props = {
     text: string,
     options?: {
       noWrap?: boolean,
+      forceColumnTextWrap?: boolean,
     },
   }[],
   items: ItemProp[],
@@ -68,7 +69,13 @@ const ArtefactTable: FC<Props> = ({
                 </a>
               </td>
               {
-                head.map((headItem) => (<td className={headItem.options?.noWrap ? 'no-wrap' : ''}>{ item[headItem.fieldName] }</td>))
+                head.map((headItem) => (
+                  <td className={headItem.options?.noWrap ? 'no-wrap' : ''}>
+                    <span className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}>
+                      { item[headItem.fieldName] }
+                    </span>
+                  </td>)
+                )
               }
               <td className="artefact-table__favorite">
                   <div className="favorite-holder">

@@ -229,7 +229,7 @@ const Overview: FC<OverviewProps> = ({
     return {
       head: [
         { fieldName: 'date', text: t('Date'), options: { noWrap: true } },
-        { fieldName: 'summary', text: t('Summary') },
+        { fieldName: 'summary', text: t('Summary'), options: { forceColumnTextWrap: true } },
       ],
       items: items.map((item) => ({
         id: item.id,
