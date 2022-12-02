@@ -264,7 +264,6 @@ const Overview: FC<OverviewProps> = ({
       ArtefactOverviewType.TABLE === viewType && <ArtefactTable
         head={ tableData.head }
         items={ tableData.items }
-        getIsFavorite={isFavorite}
         onFavoriteToggle={toggleFavorite}
       ></ArtefactTable>
     }

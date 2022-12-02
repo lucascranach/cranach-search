@@ -23,7 +23,6 @@ export type Props = {
     },
   }[],
   items: ItemProp[],
-  getIsFavorite: (id: string) => boolean,
   onFavoriteToggle: (id: string) => void,
 }
 
