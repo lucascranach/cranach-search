@@ -32,8 +32,6 @@ const ArtefactTable: FC<Props> = ({
   onFavoriteToggle,
 }) => {
 
-  // const additionalTextString = additionalText.map((item, index) => (<p key={index} className="artefact-line__text">{item}</p>));
-
   const [isArmed, setIsArmed] = useState(false);
 
   useEffect(() => {
