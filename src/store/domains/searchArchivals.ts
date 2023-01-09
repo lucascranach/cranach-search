@@ -2,7 +2,7 @@
 import { makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import ArchivalsSearchAPI_ from '../../api/archivals';
-import { GlobalSearchResult } from '../../api/types';
+import { ArtifactKind, GlobalSearchResult } from '../../api/types';
 import type {
   GlobalSearchFilterGroupItem as FilterGroupItem,
   GlobalSearchFilterItem as FilterItem,
@@ -126,7 +126,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
     const artefactIds = result.items.map(item => {
       const { id } = item;
       const pattern = `.*${id}`;
-      const imgSrc = item.imgSrc.replace(pattern, id);
+      const imgSrc = item.imgSrc.replace(pattern, id) ;
       const entityType = Array.from(this.rootStore.lighttable.entityTypes).join(',');
       return { id, imgSrc, entityType, }
     });

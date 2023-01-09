@@ -33,7 +33,7 @@ const Navigation = () => {
     /*
     {
       title: 'Prints and Drawings',
-      entityTypes: new Set([EntityType.GRAPHICS]),
+      entityTypes: new Set([EntityType.GRAPHIC]),
     },
     */
   ];

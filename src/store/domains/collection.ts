@@ -1,6 +1,6 @@
 
 import { makeAutoObservable } from 'mobx';
-import { EntityType } from '../../api/types';
+import { ArtifactKind, EntityType } from '../../api/types';
 import { RootStoreInterface } from '../rootStore';
 import CollectionAPI_ from '../../api/collection';
 

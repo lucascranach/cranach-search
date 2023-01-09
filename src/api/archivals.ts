@@ -1,7 +1,7 @@
 
 import {
   EntityType,
-  GlobalSearchArtifact,
+  ArtifactKind,
   GlobalSearchResponse,
   GlobalSearchFilterItem,
   GlobalSearchFilterGroupItem,
@@ -130,28 +130,41 @@ export default {
   searchByFilters,
 };
 
-export const toArtefact = (item: any): GlobalSearchArtifact => {
+export const toArtefact = (item: any): ArchivalSearchArtifact => {
   return {
+    kind: ArtifactKind.ARCHIVAL,
     id: item.inventory_number,
-    entityType: item.entity_type,
+    entityType: EntityType.ARCHIVAL,
     title: item.title,
     date: item.dating,
     repository: item.repository,
     owner: item.owner,
     classification: item.classification,
-    printProcess: '',
-    inventor: '',
-    artist: '',
     dimensions: item.dimensions,
     objectName: item.object_name,
     imgSrc: item.img_src,
-    medium: '',
     searchSortingNumber: item.search_sorting_number,
     _highlight: item._highlight,
   }
 };
 
-export type ArchivalsAPIFilterType = {
+export interface ArchivalSearchArtifact {
+  kind: ArtifactKind.ARCHIVAL;
+  id: string,
+  title: string,
+  entityType: EntityType;
+  date: string,
+  repository: string,
+  owner: string,
+  classification: string,
+  dimensions: string,
+  objectName: string,
+  imgSrc: string,
+  searchSortingNumber: string,
+  _highlight?: Record<string, Array<string>>;
+}
+
+export interface ArchivalsAPIFilterType {
   dating: {
     fromYear: number,
     toYear: number,
