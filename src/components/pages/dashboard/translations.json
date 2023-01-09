@@ -12,6 +12,10 @@
     "Place of Publication": "Ort der Veröffentlichung",
     "Year": "Jahr",
     "Text Category": "Textart",
-    "Title": "Titel"
+    "Title": "Titel",
+
+    "Journal": "Zeitschrift",
+    "Article": "Aufsatz",
+    "Monography / Miscellany": "Monographie / Sammelband"
   }
 }

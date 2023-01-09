@@ -213,12 +213,12 @@ const Dashboard: FC = () => {
           enableFavorite: false,
         },
         head: [
-          { fieldName: 'referenceNumber', text: t('Signature') },
+          { fieldName: 'referenceNumber', text: t('Signature'), options: { noWrap: true } },
           { fieldName: 'author', text: t('Author/Editor') },
 
           { fieldName: 'publishLocation', text: t('Place of Publication') },
           { fieldName: 'publishYear', text: t('Year') },
-          { fieldName: 'textCategory', text: t('Text Category') },
+          { fieldName: 'textCategory', text: t('Text Category'), options: { noWrap: true } },
           { fieldName: 'title', text: t('Title'), options: { asInnerHTML: true } },
         ],
         items: items.map((item) => ({
@@ -231,7 +231,20 @@ const Dashboard: FC = () => {
           publishLocation : item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishLocation : '',
           publishYear: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishYear : '',
 
-          textCategory: '', // TODO: pass text category from backend
+          textCategory: ((item): string => {
+            if (item.kind !== ArtifactKind.LITERATURE_REFERENCE) return '';
+
+            if (item.journal) {
+              return t('Journal');
+            }
+
+            if (item.subtitle) {
+              return t('Article');
+            }
+
+            return t('Monography / Miscellany');
+          })(item),
+
           title: item.title,
 
           isFavorite: isFavorite(item.id),

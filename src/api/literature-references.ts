@@ -102,6 +102,8 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
     id: item.reference_id,
     entityType: item.entity_type,
     title: item.title,
+    subtitle: item.subtitle,
+    journal: item.journal,
     date: item.dating,
     referenceNumber: item.reference_number,
     persons: item.persons,
@@ -116,6 +118,8 @@ export interface LiteratureReferenceSearchArtifact {
   id: string;
   entityType: EntityType;
   title: string;
+  subtitle: string;
+  journal: string;
   date: string;
   referenceNumber: string;
   persons: { role: string, name: string }[],
