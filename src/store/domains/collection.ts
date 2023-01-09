@@ -46,7 +46,7 @@ export default class Collection implements CollectionStoreInterface {
 
     const mappedItem: CollectionItem = {
       inventoryNumber: matchingItem.id,
-      objectName: matchingItem.objectName,
+      objectName: 'objectName' in matchingItem ? matchingItem.objectName : '',
       entityType: matchingItem.entityType,
       collectedAtTimestamp: (new Date()).toISOString(),
     };

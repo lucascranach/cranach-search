@@ -1,5 +1,6 @@
 import { ArchivalSearchArtifact } from "./archivals";
 import { WorkSearchArtifact } from "./works";
+import { LiteratureReferenceSearchArtifact } from "./literature-references";
 
 export enum EntityType {
   PAINTING = 'PAINTING',
@@ -12,6 +13,7 @@ export enum EntityType {
 export enum ArtifactKind {
   WORK = 'WORK',
   ARCHIVAL = 'ARCHIVAL',
+  LITERATURE_REFERENCE = 'LITERATURE_REFERENCE',
 };
 
 export interface APIFilterType {
@@ -27,7 +29,7 @@ export interface APIFilterType {
 };
 
 export type GlobalSearchArtifact =
-  WorkSearchArtifact | ArchivalSearchArtifact;
+  WorkSearchArtifact | ArchivalSearchArtifact | LiteratureReferenceSearchArtifact;
 
 export interface GlobalSearchFilterItem {
   id: string;

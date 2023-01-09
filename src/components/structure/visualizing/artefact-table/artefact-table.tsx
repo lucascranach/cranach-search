@@ -21,18 +21,26 @@ export type Props = {
     options?: {
       noWrap?: boolean,
       forceColumnTextWrap?: boolean,
+      asInnerHTML?: boolean,
     },
   }[],
   items: ItemProp[],
+  options?: {
+    showImageColumn?: boolean,
+    enableFavorite?: boolean,
+  }
   onFavoriteToggle: (id: string) => void,
 }
 
 const ArtefactTable: FC<Props> = ({
   head,
   items,
+  options = {
+    showImageColumn: true,
+    enableFavorite: true,
+  },
   onFavoriteToggle,
 }) => {
-
   const [isArmed, setIsArmed] = useState(false);
 
   useEffect(() => {
@@ -46,8 +54,8 @@ const ArtefactTable: FC<Props> = ({
   >
     <thead>
       <tr>
-        <th scope="col"></th>
-        { head.map((headItem) => (<th scope="col">{headItem.text}</th>)) }
+        { options?.showImageColumn && <th scope="col"></th> }
+        { head.map((headItem) => (<th key={headItem.fieldName} scope="col">{headItem.text}</th>)) }
         <th></th>
       </tr>
     </thead>
@@ -55,35 +63,48 @@ const ArtefactTable: FC<Props> = ({
       {
         items.map((item) => {
           return (
-            <tr>
-              <td
-                scope="row"
-                className="artefact-table__image-field"
-              >
-                <a href={item.to}>
-                  <Image
-                    src={item.imgSrc || ''}
-                    alt={item.imgAlt}
-                    modifierWithBox={true} // -has-box artefact-line-image
-                  />
-                </a>
-              </td>
+            <tr key={item.id}>
+              {
+                options?.showImageColumn && <td
+                  scope="row"
+                  className="artefact-table__image-field"
+                >
+                  <a href={item.to}>
+                    <Image
+                      src={item.imgSrc || ''}
+                      alt={item.imgAlt}
+                      modifierWithBox={true} // -has-box artefact-line-image
+                    />
+                  </a>
+                </td>
+              }
               {
                 head.map((headItem) => (
-                  <td className={headItem.options?.noWrap ? 'no-wrap' : ''}>
-                    <span className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}>
-                      { item[headItem.fieldName] }
-                    </span>
+                  <td key={headItem.fieldName} className={headItem.options?.noWrap ? 'no-wrap' : ''}>
+                    {
+                      headItem.options?.asInnerHTML
+                      ? (<span
+                        className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
+                        dangerouslySetInnerHTML={{ __html: item[headItem.fieldName].toString() }}
+                        ></span>)
+                      : (<span
+                        className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
+                        >
+                          { item[headItem.fieldName] }
+                        </span>)
+                    }
                   </td>)
                 )
               }
               <td className="artefact-table__favorite">
-                  <div className="favorite-holder">
+                {
+                  options?.enableFavorite && <div className="favorite-holder">
                     <a
                       className={`favorite icon ${item.isFavorite ? 'favorite--is-active' : ''} ${isArmed ? 'favorite--is-armed' : ''}`}
                       onClick={() => { onFavoriteToggle(item.id) }}
                     >{item.isFavorite ? 'remove' : 'add'}</a>
                   </div>
+                }
               </td>
             </tr>
           );

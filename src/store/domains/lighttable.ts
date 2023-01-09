@@ -182,7 +182,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
       const { id } = item;
       const { entityType } = item;
       const pattern = `.*${id}`;
-      const imgSrc = item.imgSrc.replace(pattern, id);
+      const imgSrc = 'imgSrc' in item ? item.imgSrc.replace(pattern, id) : '';
       return { id, imgSrc, entityType }
     });
 

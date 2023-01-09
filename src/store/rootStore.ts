@@ -3,6 +3,7 @@ import { History } from 'history';
 
 import WorksAPI from '../api/works';
 import ArchivalsAPI from '../api/archivals';
+import LiteratureReferencesAPI from '../api/literature-references';
 import CollectionAPI from '../api/collection';
 
 import UI, { UIStoreInterface } from './domains/ui';
@@ -11,6 +12,7 @@ import SearchWorks, { SearchWorksStoreInterface } from './domains/searchWorks';
 import Collection, { CollectionStoreInterface } from './domains/collection';
 import Lighttable, { LighttableStoreInterface } from './domains/lighttable';
 import SearchArchivals, { SearchArchivalsStoreInterface } from './domains/searchArchivals';
+import SearchLiteratureReferences, { SearchLiteratureReferencesStoreInterface } from './domains/searchLiteratureReferences';
 
 export default class RootStore implements RootStoreInterface {
   public readonly mode;
@@ -20,6 +22,7 @@ export default class RootStore implements RootStoreInterface {
   public lighttable: LighttableStoreInterface;
   public searchWorks: SearchWorksStoreInterface;
   public searchArchivals: SearchArchivalsStoreInterface;
+  public searchLiteratureReferences: SearchLiteratureReferencesStoreInterface;
 
   constructor(history: History) {
     makeAutoObservable(this);
@@ -33,6 +36,7 @@ export default class RootStore implements RootStoreInterface {
     this.lighttable = new Lighttable(this);
     this.searchWorks = new SearchWorks(this, WorksAPI);
     this.searchArchivals = new SearchArchivals(this, ArchivalsAPI);
+    this.searchLiteratureReferences = new SearchLiteratureReferences(this, LiteratureReferencesAPI)
   }
 }
 
@@ -44,4 +48,5 @@ export interface RootStoreInterface {
   collection: CollectionStoreInterface,
   searchWorks: SearchWorksStoreInterface,
   searchArchivals: SearchArchivalsStoreInterface,
+  searchLiteratureReferences: SearchLiteratureReferencesStoreInterface;
 }

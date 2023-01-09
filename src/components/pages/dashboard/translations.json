@@ -5,6 +5,13 @@
     "Artist": "Künstler",
     "Repository": "Besitzer",
     "Date": "Datum",
-    "Summary": "Zusammenfassung"
+    "Summary": "Zusammenfassung",
+
+    "Signature": "Kürzel",
+    "Author/Editor": "Autor/In / Herausgeber/In",
+    "Place of Publication": "Ort der Veröffentlichung",
+    "Year": "Jahr",
+    "Text Category": "Textart",
+    "Title": "Titel"
   }
 }

@@ -298,6 +298,10 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
         this.artifactKind = UIArtifactKind.ARCHIVALS;
         break;
 
+      case 'literature_references':
+        this.artifactKind = UIArtifactKind.LITERATURE_REFERENCES;
+        break;
+
       default:
         this.artifactKind = UIArtifactKind.WORKS;
 
@@ -316,6 +320,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       [UIArtifactKind.WORKS]: 'works',
       [UIArtifactKind.PAINTINGS]: 'paintings',
       [UIArtifactKind.ARCHIVALS]: 'archivals',
+      [UIArtifactKind.LITERATURE_REFERENCES]: 'literature_references',
     };
 
     if (this.artifactKind in artifactKindStringMap) {
@@ -360,12 +365,13 @@ export type UIDimensionPositionsType = {
    left: number,
 }
 export enum UIArtifactKind {
-  PAINTINGS = 1 << 1,
-  GRAPHICS = 1 << 2,
+  PAINTINGS = 1 << 0,
+  GRAPHICS = 1 << 1,
   WORKS = PAINTINGS | GRAPHICS,
 
 
-  ARCHIVALS = 1 << 3,
+  ARCHIVALS = 1 << 2,
+  LITERATURE_REFERENCES = 1 << 3,
 }
 export interface UIStoreInterface {
   lang: string;

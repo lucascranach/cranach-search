@@ -30,6 +30,10 @@ const Navigation = () => {
       title: 'Archival Documents',
       kind: UIArtifactKind.ARCHIVALS,
     },
+    {
+      title: 'Publications',
+      kind: UIArtifactKind.LITERATURE_REFERENCES,
+    },
     /*
     {
       title: 'Prints and Drawings',

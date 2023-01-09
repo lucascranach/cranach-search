@@ -95,6 +95,10 @@ const Dashboard: FC = () => {
     return slice;
   };
 
+  const getImgSrcOrFallback = (item: GlobalSearchArtifact): string => {
+    return 'imgSrc' in item && item.imgSrc ? item.imgSrc : (import.meta.env.BASE_URL + 'assets/no-image--trans.png');
+  }
+
   const shortenTitle = (title: string): string => {
     const splitTitle = title.split(' ');
     return splitTitle.length <= maximumTitleLengthInWords ? title : `${splitTitle.slice(0, maximumTitleLengthInWords).join(' ')} …`;
@@ -119,6 +123,7 @@ const Dashboard: FC = () => {
   const assembleSubTitleForCardView = (item: GlobalSearchArtifact): string => {
     switch (item.kind) {
       case ArtifactKind.ARCHIVAL:
+      case ArtifactKind.LITERATURE_REFERENCE:
         return '';
       case ArtifactKind.WORK:
         return `${item.classification}, ${item.printProcess}`;
@@ -128,6 +133,7 @@ const Dashboard: FC = () => {
   const assembleSubTitleForListView = (item: GlobalSearchArtifact): string => {
     switch (item.kind) {
       case ArtifactKind.ARCHIVAL:
+      case ArtifactKind.LITERATURE_REFERENCE:
         return '';
       case ArtifactKind.WORK:
         return (item.entityType === EntityType.GRAPHIC)
@@ -139,6 +145,7 @@ const Dashboard: FC = () => {
   const assembleTextForCardView = (item: GlobalSearchArtifact): string => {
     switch (item.kind) {
       case ArtifactKind.ARCHIVAL:
+      case ArtifactKind.LITERATURE_REFERENCE:
         return '';
 
       case ArtifactKind.WORK:
@@ -167,7 +174,7 @@ const Dashboard: FC = () => {
 
   const viewType = mapSelectedOverviewViewType(ui.overviewViewType);
 
-  const tablePropsMapper = (items: GlobalSearchArtifact[], artifactKind: UIArtifactKind): Pick<ArtifactTableProps, 'head' | 'items'> => {
+  const tablePropsMapper = (items: GlobalSearchArtifact[], artifactKind: UIArtifactKind): Pick<ArtifactTableProps, 'head' | 'items' | 'options'> => {
     if (items.length === 0) {
       return {
         head: [],
@@ -175,7 +182,7 @@ const Dashboard: FC = () => {
       };
     }
 
-    if ([UIArtifactKind.WORKS, UIArtifactKind.PAINTINGS].includes(artifactKind)) {
+    if (artifactKind & UIArtifactKind.WORKS) {
       return {
         head: [
           { fieldName: 'title', text: t('Title') },
@@ -187,13 +194,46 @@ const Dashboard: FC = () => {
         items: items.map((item) => ({
           id: item.id,
           to: getToUrlForArtifact(item.entityType, item.id),
-          imgSrc: item.imgSrc,
+          imgSrc: getImgSrcOrFallback(item),
           imgAlt: '',
           date: item.date,
           title: item.title,
           medium: item.kind === ArtifactKind.WORK ? item.medium : '',
           artist: item.kind === ArtifactKind.WORK ? item.artist : '',
           repository: item.kind === ArtifactKind.WORK ? item.repository : '',
+          isFavorite: isFavorite(item.id),
+        })),
+      };
+    }
+
+    if (artifactKind === UIArtifactKind.LITERATURE_REFERENCES) {
+      return {
+        options: {
+          showImageColumn: false,
+          enableFavorite: false,
+        },
+        head: [
+          { fieldName: 'referenceNumber', text: t('Signature') },
+          { fieldName: 'author', text: t('Author/Editor') },
+
+          { fieldName: 'publishLocation', text: t('Place of Publication') },
+          { fieldName: 'publishYear', text: t('Year') },
+          { fieldName: 'textCategory', text: t('Text Category') },
+          { fieldName: 'title', text: t('Title'), options: { asInnerHTML: true } },
+        ],
+        items: items.map((item) => ({
+          id: item.id,
+          to: getToUrlForArtifact(item.entityType, item.id),
+          imgSrc: getImgSrcOrFallback(item),
+          imgAlt: '',
+          referenceNumber: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.referenceNumber : '',
+          author: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.persons.map(person => person.name).join(', ') : '',
+          publishLocation : item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishLocation : '',
+          publishYear: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishYear : '',
+
+          textCategory: '', // TODO: pass text category from backend
+          title: item.title,
+
           isFavorite: isFavorite(item.id),
         })),
       };
@@ -207,7 +247,7 @@ const Dashboard: FC = () => {
       items: items.map((item) => ({
         id: item.id,
         to: getToUrlForArtifact(item.entityType, item.id),
-        imgSrc: item.imgSrc,
+        imgSrc: getImgSrcOrFallback(item),
         imgAlt: '',
         date: item.date,
         summary: item.title,
@@ -224,14 +264,15 @@ const Dashboard: FC = () => {
         subtitle: assembleSubTitleForCardView(item),
         text: assembleTextForCardView(item),
         to: getToUrlForArtifact(item.entityType, item.id),
-        imgSrc: item.imgSrc,
+        imgSrc: getImgSrcOrFallback(item),
         openInNewWindow: false,
       };
     } else {
       return {
         id: item.id,
         to: getToUrlForArtifact(item.entityType, item.id),
-        imgSrc: item.imgSrc,
+        imgSrc: getImgSrcOrFallback(item),
+        openInNewWindow: false,
       };
     }
   };
@@ -245,10 +286,9 @@ const Dashboard: FC = () => {
       additionalText: assembleAdditionalText(item),
 
       to: getToUrlForArtifact(item.entityType, item.id),
-      imgSrc: item.imgSrc,
+      imgSrc: getImgSrcOrFallback(item),
     };
   };
-
 
   return (
     <div
