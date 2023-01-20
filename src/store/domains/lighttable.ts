@@ -22,6 +22,13 @@ import {
 import { UIArtifactKind as LighttableArtifactKind } from './ui';
 export { UIArtifactKind as LighttableArtifactKind } from './ui';
 
+const initialValues = {
+  pagination: {
+    size: 60,
+    from: 0,
+  },
+};
+
 export default class Lighttable implements LighttableStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
   providers: LighttableProviderInterface[] = [];
@@ -30,8 +37,8 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
   result: GlobalSearchResult | null = null;
   error: string | null = null;
   pagination = {
-    size: 60,
-    from: 0,
+    size: initialValues.pagination.size,
+    from: initialValues.pagination.from,
   };
 
   fetchDebounceWaitInMSecs: number = 500;
@@ -144,6 +151,10 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     this.pagination.size = size;
   }
 
+  resetSize() {
+    this.pagination = {...initialValues.pagination};
+  }
+
   setFrom(from: number) {
     this.pagination.from = from;
   }
@@ -244,6 +255,7 @@ export interface LighttableStoreInterface {
   jumpToPagePos(pagePos: number): void;
   setResultFetchingFailed(error: string | null): void;
   setSize(size: number): void;
+  resetSize(): void;
   setFrom(from: number): void;
   resetPagePos(): void;
   storeSearchResultInLocalStorage(key: string, result: GlobalSearchResult | null): void;

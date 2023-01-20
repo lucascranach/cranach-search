@@ -64,7 +64,14 @@ const Dashboard: FC = () => {
         <ArtefactOverview.Overview
           viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
           items={overviewItems}
-          handleArtefactAmountChange={ (amount: number) => lighttable.setSize(amount) }
+          handleArtefactNumberChange={ (amount: number) => {
+            lighttable.setSize(amount);
+            lighttable.fetch();
+          } }
+          resetArtefactNumber={ () => {
+            lighttable.resetSize();
+            lighttable.fetch();
+          } }
         />
         { lighttable.loading && <Cloak /> }
       </main>

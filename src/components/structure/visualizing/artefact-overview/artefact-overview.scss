@@ -2,21 +2,21 @@
 @import "../../../../style//000-abstracts/mixins";
 
 .artefact-overview {
-  align-content: flex-start;
   height: 100%;
+  align-content: flex-start;
   padding-bottom: $xxl;
 
   &--is-grid {
     display: grid;
     gap: $s;
 
-
     @include grid-auto-columns();
 
     &[data-active-view="card-small"] {
+      @include grid-auto-columns-small();
+
       column-gap: $xxs !important;
       row-gap: $xxs !important;
-      @include grid-auto-columns-small();
     }
 
     &[data-active-view="list"] {
@@ -29,10 +29,6 @@
       @include grid-even-columns($vp-xxlarge, 3);
       @include grid-even-columns($vp-4xlarge, 4);
     }
-  }
-
-  &--is-table {
-
   }
 
   &-switcher {

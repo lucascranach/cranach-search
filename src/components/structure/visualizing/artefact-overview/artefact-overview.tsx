@@ -42,7 +42,8 @@ export enum ArtefactOverviewType {
 type OverviewProps = {
   items?: ArtefactOverviewItem[],
   viewType?: ArtefactOverviewType,
-  handleArtefactAmountChange?: (amount: number) => void;
+  handleArtefactNumberChange?: (amount: number) => void;
+  resetArtefactNumber?: () => void;
 }
 
 const DefaultViewType = ArtefactOverviewType.CARD;
@@ -51,7 +52,8 @@ const maximumTitleLengthInWords = 10;
 const Overview: FC<OverviewProps> = ({
   items = [],
   viewType = DefaultViewType,
-  handleArtefactAmountChange = () => {},
+  handleArtefactNumberChange = () => {},
+  resetArtefactNumber = () => {},
 }) => {
   const { root: { collection, ui } } = useContext(StoreContext);
 
@@ -164,12 +166,11 @@ const Overview: FC<OverviewProps> = ({
     const tileSize = parseFloat(styles.getPropertyValue('--tile-fix'));
 
     const artefactOverviewDimensions = {
-      'width': elRef.clientWidth,
+      'width': elRef.clientWidth + 1,
       'height': elRef.clientHeight
     };
 
-    const safetyDistance = 1;
-    const rows = Math.floor(artefactOverviewDimensions.height / tileSize) - safetyDistance;
+    const rows = Math.floor(artefactOverviewDimensions.height / tileSize);
     const cols = Math.floor(artefactOverviewDimensions.width / tileSize);
 
     return cols * rows;
@@ -179,7 +180,7 @@ const Overview: FC<OverviewProps> = ({
     const element = artefactOverviewElRef.current;
     if (!element) return;
     const suitableAmountOfArtefacts = getSuitableAmountOfArtefacts(element);
-    handleArtefactAmountChange(suitableAmountOfArtefacts);
+    handleArtefactNumberChange(suitableAmountOfArtefacts);
   }
 
   const isFavorite = (id: string): boolean => {
@@ -251,6 +252,8 @@ const Overview: FC<OverviewProps> = ({
       window.addEventListener('resize', setFittedArtefactAmount);
 
       return () => window.removeEventListener('resize', setFittedArtefactAmount);
+    } else {
+      resetArtefactNumber();
     }
   }, [viewType, artefactOverviewElRef]);
 
