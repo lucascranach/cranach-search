@@ -8,7 +8,7 @@ import translations from './translations.json';
 import './secondary-navigation.scss';
 
 
-import StoreContext, { UIOverviewViewType, UISidebarContentType, UISidebarStatusType } from '../../../../store/StoreContext';
+import StoreContext, { UIArtifactKind, UIOverviewViewType, UISidebarContentType, UISidebarStatusType } from '../../../../store/StoreContext';
 
 
 const SecondaryNavigation = () => {
@@ -78,6 +78,7 @@ const SecondaryNavigation = () => {
             viewType={overviewViewTypeMap[ui.overviewViewType]}
             className="overview-switcher"
             handleChange={(type) => ui.setOverviewViewType(reverseOverviewViewTypeMap[type]) }
+            limitedToViews={ui.limitedToOverviews.map((currRestrictedOverview) => overviewViewTypeMap[currRestrictedOverview])}
           ></ArtefactOverview.Switcher>
 
           <Switcher className="lang-selector">
