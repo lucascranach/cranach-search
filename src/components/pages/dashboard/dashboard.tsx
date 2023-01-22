@@ -213,13 +213,34 @@ const Dashboard: FC = () => {
           enableFavorite: false,
         },
         head: [
-          { fieldName: 'referenceNumber', text: t('Signature'), options: { noWrap: true } },
-          { fieldName: 'author', text: t('Author/Editor') },
+          { fieldName: 'referenceNumber', text: t('Signature'), options: {
+            sort: lighttable.getSortingForFieldname('referenceNumber'),
+            noWrap: true,
+            noWrapHead: true,
+          }},
+          { fieldName: 'authors', text: t('Author/Editor'), options: {
+            sort: lighttable.getSortingForFieldname('authors'),
+            noWrapHead: true,
+          }},
 
-          { fieldName: 'publishLocation', text: t('Place of Publication') },
-          { fieldName: 'publishYear', text: t('Year') },
-          { fieldName: 'textCategory', text: t('Text Category'), options: { noWrap: true } },
-          { fieldName: 'title', text: t('Title'), options: { asInnerHTML: true } },
+          { fieldName: 'publishLocation', text: t('Place of Publication'), options: {
+            sort: lighttable.getSortingForFieldname('publishLocation'),
+            noWrapHead: true,
+          }},
+          { fieldName: 'publishDate', text: t('Year'), options: {
+            sort: lighttable.getSortingForFieldname('publishDate'),
+            noWrapHead: true,
+          }},
+          { fieldName: 'textCategory', text: t('Text Category'), options: {
+            sort: lighttable.getSortingForFieldname('textCategory'),
+            noWrap: true,
+            noWrapHead: true,
+          }},
+          { fieldName: 'title', text: t('Title'), options: {
+            sort: lighttable.getSortingForFieldname('title'),
+            asInnerHTML: true,
+            noWrapHead: true,
+          }},
         ],
         items: items.map((item) => ({
           id: item.id,
@@ -227,23 +248,11 @@ const Dashboard: FC = () => {
           imgSrc: getImgSrcOrFallback(item),
           imgAlt: '',
           referenceNumber: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.referenceNumber : '',
-          author: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.persons.map(person => person.name).join(', ') : '',
+          authors: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.authors : '',
           publishLocation : item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishLocation : '',
-          publishYear: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishYear : '',
+          publishDate: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishDate : '',
 
-          textCategory: ((item): string => {
-            if (item.kind !== ArtifactKind.LITERATURE_REFERENCE) return '';
-
-            if (item.journal) {
-              return t('Journal');
-            }
-
-            if (item.subtitle) {
-              return t('Article');
-            }
-
-            return t('Monography / Miscellany');
-          })(item),
+          textCategory: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.textCategory : '',
 
           title: item.title,
 
@@ -303,6 +312,20 @@ const Dashboard: FC = () => {
     };
   };
 
+  const getNextSortDirection = (sortDirection: 'asc' | 'desc' | null): 'asc' | 'desc' | null => {
+    if (!sortDirection) {
+      return 'asc';
+    } else if (sortDirection === 'asc') {
+      return 'desc';
+    } else {
+      return null;
+    }
+  };
+
+  const updateSortingForFieldname = (fieldName: string, direction: 'asc' | 'desc' | null): void => {
+    lighttable.setSortingForFieldname(fieldName, getNextSortDirection(direction));
+  };
+
   return (
     <div
       className="dashboard"
@@ -322,6 +345,7 @@ const Dashboard: FC = () => {
             ArtefactOverviewType.TABLE === viewType && (<ArtefactTable
               { ...tablePropsMapper(lighttable.flattenedResultItem, ui.artifactKind) }
               onFavoriteToggle={toggleFavorite}
+              onSortChange={updateSortingForFieldname}
             ></ArtefactTable>)
 
             ||

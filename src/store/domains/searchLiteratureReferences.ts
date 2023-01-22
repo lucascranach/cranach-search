@@ -201,6 +201,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
 
     return this.literatureReferencesSearchAPI.searchByFilters(
       updatedFilters,
+      this.lighttable.sorting,
       lang,
     ).then((response) => {
       if (response) {
@@ -231,6 +232,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
     };
     const responseForInArtefactNavigation = await this.literatureReferencesSearchAPI.searchByFilters(
       extendedFilters,
+      this.lighttable.sorting,
       lang,
     );
     this.lighttable.storeSearchResultInLocalStorage('searchResult:literatureReferences', responseForInArtefactNavigation?.result ?? null);

@@ -2,10 +2,10 @@
 import { makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import {
-    ArtifactKind,
   EntityType,
   GlobalSearchArtifact,
   GlobalSearchResult,
+  SortingItem,
 } from '../../api/types';
 export { EntityType } from '../../api/types';
 export type {
@@ -34,6 +34,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     size: 60,
     from: 0,
   };
+  sorting: SortingItem[] = [];
 
   fetchDebounceWaitInMSecs: number = 500;
   fetchDebounceHandler: undefined | number = undefined;
@@ -117,6 +118,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
   reset() {
     this.resetPagePos();
+    this.resetSorting();
   }
 
   registerProvider(provider: LighttableProviderInterface) {
@@ -169,6 +171,10 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
             case 'page':
               this.handleRoutingNotificationForPage(value);
               break;
+
+            case 'sort':
+              this.handleRoutingNotificationForSort(value);
+              break;
           }
         });
         break;
@@ -195,6 +201,25 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     this.updatePagePos(0);
   }
 
+  setSortingForFieldname(fieldName: string, direction: 'asc' | 'desc' | null) {
+    this.sorting = (direction !== null) ? [{ fieldName, direction }] : [];
+
+    this.updateRoutingForSorting();
+    this.fetch();
+  }
+
+  getSortingForFieldname(fieldName: string): 'asc' | 'desc' | null {
+    const foundExistingSortingField = this.sorting.find((currSortingField) => currSortingField.fieldName === fieldName);
+
+    if (foundExistingSortingField) return foundExistingSortingField.direction;
+
+    return null;
+  }
+
+  resetSorting() {
+    this.sorting = [];
+  }
+
   private updateRoutingForPage() {
     const page = this.currentResultPagePos + 1;
     this.rootStore.routing.updateSearchQueryParams([[RoutingChangeAction.ADD, ['page', page.toString()]]]);
@@ -212,6 +237,35 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     this.fetch();
   }
 
+  private updateRoutingForSorting() {
+    const sortValue = this.sorting.map(({fieldName, direction}) => `${fieldName}:${direction}`).join(',');
+    if (this.sorting.length > 0) {
+      this.rootStore.routing.updateSearchQueryParams([
+        [RoutingChangeAction.ADD, [ 'sort', sortValue ]],
+      ]);
+    } else {
+      this.rootStore.routing.updateSearchQueryParams([
+        [RoutingChangeAction.REMOVE, [ 'sort', '']],
+      ]);
+    }
+  }
+
+  private handleRoutingNotificationForSort(value: string) {
+    this.sorting = value.split(',').reduce<SortingItem[]>((acc, singleValue) => {
+      const [fieldName = '', direction = ''] = singleValue.split(':');
+      const cleanFieldName = fieldName.trim();
+      const cleanDirection = direction.trim();
+
+      if (cleanFieldName.length > 0 && cleanDirection.length > 0 && (cleanDirection === 'asc' || cleanDirection === 'desc')) {
+        acc.push({
+          fieldName: cleanFieldName,
+          direction: cleanDirection,
+        });
+      }
+
+      return acc;
+    }, []);
+  }
 }
 
 export interface LighttableProviderInterface {
@@ -229,6 +283,7 @@ export interface LighttableStoreInterface {
     size: number;
     from: number;
   };
+  sorting: SortingItem[];
   flattenedResultItem: GlobalSearchArtifact[];
   currentResultPagePos: number;
   maxResultPages: number;
@@ -247,5 +302,8 @@ export interface LighttableStoreInterface {
   setSize(size: number): void;
   setFrom(from: number): void;
   resetPagePos(): void;
+  setSortingForFieldname(fieldName: string, direction: 'asc' | 'desc' | null): void;
+  getSortingForFieldname(fieldName: string): 'asc' | 'desc' | null;
+  resetSorting(): void;
   storeSearchResultInLocalStorage(key: string, result: GlobalSearchResult | null): void;
 }

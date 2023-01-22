@@ -60,3 +60,9 @@ export interface GlobalSearchResponse {
     single: GlobalSearchFilterItem[];
   };
 }
+
+export interface SortingItem {
+  fieldName: string;
+  direction: 'asc' | 'desc'
+};
+
