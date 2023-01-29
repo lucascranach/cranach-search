@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import SearchWorks from '../search-works';
 import SearchArchivals from '../search-archivals';
+import SearchLiteratureReferences from '../search-literature-references';
 
 import StoreContext, {
   UIArtifactKind,
@@ -13,11 +14,13 @@ const Search: FC = () => {
 
   const worksArtifactKinds = new Set([UIArtifactKind.WORKS, UIArtifactKind.PAINTINGS]);
   const archivalsArtifactKinds = new Set([UIArtifactKind.ARCHIVALS]);
+  const literatureReferencesArtifactKinds = new Set([UIArtifactKind.LITERATURE_REFERENCES]);
 
   return (
     <Fragment>
       { worksArtifactKinds.has(ui.artifactKind) && <SearchWorks /> }
       { archivalsArtifactKinds.has(ui.artifactKind) && <SearchArchivals /> }
+      { literatureReferencesArtifactKinds.has(ui.artifactKind) && <SearchLiteratureReferences /> }
     </Fragment>
   );
 };

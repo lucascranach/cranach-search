@@ -34,6 +34,7 @@ const assembleResultData = (resultset: any): GlobalSearchResponse => {
 
 const getQueryStringForFilters = (
   filters: LiteratureReferencesAPIFilterType,
+  freetextFields: LiteratureReferencesAPIFreetextFieldsType,
   sorting: SortingItem[],
   langCode: string
 ): string => {
@@ -53,6 +54,26 @@ const getQueryStringForFilters = (
     params['entity_type:eq'] = Array.from(filters.entityTypes).join(',');
   }
 
+  const cleanAllFieldsTerm = freetextFields.allFieldsTerm.trim();
+  if (cleanAllFieldsTerm !== '') {
+    params['searchterm'] = cleanAllFieldsTerm;
+  }
+
+  const cleanAuthors = freetextFields.authors.trim();
+  if (cleanAuthors) {
+    params['authors:sim'] = cleanAuthors;
+  }
+
+  const cleanSignature = freetextFields.signature.trim();
+  if (cleanSignature) {
+    params['reference_number:sim'] = cleanSignature;
+  }
+
+  const cleanYear = freetextFields.year.trim();
+  if (cleanYear) {
+    params['publish_date:sim'] = cleanYear;
+  }
+
   if (sorting.length > 0) {
     params['sort_by'] = sorting
       .map(({fieldName, direction}) => `${sortingFieldnameMapping[fieldName] || fieldName}.${direction}`)
@@ -68,11 +89,13 @@ const getQueryStringForFilters = (
 
 const searchByFilters = async (
   filters: LiteratureReferencesAPIFilterType,
+  freetextFields: LiteratureReferencesAPIFreetextFieldsType,
   sorting: SortingItem[],
   langCode: string
 ): Promise<GlobalSearchResponse | null> => {
   const queryParams = getQueryStringForFilters(
     filters,
+    freetextFields,
     sorting,
     langCode,
   );
@@ -160,4 +183,11 @@ export interface LiteratureReferencesAPIFilterType {
   from: number,
   entityTypes: Set<EntityType>,
   filterGroups: Map<string, Set<string>>,
+};
+
+export interface LiteratureReferencesAPIFreetextFieldsType {
+  allFieldsTerm: string,
+  authors: string,
+  signature: string,
+  year: string,
 };
