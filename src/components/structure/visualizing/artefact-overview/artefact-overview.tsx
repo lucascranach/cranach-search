@@ -1,12 +1,7 @@
-import React, { FC, useRef, useEffect, ReactNode } from 'react';
+import React, { FC, useRef, useEffect } from 'react';
 import Switcher from '../../../base/interacting/switcher';
 
 import './artefact-overview.scss';
-
-export type ArtefactOverviewItem = {
-  id: string;
-  searchSortingNumber: string;
-};
 
 export enum ArtefactOverviewType {
   CARD = 'card',
