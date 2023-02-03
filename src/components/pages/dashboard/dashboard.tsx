@@ -51,9 +51,14 @@ const Dashboard: FC = () => {
     }
   };
 
-  const getToUrlForArtifact = (_: EntityType, id: string): string => {
+  const getToUrlForArtifact = (entityType: EntityType, id: string): string => {
     const cdaArtefactUrlPattern = import.meta.env.VITE_CDA_ARTEFACT_URL as string;
-    return cdaArtefactUrlPattern.replace('{{lang}}', ui.lang).replace('{{id}}', id);
+
+    const artefactId = entityType === EntityType.LITERATURE_REFERENCE
+      ? `literature-${id}`
+      : id;
+
+    return cdaArtefactUrlPattern.replace('{{lang}}', ui.lang).replace('{{id}}', artefactId);
   };
 
   const mapSelectedOverviewViewType = (type: UIOverviewViewType): ArtefactOverviewType => ({
@@ -217,6 +222,7 @@ const Dashboard: FC = () => {
             sort: lighttable.getSortingForFieldname('referenceNumber'),
             noWrap: true,
             noWrapHead: true,
+            linkify: true,
           }},
           { fieldName: 'authors', text: t('Author/Editor'), options: {
             sort: lighttable.getSortingForFieldname('authors'),
