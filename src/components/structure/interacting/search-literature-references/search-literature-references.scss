@@ -1,0 +1,158 @@
+@import "../../../../style/000-abstracts/__abstracts-dir";
+
+.search-literature-references {
+  display: none;
+  width: $sidebar-width;
+  padding: $s + $s + $s $m $xxl $m;
+
+  &--is-active {
+    display: block;
+  }
+
+  &-button {
+    position: relative;
+    z-index: $level-content-nav;
+  }
+
+  & > .block {
+    padding: 0;
+
+    & + .block {
+      margin-top: $xl;
+    }
+
+    > .search-input {
+      margin-bottom: $m;
+
+      & + .search-input {
+        margin-top: $s;
+      }
+    }
+
+    .dating-field {
+      display: inline-block;
+    }
+
+    .cell-row {
+      display: flex;
+      margin-right: 2rem;
+
+      .cell {
+        margin: 0 0.5rem;
+      }
+    }
+  }
+
+  .search-title {
+    margin-bottom: $l;
+  }
+
+  .reset-filters {
+    margin-left: $l;
+    cursor: pointer;
+  }
+
+  .single-filter {
+    margin-bottom: $m;
+  }
+
+  .search-result-info {
+    margin-bottom: $l;
+    margin-left: -$s;
+    font-weight: $fw-semibold;
+
+    p {
+      line-height: normal;
+    }
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .filter-info-item {
+    display: flex;
+
+    &__inactive {
+      filter: grayscale(100%);
+      opacity: $op-medium;
+    }
+
+    &__name {
+      margin-left: $xs;
+      line-height: $m;
+    }
+  }
+
+  .advanced-search-toggle {
+    z-index: $level-content;
+    height: 0;
+    margin-top: $m;
+    opacity: $op-medium;
+
+    .head .entry-title {
+      padding-top: 0;
+      text-align: right;
+    }
+
+    &.-open {
+      height: auto;
+      padding-bottom: $l;
+      opacity: 1;
+
+      .head .entry-title {
+        font-weight: $fw-semibold;
+        text-align: left;
+      }
+    }
+
+    .box {
+      padding: 0;
+    }
+  }
+
+  .sticky-panel {
+    position: fixed;
+    z-index: $level-overall-nav;
+    right: 0;
+    bottom: 0;
+    width: $sidebar-width;
+    padding: 0 $m $m $m;
+    background-color: $lightest;
+
+    .reset-button {
+      height: $l;
+      padding: 0 $s;
+      background-color: $light;
+      color: $darkest;
+      font-weight: $fw-light;
+      transition: background-color $tr-fast, color $tr-fast;
+
+      &:hover {
+        background-color: $accent;
+        color: $lightest;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: $vp-medium) {
+  .search {
+    width: auto;
+    padding: $s $m $l $m;
+
+    .logo {
+      display: block;
+      margin-bottom: $s;
+      font-size: $l;
+    }
+
+    .sticky-panel {
+      position: static;
+      right: inherit;
+      bottom: inherit;
+      width: 100%;
+      padding: $m 0 $s 0;
+    }
+  }
+}

@@ -73,12 +73,14 @@ type SwitcherProps = {
   viewType?: ArtefactOverviewType,
   handleChange?: (view: ArtefactOverviewType) => void,
   className?: string,
+  limitedToViews?: ArtefactOverviewType[],
 }
 
 const OverviewSwitcher: FC<SwitcherProps> = ({
   viewType = DefaultViewType,
   handleChange = () => { },
   className = '',
+  limitedToViews = [],
 }) => {
 
   const allViewEntries = [
@@ -100,18 +102,25 @@ const OverviewSwitcher: FC<SwitcherProps> = ({
     },
   ];
 
+  const inLimitMode = limitedToViews.length > 0;
+
   return (<Switcher className={`artefact-overview-switcher ${className}`} >
-    {allViewEntries.map(({ type, icon }) => (
-      <Switcher.Item
+    {allViewEntries.map(({ type, icon }) => {
+      const isSelected = type === viewType;
+      const notLimited = inLimitMode && !limitedToViews.includes(type);
+      const isDisabled = isSelected || notLimited;
+
+      return (<Switcher.Item
         key={type}
       >
         <i
-          className={`icon artefact-overview-switcher-item-icon ${(type === viewType) ? 'is-active' : ''}`}
+          className={`icon artefact-overview-switcher-item-icon ${isDisabled ? 'is-disabled' : ''}`}
           data-icon={icon}
-          onClick={() => handleChange(type)}
+          onClick={() => { if (!isDisabled) handleChange(type) }}
         ></i>
-      </Switcher.Item>
-    ))}
+      </Switcher.Item>);
+    })
+  }
   </Switcher>);
 };
 

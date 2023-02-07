@@ -59,9 +59,31 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       () => this.lang,
       () => this.rootStore.lighttable.fetch(),
     );
+
+    // by limiting literature-references to the table overview type,
+    //  we also need to select that overview type when the artifact
+    //  kind changes to literature-references
+    reaction(
+      () => this.artifactKind,
+      () => {
+        if (this.artifactKind === UIArtifactKind.LITERATURE_REFERENCES) {
+          this.setOverviewViewType(UIOverviewViewType.TABLE);
+        }
+      }
+    )
   }
 
   /* Computed values */
+
+  get limitedToOverviews(): UIOverviewViewType[] {
+    // We want to restrict the OverviewType to table,
+    //  when the literature-references artifact is selected by the user
+    if (this.artifactKind === UIArtifactKind.LITERATURE_REFERENCES) {
+      return [UIOverviewViewType.TABLE];
+    }
+
+    return [];
+  }
 
   get leftInitialViewArea(): boolean {
     return this.scrollPosition.top > this.viewportDimensions.height;
@@ -379,6 +401,7 @@ export interface UIStoreInterface {
   sidebarContent: UISidebarContentType;
   sidebarStatus: UISidebarStatusType;
   overviewViewType: UIOverviewViewType;
+  limitedToOverviews: UIOverviewViewType[];
   secondaryNavigationIsVisible: boolean;
   additionalSearchInputsVisible: boolean;
   allowedLangs: Record<string, string>;

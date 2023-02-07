@@ -46,6 +46,9 @@ export type FilterType = {
 
 const createInitialFreeTexts = (): FreeTextFields => ({
   allFieldsTerm: '',
+  authors: '',
+  signature: '',
+  year: '',
 });
 
 const createInitialFilters = (): FilterType => ({
@@ -201,6 +204,8 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
 
     return this.literatureReferencesSearchAPI.searchByFilters(
       updatedFilters,
+      this.freetextFields,
+      this.lighttable.sorting,
       lang,
     ).then((response) => {
       if (response) {
@@ -231,6 +236,8 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
     };
     const responseForInArtefactNavigation = await this.literatureReferencesSearchAPI.searchByFilters(
       extendedFilters,
+      this.freetextFields,
+      this.lighttable.sorting,
       lang,
     );
     this.lighttable.storeSearchResultInLocalStorage('searchResult:literatureReferences', responseForInArtefactNavigation?.result ?? null);
@@ -252,6 +259,9 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
               break;
 
             case 'search_term':
+            case 'authors':
+            case 'signature':
+            case 'year':
               this.handleRoutingNotificationForFreetext(name, value);
               break;
           }
@@ -357,6 +367,18 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
       case 'search_term':
         this.freetextFields.allFieldsTerm = value;
         break;
+
+      case 'authors':
+        this.freetextFields.authors = value;
+        break;
+
+      case 'signature':
+        this.freetextFields.signature = value;
+        break;
+
+      case 'year':
+        this.freetextFields.year = value;
+        break;
     }
   }
 
@@ -368,6 +390,9 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
 
 export interface FreeTextFields {
   allFieldsTerm: string;
+  authors: string;
+  signature: string;
+  year: string;
 }
 
 export interface SearchLiteratureReferencesStoreInterface {

@@ -1,15 +1,23 @@
 
 import {
   EntityType,
-  GlobalSearchArtifact,
   GlobalSearchResponse,
   ArtifactKind,
+  SortingItem,
 } from './types';
 
 import {
   querify,
   apiConfiguration,
 } from './utils';
+
+const sortingFieldnameMapping: Record<string, string> = {
+  'referenceNumber': 'reference_number',
+  'authors': 'authors',
+  'publishLocation': 'publish_location',
+  'publishDate': 'publish_date',
+  'textCategory': 'text_category',
+};
 
 const assembleResultData = (resultset: any): GlobalSearchResponse => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
@@ -26,6 +34,8 @@ const assembleResultData = (resultset: any): GlobalSearchResponse => {
 
 const getQueryStringForFilters = (
   filters: LiteratureReferencesAPIFilterType,
+  freetextFields: LiteratureReferencesAPIFreetextFieldsType,
+  sorting: SortingItem[],
   langCode: string
 ): string => {
   const params: Record<string, string | number> = {
@@ -44,18 +54,49 @@ const getQueryStringForFilters = (
     params['entity_type:eq'] = Array.from(filters.entityTypes).join(',');
   }
 
-  // Sorting literature references by reference number
-  params['sort_by'] = 'reference_number.asc';
+  const cleanAllFieldsTerm = freetextFields.allFieldsTerm.trim();
+  if (cleanAllFieldsTerm !== '') {
+    params['searchterm'] = cleanAllFieldsTerm;
+  }
+
+  const cleanAuthors = freetextFields.authors.trim();
+  if (cleanAuthors) {
+    params['authors:sim'] = cleanAuthors;
+  }
+
+  const cleanSignature = freetextFields.signature.trim();
+  if (cleanSignature) {
+    params['reference_number:sim'] = cleanSignature;
+  }
+
+  const cleanYear = freetextFields.year.trim();
+  if (cleanYear) {
+    params['publish_date:sim'] = cleanYear;
+  }
+
+  if (sorting.length > 0) {
+    params['sort_by'] = sorting
+      .map(({fieldName, direction}) => `${sortingFieldnameMapping[fieldName] || fieldName}.${direction}`)
+      .join(',');
+  } else {
+    // Sorting literature references by reference number by default
+    params['sort_by'] = 'reference_number.asc';
+
+  }
 
   return querify(params);
 };
 
 const searchByFilters = async (
   filters: LiteratureReferencesAPIFilterType,
+  freetextFields: LiteratureReferencesAPIFreetextFieldsType,
+  sorting: SortingItem[],
   langCode: string
 ): Promise<GlobalSearchResponse | null> => {
   const queryParams = getQueryStringForFilters(
     filters,
+    freetextFields,
+    sorting,
     langCode,
   );
 
@@ -104,11 +145,13 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
     title: item.title,
     subtitle: item.subtitle,
     journal: item.journal,
+    textCategory: item.text_category,
     date: item.dating,
     referenceNumber: item.reference_number,
     persons: item.persons,
+    authors: item.authors,
     publishLocation: item.publish_location,
-    publishYear: item.publish_date,
+    publishDate: item.publish_date,
     searchSortingNumber: item.searchSortingNumber,
   };
 };
@@ -120,11 +163,13 @@ export interface LiteratureReferenceSearchArtifact {
   title: string;
   subtitle: string;
   journal: string;
+  textCategory: string;
   date: string;
   referenceNumber: string;
   persons: { role: string, name: string }[],
+  authors: string,
   publishLocation: string,
-  publishYear: string,
+  publishDate: string,
   searchSortingNumber: string;
   _highlight?: Record<string, Array<string>>;
 }
@@ -138,4 +183,11 @@ export interface LiteratureReferencesAPIFilterType {
   from: number,
   entityTypes: Set<EntityType>,
   filterGroups: Map<string, Set<string>>,
+};
+
+export interface LiteratureReferencesAPIFreetextFieldsType {
+  allFieldsTerm: string,
+  authors: string,
+  signature: string,
+  year: string,
 };
