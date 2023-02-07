@@ -1,0 +1,21 @@
+{
+  "de": {
+    "Title": "Titel",
+    "Medium": "Medium",
+    "Artist": "Künstler",
+    "Repository": "Besitzer",
+    "Date": "Datum",
+    "Summary": "Zusammenfassung",
+
+    "Signature": "Kürzel",
+    "Author/Editor": "Autor/In / Herausgeber/In",
+    "Place of Publication": "Ort der Veröffentlichung",
+    "Year": "Jahr",
+    "Text Category": "Textart",
+    "Title": "Titel",
+
+    "Journal": "Zeitschrift",
+    "Article": "Aufsatz",
+    "Monography / Miscellany": "Monographie / Sammelband"
+  }
+}

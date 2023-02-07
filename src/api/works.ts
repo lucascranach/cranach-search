@@ -4,6 +4,7 @@ import {
   GlobalSearchFilterItem,
   GlobalSearchArtifact,
   GlobalSearchResponse,
+  ArtifactKind,
 } from './types';
 
 import {
@@ -195,8 +196,9 @@ export default {
   searchByFiltersAndTerm,
 };
 
-export const toArtefact = (item: any): GlobalSearchArtifact => {
+export const toArtefact = (item: any): WorkSearchArtifact => {
   return {
+    kind: ArtifactKind.WORK,
     id: item.inventory_number,
     entityType: item.entity_type,
     title: item.title,
@@ -216,7 +218,27 @@ export const toArtefact = (item: any): GlobalSearchArtifact => {
   }
 };
 
-export type WorksAPIFilterType = {
+export interface WorkSearchArtifact {
+  kind: ArtifactKind.WORK,
+  id: string;
+  objectName: string;
+  entityType: EntityType,
+  title: string;
+  inventor: string;
+  artist: string;
+  repository: string;
+  owner: string;
+  date: string;
+  dimensions: string;
+  classification: string;
+  printProcess: string;
+  imgSrc: string;
+  medium: string;
+  searchSortingNumber: string,
+  _highlight?: Record<string, Array<string>>;
+}
+
+export interface WorksAPIFilterType {
   dating: {
     fromYear: number,
     toYear: number,
@@ -229,7 +251,7 @@ export type WorksAPIFilterType = {
 };
 
 
-export type WorksAPIFreetextFieldsType = {
+export interface WorksAPIFreetextFieldsType {
   allFieldsTerm: string,
   title: string,
   FRNr: string,

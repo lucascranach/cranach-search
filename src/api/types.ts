@@ -1,12 +1,22 @@
+import { ArchivalSearchArtifact } from "./archivals";
+import { WorkSearchArtifact } from "./works";
+import { LiteratureReferenceSearchArtifact } from "./literature-references";
+
 export enum EntityType {
-  PAINTINGS = 'PAINTING',
-  GRAPHICS = 'GRAPHIC',
-  ARCHIVALS = 'ARCHIVAL',
-  DOCUMENTS = 'DOCUMENT',
+  PAINTING = 'PAINTING',
+  GRAPHIC = 'GRAPHIC',
+  ARCHIVAL = 'ARCHIVAL',
+  LITERATURE_REFERENCE = 'LITERATURE_REFERENCE',
   UNKNOWN = 'UNKNOWN',
 };
 
-export type APIFilterType = {
+export enum ArtifactKind {
+  WORK = 'WORK',
+  ARCHIVAL = 'ARCHIVAL',
+  LITERATURE_REFERENCE = 'LITERATURE_REFERENCE',
+};
+
+export interface APIFilterType {
   dating: {
     fromYear: number,
     toYear: number,
@@ -18,26 +28,10 @@ export type APIFilterType = {
   isBestOf: boolean,
 };
 
-export type GlobalSearchArtifact = {
-  id: string;
-  objectName: string;
-  entityType: EntityType,
-  title: string;
-  inventor: string;
-  artist: string;
-  repository: string;
-  owner: string;
-  date: string;
-  dimensions: string;
-  classification: string;
-  printProcess: string;
-  imgSrc: string;
-  medium: string;
-  searchSortingNumber: string,
-  _highlight?: Record<string, Array<string>>;
-}
+export type GlobalSearchArtifact =
+  WorkSearchArtifact | ArchivalSearchArtifact | LiteratureReferenceSearchArtifact;
 
-export type GlobalSearchFilterItem = {
+export interface GlobalSearchFilterItem {
   id: string;
   text: string;
   doc_count: number;
@@ -45,20 +39,20 @@ export type GlobalSearchFilterItem = {
   children: GlobalSearchFilterItem[];
 }
 
-export type GlobalSearchFilterGroupItem = {
+export interface GlobalSearchFilterGroupItem {
   key: string,
   text: string;
   children: GlobalSearchFilterItem[];
 }
 
-export type GlobalSearchResult = {
+export interface GlobalSearchResult {
   items: GlobalSearchArtifact[];
   meta: {
     hits: number;
   };
 }
 
-export type GlobalSearchResponse = {
+export interface GlobalSearchResponse {
   result: GlobalSearchResult;
   filters: {
     groups: GlobalSearchFilterGroupItem[];

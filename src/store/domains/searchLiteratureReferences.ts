@@ -1,8 +1,8 @@
 
 import { makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
-import ArchivalsSearchAPI_ from '../../api/archivals';
-import { ArtifactKind, GlobalSearchResult } from '../../api/types';
+import LiteratureReferencesSearchAPI_ from '../../api/literature-references';
+import { GlobalSearchResult } from '../../api/types';
 import type {
   GlobalSearchFilterGroupItem as FilterGroupItem,
   GlobalSearchFilterItem as FilterItem,
@@ -23,10 +23,10 @@ import {
 } from './lighttable';
 
 const MIN_LOWER_DATING_YEAR = 1470;
-const MAX_UPPER_DATING_YEAR = 1601;
-const THRESOLD_UPPER_DATING_YEAR = 1600;
+const MAX_UPPER_DATING_YEAR = (new Date()).getFullYear() + 1;
+const THRESOLD_UPPER_DATING_YEAR = (new Date()).getFullYear();
 
-type ArchivalsSearchAPI = typeof ArchivalsSearchAPI_;
+type LiteratureReferencesSearchAPI = typeof LiteratureReferencesSearchAPI_;
 
 interface SearchArchivalsFilters {
   groups: FilterGroupItem[];
@@ -57,10 +57,10 @@ const createInitialFilters = (): FilterType => ({
 });
 
 
-export default class SearchArchivals implements SearchArchivalsStoreInterface, RoutingObservableInterface, LighttableProviderInterface {
+export default class SearchLiteratureReferences implements SearchLiteratureReferencesStoreInterface, RoutingObservableInterface, LighttableProviderInterface {
   rootStore: RootStoreInterface;
   lighttable: LighttableStoreInterface;
-  archivalsSearchAPI: ArchivalsSearchAPI;
+  literatureReferencesSearchAPI: LiteratureReferencesSearchAPI;
 
   datingRangeBounds: [number, number] = DATING_RANGE_TOTAL_BOUNDS;
   freetextFields: FreeTextFields = createInitialFreeTexts();
@@ -71,12 +71,12 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
     single: [],
   };
 
-  constructor(rootStore: RootStoreInterface, archivalsSearchAPI: ArchivalsSearchAPI) {
+  constructor(rootStore: RootStoreInterface, literatureReferencesSearchAPI: LiteratureReferencesSearchAPI) {
     makeAutoObservable(this);
 
     this.rootStore = rootStore;
     this.lighttable = rootStore.lighttable;
-    this.archivalsSearchAPI = archivalsSearchAPI;
+    this.literatureReferencesSearchAPI = literatureReferencesSearchAPI;
 
     this.rootStore.routing.addObserver(this);
     // SearchWorks is a lightable provider (pushes search results to the lighttable);
@@ -199,7 +199,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
       entityTypes: this.rootStore.lighttable.entityTypes,
     };
 
-    return this.archivalsSearchAPI.searchByFilters(
+    return this.literatureReferencesSearchAPI.searchByFilters(
       updatedFilters,
       lang,
     ).then((response) => {
@@ -217,7 +217,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
   }
 
   supportsArtifactKind(artifactKind: LighttableArtifactKind) {
-    const supportedArtifactKinds = new Set([LighttableArtifactKind.ARCHIVALS]);
+    const supportedArtifactKinds = new Set([LighttableArtifactKind.LITERATURE_REFERENCES]);
 
     return supportedArtifactKinds.has(artifactKind);
   }
@@ -229,11 +229,11 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
       from: this.lighttable.pagination.from,
       entityTypes: this.rootStore.lighttable.entityTypes,
     };
-    const responseForInArtefactNavigation = await this.archivalsSearchAPI.searchByFilters(
+    const responseForInArtefactNavigation = await this.literatureReferencesSearchAPI.searchByFilters(
       extendedFilters,
       lang,
     );
-    this.lighttable.storeSearchResultInLocalStorage('searchResult:archivals', responseForInArtefactNavigation?.result ?? null);
+    this.lighttable.storeSearchResultInLocalStorage('searchResult:literatureReferences', responseForInArtefactNavigation?.result ?? null);
   }
 
   notify(notification: RoutingNotificationInterface) {
@@ -370,7 +370,7 @@ export interface FreeTextFields {
   allFieldsTerm: string;
 }
 
-export interface SearchArchivalsStoreInterface {
+export interface SearchLiteratureReferencesStoreInterface {
   datingRangeBounds: [number, number];
   freetextFields: FreeTextFields
   selectedFilters: FilterType;

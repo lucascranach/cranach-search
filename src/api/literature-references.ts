@@ -1,10 +1,9 @@
 
 import {
   EntityType,
-  ArtifactKind,
+  GlobalSearchArtifact,
   GlobalSearchResponse,
-  GlobalSearchFilterItem,
-  GlobalSearchFilterGroupItem,
+  ArtifactKind,
 } from './types';
 
 import {
@@ -12,42 +11,21 @@ import {
   apiConfiguration,
 } from './utils';
 
-const mapFilterFlatGroupsItem = (filter: any): GlobalSearchFilterItem => {
-  return {
-    id: filter.value,
-    text: filter.display_value,
-    doc_count: filter.doc_count,
-    is_available: filter.is_available,
-    children: [],
-  };
-};
-
-const mapFilterFlatGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
-  return [
-    'institution',
-  ].map((filterName) => ({
-    key: filterName,
-    text: filterName,
-    children: (filters[filterName].values || []).map(mapFilterFlatGroupsItem),
-  }));
-};
-
 const assembleResultData = (resultset: any): GlobalSearchResponse => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
-  const filterFlatGroups = mapFilterFlatGroups(resultset.data.filters);
   const meta = resultset.data.meta;
   return {
     result: { items, meta },
     filters: {
       groups: [],
-      flatGroups: filterFlatGroups,
+      flatGroups: [],
       single: [],
     },
   };
 }
 
 const getQueryStringForFilters = (
-  filters: ArchivalsAPIFilterType,
+  filters: LiteratureReferencesAPIFilterType,
   langCode: string
 ): string => {
   const params: Record<string, string | number> = {
@@ -62,30 +40,18 @@ const getQueryStringForFilters = (
     params['from'] = filters.from;
   }
 
-  if (filters.dating.fromYear) {
-    params['dating_begin:gte'] = filters.dating.fromYear;
-  }
-
-  if (filters.dating.toYear) {
-    params['dating_end:lte'] = filters.dating.toYear;
-  }
-
   if (!filters.entityTypes.has(EntityType.UNKNOWN)) {
     params['entity_type:eq'] = Array.from(filters.entityTypes).join(',');
   }
 
-  if (filters.filterGroups.has('institution')) {
-    const repositoryValues = Array.from(filters.filterGroups.get('institution') || []);
-    if (repositoryValues.length) {
-      params['institution:eq'] = repositoryValues.join(',');
-    }
-  }
+  // Sorting literature references by reference number
+  params['sort_by'] = 'reference_number.asc';
 
   return querify(params);
 };
 
 const searchByFilters = async (
-  filters: ArchivalsAPIFilterType,
+  filters: LiteratureReferencesAPIFilterType,
   langCode: string
 ): Promise<GlobalSearchResponse | null> => {
   const queryParams = getQueryStringForFilters(
@@ -112,7 +78,7 @@ const executeQuery = async (
 
   try {
     const resp = await fetch(
-      `${host}/archivals?${queryParams}`,
+      `${host}/literature_references?${queryParams}`,
       { method: 'GET', headers: headers },
     );
     const bodyJSON = await resp.json();
@@ -130,41 +96,40 @@ export default {
   searchByFilters,
 };
 
-export const toArtefact = (item: any): ArchivalSearchArtifact => {
+export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
   return {
-    kind: ArtifactKind.ARCHIVAL,
-    id: item.inventory_number,
-    entityType: EntityType.ARCHIVAL,
+    kind: ArtifactKind.LITERATURE_REFERENCE,
+    id: item.reference_id,
+    entityType: item.entity_type,
     title: item.title,
+    subtitle: item.subtitle,
+    journal: item.journal,
     date: item.dating,
-    repository: item.repository,
-    owner: item.owner,
-    classification: item.classification,
-    dimensions: item.dimensions,
-    objectName: item.object_name,
-    imgSrc: item.img_src,
-    searchSortingNumber: item.search_sorting_number,
-    _highlight: item._highlight,
-  }
+    referenceNumber: item.reference_number,
+    persons: item.persons,
+    publishLocation: item.publish_location,
+    publishYear: item.publish_date,
+    searchSortingNumber: item.searchSortingNumber,
+  };
 };
 
-export interface ArchivalSearchArtifact {
-  kind: ArtifactKind.ARCHIVAL;
-  id: string,
-  title: string,
+export interface LiteratureReferenceSearchArtifact {
+  kind: ArtifactKind.LITERATURE_REFERENCE;
+  id: string;
   entityType: EntityType;
-  date: string,
-  repository: string,
-  owner: string,
-  classification: string,
-  dimensions: string,
-  objectName: string,
-  imgSrc: string,
-  searchSortingNumber: string,
+  title: string;
+  subtitle: string;
+  journal: string;
+  date: string;
+  referenceNumber: string;
+  persons: { role: string, name: string }[],
+  publishLocation: string,
+  publishYear: string,
+  searchSortingNumber: string;
   _highlight?: Record<string, Array<string>>;
 }
 
-export interface ArchivalsAPIFilterType {
+export interface LiteratureReferencesAPIFilterType {
   dating: {
     fromYear: number,
     toYear: number,

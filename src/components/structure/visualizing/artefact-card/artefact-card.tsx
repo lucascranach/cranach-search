@@ -4,7 +4,7 @@ import Image from '../../../base/visualizing/image';
 
 import './artefact-card.scss';
 
-type Props = {
+export type Props = {
   id?: string,
   title?: string,
   subtitle?: string,

@@ -1,6 +1,6 @@
 
 import { makeAutoObservable } from 'mobx';
-import { EntityType } from '../../api/types';
+import { ArtifactKind, EntityType } from '../../api/types';
 import { RootStoreInterface } from '../rootStore';
 import CollectionAPI_ from '../../api/collection';
 
@@ -46,7 +46,7 @@ export default class Collection implements CollectionStoreInterface {
 
     const mappedItem: CollectionItem = {
       inventoryNumber: matchingItem.id,
-      objectName: matchingItem.objectName,
+      objectName: 'objectName' in matchingItem ? matchingItem.objectName : '',
       entityType: matchingItem.entityType,
       collectedAtTimestamp: (new Date()).toISOString(),
     };

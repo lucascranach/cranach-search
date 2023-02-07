@@ -2,6 +2,7 @@
 import { makeAutoObservable } from 'mobx';
 import type { RootStoreInterface } from '../rootStore';
 import {
+    ArtifactKind,
   EntityType,
   GlobalSearchArtifact,
   GlobalSearchResult,
@@ -62,9 +63,9 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
   get entityTypes(): Set<EntityType> {
     const artifactKindToEntityTypeMap: Record<LighttableArtifactKind, EntityType[]> = {
-      [LighttableArtifactKind.WORKS]: [EntityType.PAINTINGS, EntityType.GRAPHICS],
-      [LighttableArtifactKind.PAINTINGS]: [EntityType.PAINTINGS],
-      [LighttableArtifactKind.ARCHIVALS]: [EntityType.ARCHIVALS],
+      [LighttableArtifactKind.WORKS]: [EntityType.PAINTING, EntityType.GRAPHIC],
+      [LighttableArtifactKind.PAINTINGS]: [EntityType.PAINTING],
+      [LighttableArtifactKind.ARCHIVALS]: [EntityType.ARCHIVAL],
     };
 
     const { artifactKind } = this.rootStore.ui;
@@ -181,7 +182,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
       const { id } = item;
       const { entityType } = item;
       const pattern = `.*${id}`;
-      const imgSrc = item.imgSrc.replace(pattern, id);
+      const imgSrc = 'imgSrc' in item ? item.imgSrc.replace(pattern, id) : '';
       return { id, imgSrc, entityType }
     });
 
