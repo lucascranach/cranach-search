@@ -4,6 +4,7 @@ import Image from '../../../base/visualizing/image';
 
 import './artefact-table.scss';
 
+export type ArtefactTableSortingDirection = 'asc' | 'desc' | null;
 
 interface ItemProp {
   id: string;
@@ -23,7 +24,7 @@ export interface Props {
       noWrapHead?: boolean,
       forceColumnTextWrap?: boolean,
       asInnerHTML?: boolean,
-      sort?: 'asc' | 'desc' | null,
+      sort?: ArtefactTableSortingDirection | null,
     },
   }[],
   items: ItemProp[],
@@ -31,7 +32,7 @@ export interface Props {
     showImageColumn?: boolean,
     enableFavorite?: boolean,
   },
-  onSortChange?: (fieldName: string, direction: 'asc' | 'desc' | null) => void,
+  onSortChange?: (fieldName: string, direction: ArtefactTableSortingDirection | null) => void,
   onFavoriteToggle: (id: string) => void,
 }
 

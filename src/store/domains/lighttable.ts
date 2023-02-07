@@ -5,6 +5,7 @@ import {
   EntityType,
   GlobalSearchArtifact,
   GlobalSearchResult,
+  SortingDirection,
   SortingItem,
 } from '../../api/types';
 export { EntityType } from '../../api/types';
@@ -201,14 +202,14 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     this.updatePagePos(0);
   }
 
-  setSortingForFieldname(fieldName: string, direction: 'asc' | 'desc' | null) {
+  setSortingForFieldname(fieldName: string, direction: SortingDirection | null) {
     this.sorting = (direction !== null) ? [{ fieldName, direction }] : [];
 
     this.updateRoutingForSorting();
     this.fetch();
   }
 
-  getSortingForFieldname(fieldName: string): 'asc' | 'desc' | null {
+  getSortingForFieldname(fieldName: string): SortingDirection | null {
     const foundExistingSortingField = this.sorting.find((currSortingField) => currSortingField.fieldName === fieldName);
 
     if (foundExistingSortingField) return foundExistingSortingField.direction;
@@ -256,10 +257,10 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
       const cleanFieldName = fieldName.trim();
       const cleanDirection = direction.trim();
 
-      if (cleanFieldName.length > 0 && cleanDirection.length > 0 && (cleanDirection === 'asc' || cleanDirection === 'desc')) {
+      if (cleanFieldName.length > 0 && ['asc', 'desc'].includes(cleanDirection)) {
         acc.push({
           fieldName: cleanFieldName,
-          direction: cleanDirection,
+          direction: cleanDirection as SortingDirection,
         });
       }
 
@@ -302,8 +303,8 @@ export interface LighttableStoreInterface {
   setSize(size: number): void;
   setFrom(from: number): void;
   resetPagePos(): void;
-  setSortingForFieldname(fieldName: string, direction: 'asc' | 'desc' | null): void;
-  getSortingForFieldname(fieldName: string): 'asc' | 'desc' | null;
+  setSortingForFieldname(fieldName: string, direction: SortingDirection | null): void;
+  getSortingForFieldname(fieldName: string): SortingDirection | null;
   resetSorting(): void;
   storeSearchResultInLocalStorage(key: string, result: GlobalSearchResult | null): void;
 }

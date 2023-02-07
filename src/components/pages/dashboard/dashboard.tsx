@@ -14,7 +14,7 @@ import StoreContext, { UIOverviewViewType, EntityType, UIArtifactKind } from '..
 
 import translations from './translations.json';
 import './dashboard.scss';
-import { ArtifactKind, GlobalSearchArtifact } from '../../../api/types';
+import { ArtifactKind, GlobalSearchArtifact, SortingDirection } from '../../../api/types';
 
 const Dashboard: FC = () => {
   const { root: { lighttable, ui, collection } } = useContext(StoreContext);
@@ -312,7 +312,7 @@ const Dashboard: FC = () => {
     };
   };
 
-  const getNextSortDirection = (sortDirection: 'asc' | 'desc' | null): 'asc' | 'desc' | null => {
+  const getNextSortDirection = (sortDirection: SortingDirection | null): SortingDirection | null => {
     if (!sortDirection) {
       return 'asc';
     } else if (sortDirection === 'asc') {
@@ -322,7 +322,7 @@ const Dashboard: FC = () => {
     }
   };
 
-  const updateSortingForFieldname = (fieldName: string, direction: 'asc' | 'desc' | null): void => {
+  const updateSortingForFieldname = (fieldName: string, direction: SortingDirection | null): void => {
     lighttable.setSortingForFieldname(fieldName, getNextSortDirection(direction));
   };
 

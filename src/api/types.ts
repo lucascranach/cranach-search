@@ -61,8 +61,10 @@ export interface GlobalSearchResponse {
   };
 }
 
+export type SortingDirection  = 'asc' | 'desc';
+
 export interface SortingItem {
   fieldName: string;
-  direction: 'asc' | 'desc'
+  direction: SortingDirection;
 };
 
