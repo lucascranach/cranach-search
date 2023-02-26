@@ -1,15 +1,7 @@
 {
   "de": {
-    "Prints and Drawings": "Drucke und Zeichnungen",
-    "Paintings": "Gemälde",
-    "Archival Documents": "Archivalien",
-    "Literature": "Literatur",
-    "My Collection": "Meine Sammlung",
-    "back to the overview": "zurück zur Übersicht",
-    "goto My Collection": "Meine Sammlung zeigen",
-    "goto search": "Suche zeigen",
-    "All Departments": "Alle Abteilungen",
-    "hide sidebar": "Sidebar minimieren",
-    "All Objects": "Alle Werke"
+    "Go to my Collection": "Meine Sammlung zeigen",
+    "Go to search": "Suche zeigen",
+    "Hide sidebar": "Sidebar minimieren"
   }
 }

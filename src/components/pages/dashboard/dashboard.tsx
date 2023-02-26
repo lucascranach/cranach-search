@@ -10,7 +10,7 @@ import Cloak from '../../base/visualizing/cloak';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
 import Navigation from '../../structure/interacting/navigation';
 import ScrollTo from '../../base/interacting/scroll-to';
-import StoreContext, { UIOverviewViewType, EntityType, UIArtifactKind } from '../../../store/StoreContext';
+import StoreContext, { UIOverviewViewType, EntityType, UIArtifactKind, UISidebarContentType } from '../../../store/StoreContext';
 
 import translations from './translations.json';
 import './dashboard.scss';
@@ -26,8 +26,8 @@ const Dashboard: FC = () => {
   const maximumTitleLengthInWords = 10;
 
   useEffect(() => {
-    lighttable.fetch();
-  }, [])
+    ui.fetchForCurrentSideBarContent();
+  }, []);
 
   useEffect(() => {
     if (window.scrollY < window.innerHeight) return;
@@ -182,7 +182,10 @@ const Dashboard: FC = () => {
       };
     }
 
-    if (artifactKind & UIArtifactKind.WORKS) {
+    const workArtefactsSelected = artifactKind & UIArtifactKind.WORKS;
+    const myCranachIsVisible = ui.sidebarContent === UISidebarContentType.MY_CRANACH;
+
+    if (workArtefactsSelected || myCranachIsVisible) {
       return {
         head: [
           { fieldName: 'title', text: t('Title') },

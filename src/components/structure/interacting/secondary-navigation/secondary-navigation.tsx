@@ -28,12 +28,10 @@ const SecondaryNavigation = () => {
 
   const showMyCranach = () => {
     ui.setSideBarContent(UISidebarContentType.MY_CRANACH);
-    collection.showCollection();
   }
 
   const showFilter = () => {
     ui.setSideBarContent(UISidebarContentType.FILTER);
-    lighttable.fetch();
   }
 
   const hideSidebar = () => {
@@ -121,7 +119,7 @@ const SecondaryNavigation = () => {
             onClick={() => hideSidebar()}
           >
             <i className="icon icon--is-inline">minimize</i>
-            {t('hide sidebar')}
+            {t('Hide sidebar')}
           </button>
         </li>
 

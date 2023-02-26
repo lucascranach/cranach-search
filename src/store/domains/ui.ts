@@ -50,14 +50,14 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       },
     });
 
-    this.rootStore.routing.addObserver(this);
     this.loadFromLocalStorage();
     this.bindToScroll();
     this.bindToResize();
+    this.rootStore.routing.addObserver(this);
 
     reaction(
       () => this.lang,
-      () => this.rootStore.lighttable.fetch(),
+      () => this.fetchForCurrentSideBarContent(),
     );
 
     // by limiting literature-references to the table overview type,
@@ -70,7 +70,14 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
           this.setOverviewViewType(UIOverviewViewType.TABLE);
         }
       }
-    )
+    );
+
+    reaction(
+      () => this.sidebarContent,
+      () => {
+        this.fetchForCurrentSideBarContent();
+      }
+    );
   }
 
   /* Computed values */
@@ -78,7 +85,10 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   get limitedToOverviews(): UIOverviewViewType[] {
     // We want to restrict the OverviewType to table,
     //  when the literature-references artifact is selected by the user
-    if (this.artifactKind === UIArtifactKind.LITERATURE_REFERENCES) {
+    if (
+         this.artifactKind === UIArtifactKind.LITERATURE_REFERENCES
+      && this.sidebarContent !== UISidebarContentType.MY_CRANACH
+    ) {
       return [UIOverviewViewType.TABLE];
     }
 
@@ -117,6 +127,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   setSideBarContent(content: UISidebarContentType) {
     this.sidebarContent = content;
     this.updateLocalStorage();
+    this.updateRoutingForSiderBarContent();
   }
 
   setSideBarStatus(status: UISidebarStatusType) {
@@ -139,7 +150,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   }
 
   setArtifactKind(artifactKind: UIArtifactKind): void {
-    if (this.artifactKind === artifactKind) return;
+    this.setSideBarContent(UISidebarContentType.FILTER);
 
     // Clear current lighttable
     this.rootStore.lighttable.currentProvider?.resetAllFilters();
@@ -238,6 +249,10 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
             case 'kind':
               this.handleRoutingNotificationKind(value);
               return;
+
+            case 'mode':
+              this.handleRoutingNotificationSideBarContent(value);
+              return;
           }
         });
     }
@@ -249,6 +264,17 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
 
   setViewportDimensions(viewportDimensions: UIDimensionsType) {
     this.viewportDimensions = viewportDimensions;
+  }
+
+  fetchForCurrentSideBarContent() {
+    switch (this.sidebarContent) {
+      case UISidebarContentType.MY_CRANACH:
+        this.rootStore.collection.showCollection();
+        break;
+
+      default:
+        this.rootStore.lighttable.fetch();
+    }
   }
 
   private setRoutingForLanguage() {
@@ -337,6 +363,17 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     }
   }
 
+  private handleRoutingNotificationSideBarContent(value: string) {
+    switch (value) {
+      case 'collection':
+        this.sidebarContent = UISidebarContentType.MY_CRANACH;
+        break;
+
+      default:
+        this.sidebarContent = UISidebarContentType.FILTER;
+    }
+  }
+
   private updateRoutingForArtifactKind() {
     const artifactKindStringMap: Record<UIArtifactKind, string> = {
       [UIArtifactKind.WORKS]: 'works',
@@ -352,6 +389,20 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
         [RoutingChangeAction.ADD, ['kind', kind]],
       ]);
     }
+  }
+
+  private updateRoutingForSiderBarContent() {
+    if (this.sidebarContent === UISidebarContentType.MY_CRANACH) {
+      this.rootStore.routing.updateSearchQueryParams([
+        [RoutingChangeAction.ADD, ['mode', 'collection']],
+      ]);
+
+      return;
+    }
+
+    this.rootStore.routing.updateSearchQueryParams([
+      [RoutingChangeAction.REMOVE, ['mode', '']],
+    ]);
   }
 }
 
@@ -418,4 +469,5 @@ export interface UIStoreInterface {
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
   filterItemIsExpanded(filterItemId: string): boolean;
   setFilterItemExpandedState(filterItemId: string, collapseState: boolean): void;
+  fetchForCurrentSideBarContent(): void;
 }
