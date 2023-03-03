@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState, ReactNode } from 'react';
 
 import Image from '../../../base/visualizing/image';
 
@@ -25,6 +25,7 @@ export interface Props {
       forceColumnTextWrap?: boolean,
       asInnerHTML?: boolean,
       sort?: ArtefactTableSortingDirection | null,
+      linkify?: boolean,
     },
   }[],
   items: ItemProp[],
@@ -52,6 +53,12 @@ const ArtefactTable: FC<Props> = ({
     const timer = setTimeout(() => { setIsArmed(true); }, 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  const linkifier = (linkify: boolean, to: string, children: ReactNode): ReactNode => {
+    return linkify
+      ? <a href={to}>{ children }</a>
+      : children;
+  };
 
   return (<table
     className="artefact-table"
@@ -114,18 +121,24 @@ const ArtefactTable: FC<Props> = ({
               {
                 head.map((headItem) => (
                   <td key={headItem.fieldName} className={headItem.options?.noWrap ? 'no-wrap' : ''}>
-                    {
-                      headItem.options?.asInnerHTML
-                      ? (<span
-                        className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
-                        dangerouslySetInnerHTML={{ __html: item[headItem.fieldName].toString() }}
-                        ></span>)
-                      : (<span
-                        className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
-                        >
-                          { item[headItem.fieldName] }
-                        </span>)
-                    }
+                      {
+                        linkifier(
+                          !!headItem.options?.linkify,
+                          item.to,
+                          (
+                            headItem.options?.asInnerHTML
+                            ? (<span
+                              className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
+                              dangerouslySetInnerHTML={{ __html: item[headItem.fieldName].toString() }}
+                              ></span>)
+                            : (<span
+                              className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
+                              >
+                                { item[headItem.fieldName] }
+                              </span>)
+                          )
+                        )
+                      }
                   </td>)
                 )
               }

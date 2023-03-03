@@ -73,6 +73,11 @@
         background-color: $lighter;
         border-bottom: solid $border-stroke-weight-s $accent;
 
+        a {
+          border-bottom: 1px solid $accent;
+          color: inherit;
+        }
+
         & .text-value {
           display: inline-block;
 
