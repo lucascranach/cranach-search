@@ -1,0 +1,30 @@
+name: Build search
+on:
+  workflow_dispatch:
+    inputs:
+      choice:
+        type: choice
+        description: Destination
+        options:
+        - prod
+        - intern
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: npm ci
+      - name: Build for prod
+        if: ${{ github.event.inputs.choice === 'prod' }}
+        run: npm run build:prod
+      - name: Build for intern
+        if: ${{ github.event.inputs.choice === 'intern' }}
+        run: npm run build:preview
+      - name: List directory
+        run: cd dist && ls -l
