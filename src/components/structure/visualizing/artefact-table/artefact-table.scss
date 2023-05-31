@@ -68,10 +68,14 @@
   tbody {
     tr {
       td {
-        padding: $s $s;
+        padding: $s 0 $s $s;
         vertical-align: middle;
         background-color: $lighter;
         border-bottom: solid $border-stroke-weight-s $accent;
+
+        &:last-child {
+          padding-right: $s;
+        }
 
         a {
           border-bottom: 1px solid $accent;
