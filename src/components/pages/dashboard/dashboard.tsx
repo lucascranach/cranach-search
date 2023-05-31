@@ -227,11 +227,15 @@ const Dashboard: FC = () => {
             noWrapHead: true,
             linkify: true,
           }},
+          { fieldName: 'title', text: t('Title'), options: {
+            sort: lighttable.getSortingForFieldname('title'),
+            asInnerHTML: true,
+            noWrapHead: true,
+          }},
           { fieldName: 'authors', text: t('Author/Editor'), options: {
             sort: lighttable.getSortingForFieldname('authors'),
             noWrapHead: true,
           }},
-
           { fieldName: 'publishLocation', text: t('Place'), options: {
             sort: lighttable.getSortingForFieldname('publishLocation'),
             noWrapHead: true,
@@ -243,11 +247,6 @@ const Dashboard: FC = () => {
           { fieldName: 'mediaType', text: t('Media type'), options: {
             sort: lighttable.getSortingForFieldname('mediaType'),
             noWrap: true,
-            noWrapHead: true,
-          }},
-          { fieldName: 'title', text: t('Title'), options: {
-            sort: lighttable.getSortingForFieldname('title'),
-            asInnerHTML: true,
             noWrapHead: true,
           }},
         ],
