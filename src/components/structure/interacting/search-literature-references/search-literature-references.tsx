@@ -94,6 +94,16 @@ const SearchArchivals: FC = () => {
             onReset={ triggerFilterRequest }
             resetable={true}
           ></TextInput>
+
+          <TextInput
+            className="search-input"
+            label={ t('Media type') }
+            value={ searchLiteratureReferences.freetextFields.mediaType }
+            onChange={ mediaType => searchLiteratureReferences.setFreetextFields({ mediaType }) }
+            onKeyDown={ triggerFilterRequestOnEnter }
+            onReset={ triggerFilterRequest }
+            resetable={true}
+          ></TextInput>
         </Toggle>
 
         <Btn

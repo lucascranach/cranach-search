@@ -260,7 +260,7 @@ const Dashboard: FC = () => {
           publishLocation : item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishLocation : '',
           publishDate: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishDate : '',
 
-          mediaType: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publications.map((publication) => publication.text).join(', ') : '',
+          mediaType: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.mediaType : '',
 
           title: item.title,
 

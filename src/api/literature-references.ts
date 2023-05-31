@@ -16,7 +16,7 @@ const sortingFieldnameMapping: Record<string, string> = {
   'authors': 'authors',
   'publishLocation': 'publish_location',
   'publishDate': 'publish_date',
-  'publications': 'publications',
+  'mediaType': 'publications_line',
 };
 
 const assembleResultData = (resultset: any): GlobalSearchResponse => {
@@ -72,6 +72,11 @@ const getQueryStringForFilters = (
   const cleanYear = freetextFields.year.trim();
   if (cleanYear) {
     params['publish_date:sim'] = cleanYear;
+  }
+
+  const cleanMediaType = freetextFields.mediaType.trim();
+  if (cleanMediaType) {
+    params['publication_text:sim'] = cleanMediaType;
   }
 
   if (sorting.length > 0) {
@@ -146,6 +151,7 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
     subtitle: item.subtitle,
     journal: item.journal,
     publications: item.publications,
+    mediaType: item.publications_line,
     date: item.dating,
     referenceNumber: item.reference_number,
     persons: item.persons,
@@ -171,6 +177,7 @@ export interface LiteratureReferenceSearchArtifact {
   subtitle: string;
   journal: string;
   publications: LiteratureReferencePublication[];
+  mediaType: string;
   date: string;
   referenceNumber: string;
   persons: { role: string, name: string }[],
@@ -197,4 +204,5 @@ export interface LiteratureReferencesAPIFreetextFieldsType {
   authors: string,
   signature: string,
   year: string,
+  mediaType: string,
 };

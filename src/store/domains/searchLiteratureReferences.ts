@@ -49,6 +49,7 @@ const createInitialFreeTexts = (): FreeTextFields => ({
   authors: '',
   signature: '',
   year: '',
+  mediaType: '',
 });
 
 const createInitialFilters = (): FilterType => ({
@@ -262,6 +263,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
             case 'authors':
             case 'signature':
             case 'year':
+            case 'media_type':
               this.handleRoutingNotificationForFreetext(name, value);
               break;
           }
@@ -321,6 +323,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
 
     const keyMap: Record<string, string> = {
       'allFieldsTerm': 'search_term',
+      'mediaType': 'media_type',
     };
 
     Object.entries(this.freetextFields).forEach(([key, value]) => {
@@ -379,6 +382,10 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
       case 'year':
         this.freetextFields.year = value;
         break;
+
+      case 'media_type':
+        this.freetextFields.mediaType = value;
+        break;
     }
   }
 
@@ -393,6 +400,7 @@ export interface FreeTextFields {
   authors: string;
   signature: string;
   year: string;
+  mediaType: string;
 }
 
 export interface SearchLiteratureReferencesStoreInterface {
