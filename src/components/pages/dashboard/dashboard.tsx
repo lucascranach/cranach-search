@@ -232,7 +232,7 @@ const Dashboard: FC = () => {
             noWrapHead: true,
           }},
 
-          { fieldName: 'publishLocation', text: t('Place of Publication'), options: {
+          { fieldName: 'publishLocation', text: t('Place'), options: {
             sort: lighttable.getSortingForFieldname('publishLocation'),
             noWrapHead: true,
           }},
