@@ -16,7 +16,7 @@ const sortingFieldnameMapping: Record<string, string> = {
   'authors': 'authors',
   'publishLocation': 'publish_location',
   'publishDate': 'publish_date',
-  'textCategory': 'text_category',
+  'publications': 'publications',
 };
 
 const assembleResultData = (resultset: any): GlobalSearchResponse => {
@@ -145,7 +145,7 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
     title: item.title,
     subtitle: item.subtitle,
     journal: item.journal,
-    textCategory: item.text_category,
+    publications: item.publications,
     date: item.dating,
     referenceNumber: item.reference_number,
     persons: item.persons,
@@ -156,6 +156,13 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
   };
 };
 
+interface LiteratureReferencePublication {
+  type: string;
+  text: string;
+  remarks: string;
+  subPublications: LiteratureReferencePublication[];
+}
+
 export interface LiteratureReferenceSearchArtifact {
   kind: ArtifactKind.LITERATURE_REFERENCE;
   id: string;
@@ -163,7 +170,7 @@ export interface LiteratureReferenceSearchArtifact {
   title: string;
   subtitle: string;
   journal: string;
-  textCategory: string;
+  publications: LiteratureReferencePublication[];
   date: string;
   referenceNumber: string;
   persons: { role: string, name: string }[],

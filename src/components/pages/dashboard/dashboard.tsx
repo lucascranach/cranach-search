@@ -240,8 +240,8 @@ const Dashboard: FC = () => {
             sort: lighttable.getSortingForFieldname('publishDate'),
             noWrapHead: true,
           }},
-          { fieldName: 'textCategory', text: t('Text Category'), options: {
-            sort: lighttable.getSortingForFieldname('textCategory'),
+          { fieldName: 'mediaType', text: t('Media type'), options: {
+            sort: lighttable.getSortingForFieldname('mediaType'),
             noWrap: true,
             noWrapHead: true,
           }},
@@ -261,7 +261,7 @@ const Dashboard: FC = () => {
           publishLocation : item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishLocation : '',
           publishDate: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishDate : '',
 
-          textCategory: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.textCategory : '',
+          mediaType: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publications.map((publication) => publication.text).join(', ') : '',
 
           title: item.title,
 
