@@ -28,7 +28,7 @@ const THRESOLD_UPPER_DATING_YEAR = (new Date()).getFullYear();
 
 type LiteratureReferencesSearchAPI = typeof LiteratureReferencesSearchAPI_;
 
-interface SearchArchivalsFilters {
+interface SearchLiteratureReferencesFilters {
   groups: FilterGroupItem[];
   flatGroups: FilterGroupItem[];
   single: FilterItem[];
@@ -69,7 +69,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
   datingRangeBounds: [number, number] = DATING_RANGE_TOTAL_BOUNDS;
   freetextFields: FreeTextFields = createInitialFreeTexts();
   selectedFilters: FilterType = createInitialFilters();
-  filters: SearchArchivalsFilters = {
+  filters: SearchLiteratureReferencesFilters = {
     groups: [],
     flatGroups: [],
     single: [],
@@ -116,7 +116,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
     };
   }
 
-  setFilters(filters: SearchArchivalsFilters) {
+  setFilters(filters: SearchLiteratureReferencesFilters) {
     this.filters = filters;
   }
 
@@ -407,7 +407,7 @@ export interface SearchLiteratureReferencesStoreInterface {
   datingRangeBounds: [number, number];
   freetextFields: FreeTextFields
   selectedFilters: FilterType;
-  filters: SearchArchivalsFilters;
+  filters: SearchLiteratureReferencesFilters;
   amountOfActiveFilters: number;
 
   setFreetextFields(fields: Partial<FreeTextFields>): void;
