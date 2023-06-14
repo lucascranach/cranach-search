@@ -211,7 +211,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
     ).then((response) => {
       if (response) {
         this.lighttable.setResult(response.result);
-        this.setFilters(response.filters);
+        this.setFilters(SearchLiteratureReferences.sortFilters(response.filters));
       }
       this.lighttable.setResultLoading(false);
       this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
@@ -392,6 +392,21 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
   private updateAllFilterRoutings() {
     this.updateRoutingForDating();
     this.updateRoutingForFilterGroups();
+  }
+
+  private static sortFilters(filters: SearchLiteratureReferencesFilters): SearchLiteratureReferencesFilters {
+    return {
+      ...filters,
+      flatGroups: filters.flatGroups.map((flatGroup) => {
+        if (flatGroup.key === 'media_type') {
+          return {
+            ...flatGroup,
+            children: [...flatGroup.children].sort((a, b) => a.text.localeCompare(b.text)),
+          };
+        }
+        return flatGroup;
+      }),
+    };
   }
 }
 
