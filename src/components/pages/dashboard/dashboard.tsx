@@ -227,12 +227,16 @@ const Dashboard: FC = () => {
             noWrapHead: true,
             linkify: true,
           }},
+          { fieldName: 'title', text: t('Title'), options: {
+            sort: lighttable.getSortingForFieldname('title'),
+            asInnerHTML: true,
+            noWrapHead: true,
+          }},
           { fieldName: 'authors', text: t('Author/Editor'), options: {
             sort: lighttable.getSortingForFieldname('authors'),
             noWrapHead: true,
           }},
-
-          { fieldName: 'publishLocation', text: t('Place of Publication'), options: {
+          { fieldName: 'publishLocation', text: t('Place'), options: {
             sort: lighttable.getSortingForFieldname('publishLocation'),
             noWrapHead: true,
           }},
@@ -240,14 +244,9 @@ const Dashboard: FC = () => {
             sort: lighttable.getSortingForFieldname('publishDate'),
             noWrapHead: true,
           }},
-          { fieldName: 'textCategory', text: t('Text Category'), options: {
-            sort: lighttable.getSortingForFieldname('textCategory'),
+          { fieldName: 'mediaType', text: t('Media type'), options: {
+            sort: lighttable.getSortingForFieldname('mediaType'),
             noWrap: true,
-            noWrapHead: true,
-          }},
-          { fieldName: 'title', text: t('Title'), options: {
-            sort: lighttable.getSortingForFieldname('title'),
-            asInnerHTML: true,
             noWrapHead: true,
           }},
         ],
@@ -261,7 +260,7 @@ const Dashboard: FC = () => {
           publishLocation : item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishLocation : '',
           publishDate: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.publishDate : '',
 
-          textCategory: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.textCategory : '',
+          mediaType: item.kind === ArtifactKind.LITERATURE_REFERENCE ? item.mediaType : '',
 
           title: item.title,
 

@@ -16,7 +16,7 @@ const sortingFieldnameMapping: Record<string, string> = {
   'authors': 'authors',
   'publishLocation': 'publish_location',
   'publishDate': 'publish_date',
-  'textCategory': 'text_category',
+  'mediaType': 'publications_line',
 };
 
 const assembleResultData = (resultset: any): GlobalSearchResponse => {
@@ -72,6 +72,11 @@ const getQueryStringForFilters = (
   const cleanYear = freetextFields.year.trim();
   if (cleanYear) {
     params['publish_date:sim'] = cleanYear;
+  }
+
+  const cleanMediaType = freetextFields.mediaType.trim();
+  if (cleanMediaType) {
+    params['publication_text:sim'] = cleanMediaType;
   }
 
   if (sorting.length > 0) {
@@ -145,7 +150,8 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
     title: item.title,
     subtitle: item.subtitle,
     journal: item.journal,
-    textCategory: item.text_category,
+    publications: item.publications,
+    mediaType: item.publications_line,
     date: item.dating,
     referenceNumber: item.reference_number,
     persons: item.persons,
@@ -156,6 +162,13 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
   };
 };
 
+interface LiteratureReferencePublication {
+  type: string;
+  text: string;
+  remarks: string;
+  subPublications: LiteratureReferencePublication[];
+}
+
 export interface LiteratureReferenceSearchArtifact {
   kind: ArtifactKind.LITERATURE_REFERENCE;
   id: string;
@@ -163,7 +176,8 @@ export interface LiteratureReferenceSearchArtifact {
   title: string;
   subtitle: string;
   journal: string;
-  textCategory: string;
+  publications: LiteratureReferencePublication[];
+  mediaType: string;
   date: string;
   referenceNumber: string;
   persons: { role: string, name: string }[],
@@ -190,4 +204,5 @@ export interface LiteratureReferencesAPIFreetextFieldsType {
   authors: string,
   signature: string,
   year: string,
+  mediaType: string,
 };
