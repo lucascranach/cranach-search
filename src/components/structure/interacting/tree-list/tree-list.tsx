@@ -27,24 +27,32 @@ const TreeList: FC<Props> = ({
   wrapComponent = undefined,
   isOpenIf = undefined,
   onToggle = undefined,
-}) => (
-  <ul
+}) => {
+  const initialOpenState = items.reduce(
+    (acc, item) => {
+      acc[item.id] = !!isOpenIf && isOpenIf(item);
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
+  const [isOpen, setIsOpen] = useState(initialOpenState);
+
+  return (<ul
     className={ `tree-list ${className}` }
     data-component="structure/interacting/tree-list"
   >
     { items.map((item) => {
-      const initialIsOpen = !!isOpenIf && isOpenIf(item);
-      const [isOpen, setIsOpen] = useState(initialIsOpen);
+      const itemIsOpen = isOpen[item.id];
       const hasChildren = !!item.children && item.children.length > 0;
 
       const toggle = () => {
         if (!hasChildren) return false;
-        if (onToggle) onToggle(item, !isOpen);
-        setIsOpen(!isOpen)
-        return !isOpen;
+        if (onToggle) onToggle(item, !itemIsOpen);
+        setIsOpen({...isOpen, [item.id]: !itemIsOpen });
+        return !itemIsOpen;
       };
 
-      return (<li key={ item.id } className={`tree-list__item ${ hasChildren ? 'tree-list__item--has-children' : '' } ${ isOpen ? 'tree-list__item--is-open' : '' }`}>
+      return (<li key={ item.id } className={`tree-list__item ${ hasChildren ? 'tree-list__item--has-children' : '' } ${ itemIsOpen ? 'tree-list__item--is-open' : '' }`}>
         <span
           className={ `tree-list__item-name ${ hasChildren ? ['tree-list__item-name--is-clickable', classNameOnClickable].join(' ') : '' }` }
           onClick={ () => !wrapComponent && toggle() }
@@ -52,12 +60,12 @@ const TreeList: FC<Props> = ({
           { wrapComponent ? wrapComponent(item, toggle): item.name }
         </span>
         {hasChildren && (<span
-          className={`icon tree-list__item-fold-indicator ${isOpen ? 'tree-list__item-fold-indicator--is-open' : ''}`}
+          className={`icon tree-list__item-fold-indicator ${itemIsOpen ? 'tree-list__item-fold-indicator--is-open' : ''}`}
           onClick={ toggle }
         >
           expand_more
         </span>)}
-        { isOpen && hasChildren && <TreeList
+        { itemIsOpen && hasChildren && <TreeList
           items={ item.children || [] }
           wrapComponent={ wrapComponent }
           classNameOnClickable={classNameOnClickable}
@@ -66,7 +74,7 @@ const TreeList: FC<Props> = ({
         ></TreeList> }
       </li>);
     }) }
-  </ul>
-);
+  </ul>);
+};
 
 export default observer(TreeList);

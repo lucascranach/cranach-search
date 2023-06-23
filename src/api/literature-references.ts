@@ -4,12 +4,35 @@ import {
   GlobalSearchResponse,
   ArtifactKind,
   SortingItem,
+  GlobalSearchFilterItem,
+  GlobalSearchFilterGroupItem,
 } from './types';
 
 import {
   querify,
   apiConfiguration,
 } from './utils';
+
+
+const mapFilterFlatGroupsItem = (filter: any): GlobalSearchFilterItem => {
+  return {
+    id: filter.value,
+    text: filter.display_value,
+    doc_count: filter.doc_count,
+    is_available: filter.is_available,
+    children: [],
+  };
+};
+
+const mapFilterFlatGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
+  return [
+    'media_type',
+  ].map((filterName) => ({
+    key: filterName,
+    text: filterName,
+    children: (filters[filterName].values || []).map(mapFilterFlatGroupsItem),
+  }));
+};
 
 const sortingFieldnameMapping: Record<string, string> = {
   'referenceNumber': 'reference_number',
@@ -21,12 +44,13 @@ const sortingFieldnameMapping: Record<string, string> = {
 
 const assembleResultData = (resultset: any): GlobalSearchResponse => {
   const items = resultset.data.results.map((item: any) => toArtefact(item));
+  const filterFlatGroups = mapFilterFlatGroups(resultset.data.filters);
   const meta = resultset.data.meta;
   return {
     result: { items, meta },
     filters: {
       groups: [],
-      flatGroups: [],
+      flatGroups: filterFlatGroups,
       single: [],
     },
   };
@@ -86,8 +110,11 @@ const getQueryStringForFilters = (
   } else {
     // Sorting literature references by reference number by default
     params['sort_by'] = 'reference_number.asc';
-
   }
+
+  filters.filterGroups.forEach((filterIds: Set<string>, groupKey: string) => {
+    params[`${groupKey}:eq`] = Array.from(filterIds).join(',');
+  });
 
   return querify(params);
 };
@@ -150,7 +177,6 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
     title: item.title,
     subtitle: item.subtitle,
     journal: item.journal,
-    publications: item.publications,
     mediaType: item.publications_line,
     date: item.dating,
     referenceNumber: item.reference_number,
@@ -162,13 +188,6 @@ export const toArtefact = (item: any): LiteratureReferenceSearchArtifact => {
   };
 };
 
-interface LiteratureReferencePublication {
-  type: string;
-  text: string;
-  remarks: string;
-  subPublications: LiteratureReferencePublication[];
-}
-
 export interface LiteratureReferenceSearchArtifact {
   kind: ArtifactKind.LITERATURE_REFERENCE;
   id: string;
@@ -176,7 +195,6 @@ export interface LiteratureReferenceSearchArtifact {
   title: string;
   subtitle: string;
   journal: string;
-  publications: LiteratureReferencePublication[];
   mediaType: string;
   date: string;
   referenceNumber: string;
