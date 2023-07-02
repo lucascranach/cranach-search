@@ -4,7 +4,6 @@
 .artefact-overview {
   height: 100%;
   align-content: flex-start;
-  padding-bottom: $xxl;
 
   &--is-grid {
     display: grid;
@@ -15,8 +14,7 @@
     &[data-active-view="card-small"] {
       @include grid-auto-columns-small();
 
-      column-gap: $xxs !important;
-      row-gap: $xxs !important;
+      gap: $xxs;
     }
 
     &[data-active-view="list"] {

@@ -9,6 +9,7 @@
 
   .scroll-up {
     position: fixed;
+    z-index: 100;
     right: 1rem;
     bottom: 1rem;
     display: none;

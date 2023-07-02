@@ -346,7 +346,14 @@ const Dashboard: FC = () => {
       >
         <ArtefactOverview.Overview
           viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
-          handleArtefactAmountChange={ (amount: number) => lighttable.setSize(amount) }
+          handleArtefactAmountChange={ (amount: number) => {
+            lighttable.setSize(amount);
+            lighttable.fetch();
+          } }
+          resetArtefactAmount={ () => {
+            lighttable.resetSize();
+            lighttable.fetch();
+          } }
         >
           {
 
