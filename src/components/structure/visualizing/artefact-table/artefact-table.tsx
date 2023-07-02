@@ -31,6 +31,7 @@ export interface Props {
   options?: {
     showImageColumn?: boolean,
     enableFavorite?: boolean,
+    hideEmptyColumns?: boolean,
   },
   onSortChange?: (fieldName: string, direction: ArtefactTableSortingDirection | null) => void,
   onFavoriteToggle: (id: string) => void,
@@ -39,14 +40,28 @@ export interface Props {
 const ArtefactTable: FC<Props> = ({
   head,
   items,
-  options = {
-    showImageColumn: true,
-    enableFavorite: true,
-  },
+  options,
   onSortChange,
   onFavoriteToggle,
 }) => {
   const [isArmed, setIsArmed] = useState(false);
+
+  const defaultOptions = {
+    showImageColumn: true,
+    enableFavorite: true,
+    hideEmptyColumns: true,
+  };
+
+  const customOptions = { ...defaultOptions, ...options };
+
+  const fieldNames = head.map((headItem) => headItem.fieldName);
+  const nonEmptyFieldNames = fieldNames.filter((fieldName) => {
+    return !items.every((item) => item[fieldName] === '');
+  });
+
+  const reducedHead = customOptions.hideEmptyColumns === true
+    ? head.filter((headItem) => nonEmptyFieldNames.includes(headItem.fieldName))
+    : head;
 
   useEffect(() => {
     const timer = setTimeout(() => { setIsArmed(true); }, 1000);
@@ -65,8 +80,8 @@ const ArtefactTable: FC<Props> = ({
   >
     <thead>
       <tr>
-        { options?.showImageColumn && <th scope="col"></th> }
-        { head.map((headItem) => (<th
+        { customOptions.showImageColumn && <th scope="col"></th> }
+        { reducedHead.map((headItem) => (<th
             className={ [
               headItem.options?.noWrapHead ? 'no-wrap' : '',
               headItem.options?.sort !== undefined ? 'is-sortable': '',
@@ -95,7 +110,7 @@ const ArtefactTable: FC<Props> = ({
             </div>
           }
         </th>)) }
-        { options?.enableFavorite && <th></th> }
+        { customOptions.enableFavorite && <th></th> }
       </tr>
     </thead>
     <tbody>
@@ -104,7 +119,7 @@ const ArtefactTable: FC<Props> = ({
           return (
             <tr key={item.id} onClick={ (event) => redirectToItem(item, event) }>
               {
-                options?.showImageColumn && <td
+                customOptions.showImageColumn && <td
                   scope="row"
                   className="artefact-table__image-field"
                 >
@@ -116,7 +131,7 @@ const ArtefactTable: FC<Props> = ({
                 </td>
               }
               {
-                head.map((headItem) => (
+                reducedHead.map((headItem) => (
                   <td key={headItem.fieldName} className={headItem.options?.noWrap ? 'no-wrap' : ''}>
                       {
                         headItem.options?.asInnerHTML
@@ -135,7 +150,7 @@ const ArtefactTable: FC<Props> = ({
               }
               <td className="artefact-table__favorite">
                 {
-                  options?.enableFavorite && <div className="favorite-holder">
+                  customOptions.enableFavorite && <div className="favorite-holder">
                     <a
                       className={`favorite icon ${item.isFavorite ? 'favorite--is-active' : ''} ${isArmed ? 'favorite--is-armed' : ''}`}
                       onClick={() => { onFavoriteToggle(item.id) }}
