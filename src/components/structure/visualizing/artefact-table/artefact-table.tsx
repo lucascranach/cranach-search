@@ -148,16 +148,16 @@ const ArtefactTable: FC<Props> = ({
                   </td>)
                 )
               }
-              <td className="artefact-table__favorite">
-                {
-                  customOptions.enableFavorite && <div className="favorite-holder">
+              {
+                customOptions.enableFavorite && (<td className="artefact-table__favorite">
+                  <div className="favorite-holder">
                     <a
                       className={`favorite icon ${item.isFavorite ? 'favorite--is-active' : ''} ${isArmed ? 'favorite--is-armed' : ''}`}
                       onClick={() => { onFavoriteToggle(item.id) }}
                     >{item.isFavorite ? 'remove' : 'add'}</a>
                   </div>
-                }
-              </td>
+                </td>)
+              }
             </tr>
           );
         })

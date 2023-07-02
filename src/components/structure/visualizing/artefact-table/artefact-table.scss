@@ -3,9 +3,9 @@
 .artefact-table {
   position: relative;
   overflow: hidden;
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0 $xs;
-  width: 100%;
 
   $self: &;
 
@@ -71,9 +71,9 @@
 
       td {
         padding: $s 0 $s $s;
-        vertical-align: middle;
-        background-color: $lighter;
         border-bottom: solid $border-stroke-weight-s $accent;
+        background-color: $lighter;
+        vertical-align: middle;
 
         &:last-child {
           padding-right: $s;
@@ -94,29 +94,28 @@
       }
 
       #{$self}__image-field {
-        padding: $xxs $m;
         width: $xl;
+        padding: $xxs $m;
       }
 
       #{$self}__favorite {
-        padding: 0;
         overflow: hidden;
+        width: $m;
+        padding-left: $m;
 
         .favorite-holder {
           position: relative;
-          width: $xl;
-          height: $l;
 
           .favorite {
-            top: 0px;
             position: absolute;
-            right: $xs;
+            top: -$m;
+            border: 0;
             aspect-ratio: 1/1;
             background-color: $lighten-strongest;
             border-radius: 50%;
             color: $dark;
+            line-height: normal;
             transition: transform $tr-fast, color $tr-fast, opacity $tr-medium, top $tr-medium;
-            opacity: 1;
 
             &:hover,
             &--is-active {
@@ -126,7 +125,7 @@
             }
 
             &--is-armed {
-              top: -50px;
+              top: -100px;
               opacity: 0;
             }
 
@@ -137,13 +136,13 @@
         }
       }
 
-      &:hover{
+      &:hover {
         background-color: $darken-strong;
 
         #{$self}__favorite {
           .favorite-holder {
             .favorite {
-              top: 0 !important;
+              top: -$m !important;
               opacity: 1 !important;
             }
           }
