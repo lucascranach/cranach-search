@@ -67,6 +67,8 @@
 
   tbody {
     tr {
+      cursor: pointer;
+
       td {
         padding: $s 0 $s $s;
         vertical-align: middle;

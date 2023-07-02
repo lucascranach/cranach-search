@@ -25,7 +25,6 @@ export interface Props {
       forceColumnTextWrap?: boolean,
       asInnerHTML?: boolean,
       sort?: ArtefactTableSortingDirection | null,
-      linkify?: boolean,
     },
   }[],
   items: ItemProp[],
@@ -54,10 +53,10 @@ const ArtefactTable: FC<Props> = ({
     return () => clearTimeout(timer);
   }, []);
 
-  const linkifier = (linkify: boolean, to: string, children: ReactNode): ReactNode => {
-    return linkify
-      ? <a href={to}>{ children }</a>
-      : children;
+  const redirectToItem = (item: ItemProp, event: React.MouseEvent) => {
+    if ((event.target as HTMLElement).tagName !== 'A' ) {
+      window.location.href = item.to;
+    }
   };
 
   return (<table
@@ -103,41 +102,33 @@ const ArtefactTable: FC<Props> = ({
       {
         items.map((item) => {
           return (
-            <tr key={item.id}>
+            <tr key={item.id} onClick={ (event) => redirectToItem(item, event) }>
               {
                 options?.showImageColumn && <td
                   scope="row"
                   className="artefact-table__image-field"
                 >
-                  <a href={item.to}>
-                    <Image
-                      src={item.imgSrc || ''}
-                      alt={item.imgAlt}
-                      modifierWithBox={true} // -has-box artefact-line-image
-                    />
-                  </a>
+                  <Image
+                    src={item.imgSrc || ''}
+                    alt={item.imgAlt}
+                    modifierWithBox={true} // -has-box artefact-line-image
+                  />
                 </td>
               }
               {
                 head.map((headItem) => (
                   <td key={headItem.fieldName} className={headItem.options?.noWrap ? 'no-wrap' : ''}>
                       {
-                        linkifier(
-                          !!headItem.options?.linkify,
-                          item.to,
-                          (
-                            headItem.options?.asInnerHTML
-                            ? (<span
-                              className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
-                              dangerouslySetInnerHTML={{ __html: item[headItem.fieldName].toString() }}
-                              ></span>)
-                            : (<span
-                              className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
-                              >
-                                { item[headItem.fieldName] }
-                              </span>)
-                          )
-                        )
+                        headItem.options?.asInnerHTML
+                          ? (<span
+                            className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
+                            dangerouslySetInnerHTML={{ __html: item[headItem.fieldName].toString() }}
+                            ></span>)
+                          : (<span
+                            className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
+                            >
+                              { item[headItem.fieldName] }
+                            </span>)
                       }
                   </td>)
                 )
