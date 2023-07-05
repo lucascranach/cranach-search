@@ -25,12 +25,22 @@ const mapFilterFlatGroupsItem = (filter: any): GlobalSearchFilterItem => {
 };
 
 const mapFilterFlatGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
+  // We explicitly decide which available filters should be shown and which to be omitted
+  const childrenToBeFiltered: Record<string, string[]> = {
+    'media_type': ['article', 'monograph', 'exhibition catalogue', 'catalogue', 'conference proceedings', 'auction catalogue', 'Primary source', 'anthology', 'guidebook', 'grey literature', 'festschrift', 'newspaper'],
+  }
+
   return [
     'media_type',
   ].map((filterName) => ({
     key: filterName,
     text: filterName,
-    children: (filters[filterName].values || []).map(mapFilterFlatGroupsItem),
+    children: (filters[filterName].values || []).map(mapFilterFlatGroupsItem).filter((item: GlobalSearchFilterItem) => {
+      if (childrenToBeFiltered[filterName]) {
+        return childrenToBeFiltered[filterName].includes(item.id);
+      }
+      return true;
+    }),
   }));
 };
 

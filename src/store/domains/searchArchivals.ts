@@ -201,6 +201,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
 
     return this.archivalsSearchAPI.searchByFilters(
       updatedFilters,
+      this.freetextFields,
       lang,
     ).then((response) => {
       if (response) {
@@ -231,6 +232,7 @@ export default class SearchArchivals implements SearchArchivalsStoreInterface, R
     };
     const responseForInArtefactNavigation = await this.archivalsSearchAPI.searchByFilters(
       extendedFilters,
+      this.freetextFields,
       lang,
     );
     this.lighttable.storeSearchResultInLocalStorage('searchResult:archivals', responseForInArtefactNavigation?.result ?? null);

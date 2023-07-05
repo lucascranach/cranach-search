@@ -225,7 +225,6 @@ const Dashboard: FC = () => {
             sort: lighttable.getSortingForFieldname('referenceNumber'),
             noWrap: true,
             noWrapHead: true,
-            linkify: true,
           }},
           { fieldName: 'title', text: t('Title'), options: {
             sort: lighttable.getSortingForFieldname('title'),

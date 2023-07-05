@@ -48,6 +48,7 @@ const assembleResultData = (resultset: any): GlobalSearchResponse => {
 
 const getQueryStringForFilters = (
   filters: ArchivalsAPIFilterType,
+  freetextFields: ArchivalsAPIFreetextFieldsType,
   langCode: string
 ): string => {
   const params: Record<string, string | number> = {
@@ -81,15 +82,22 @@ const getQueryStringForFilters = (
     }
   }
 
+  const cleanAllFieldsTerm = freetextFields.allFieldsTerm.trim();
+  if (cleanAllFieldsTerm !== '') {
+    params['searchterm'] = cleanAllFieldsTerm;
+  }
+
   return querify(params);
 };
 
 const searchByFilters = async (
   filters: ArchivalsAPIFilterType,
+  freetextFields: ArchivalsAPIFreetextFieldsType,
   langCode: string
 ): Promise<GlobalSearchResponse | null> => {
   const queryParams = getQueryStringForFilters(
     filters,
+    freetextFields,
     langCode,
   );
 
@@ -173,4 +181,9 @@ export interface ArchivalsAPIFilterType {
   from: number,
   entityTypes: Set<EntityType>,
   filterGroups: Map<string, Set<string>>,
+};
+
+
+export interface ArchivalsAPIFreetextFieldsType {
+  allFieldsTerm: string,
 };

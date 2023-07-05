@@ -25,13 +25,13 @@ export interface Props {
       forceColumnTextWrap?: boolean,
       asInnerHTML?: boolean,
       sort?: ArtefactTableSortingDirection | null,
-      linkify?: boolean,
     },
   }[],
   items: ItemProp[],
   options?: {
     showImageColumn?: boolean,
     enableFavorite?: boolean,
+    hideEmptyColumns?: boolean,
   },
   onSortChange?: (fieldName: string, direction: ArtefactTableSortingDirection | null) => void,
   onFavoriteToggle: (id: string) => void,
@@ -40,24 +40,38 @@ export interface Props {
 const ArtefactTable: FC<Props> = ({
   head,
   items,
-  options = {
-    showImageColumn: true,
-    enableFavorite: true,
-  },
+  options,
   onSortChange,
   onFavoriteToggle,
 }) => {
   const [isArmed, setIsArmed] = useState(false);
+
+  const defaultOptions = {
+    showImageColumn: true,
+    enableFavorite: true,
+    hideEmptyColumns: true,
+  };
+
+  const customOptions = { ...defaultOptions, ...options };
+
+  const fieldNames = head.map((headItem) => headItem.fieldName);
+  const nonEmptyFieldNames = fieldNames.filter((fieldName) => {
+    return !items.every((item) => item[fieldName] === '');
+  });
+
+  const reducedHead = customOptions.hideEmptyColumns === true
+    ? head.filter((headItem) => nonEmptyFieldNames.includes(headItem.fieldName))
+    : head;
 
   useEffect(() => {
     const timer = setTimeout(() => { setIsArmed(true); }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
-  const linkifier = (linkify: boolean, to: string, children: ReactNode): ReactNode => {
-    return linkify
-      ? <a href={to}>{ children }</a>
-      : children;
+  const redirectToItem = (item: ItemProp, event: React.MouseEvent) => {
+    if ((event.target as HTMLElement).tagName !== 'A' ) {
+      window.location.href = item.to;
+    }
   };
 
   return (<table
@@ -66,8 +80,8 @@ const ArtefactTable: FC<Props> = ({
   >
     <thead>
       <tr>
-        { options?.showImageColumn && <th scope="col"></th> }
-        { head.map((headItem) => (<th
+        { customOptions.showImageColumn && <th scope="col"></th> }
+        { reducedHead.map((headItem) => (<th
             className={ [
               headItem.options?.noWrapHead ? 'no-wrap' : '',
               headItem.options?.sort !== undefined ? 'is-sortable': '',
@@ -96,55 +110,47 @@ const ArtefactTable: FC<Props> = ({
             </div>
           }
         </th>)) }
-        { options?.enableFavorite && <th></th> }
+        { customOptions.enableFavorite && <th></th> }
       </tr>
     </thead>
     <tbody>
       {
         items.map((item) => {
           return (
-            <tr key={item.id}>
+            <tr key={item.id} onClick={ (event) => redirectToItem(item, event) }>
               {
-                options?.showImageColumn && <td
+                customOptions.showImageColumn && <td
                   scope="row"
                   className="artefact-table__image-field"
                 >
-                  <a href={item.to}>
-                    <Image
-                      src={item.imgSrc || ''}
-                      alt={item.imgAlt}
-                      modifierWithBox={true} // -has-box artefact-line-image
-                    />
-                  </a>
+                  <Image
+                    src={item.imgSrc || ''}
+                    alt={item.imgAlt}
+                    modifierWithBox={true} // -has-box artefact-line-image
+                  />
                 </td>
               }
               {
-                head.map((headItem) => (
+                reducedHead.map((headItem) => (
                   <td key={headItem.fieldName} className={headItem.options?.noWrap ? 'no-wrap' : ''}>
                       {
-                        linkifier(
-                          !!headItem.options?.linkify,
-                          item.to,
-                          (
-                            headItem.options?.asInnerHTML
-                            ? (<span
-                              className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
-                              dangerouslySetInnerHTML={{ __html: item[headItem.fieldName].toString() }}
-                              ></span>)
-                            : (<span
-                              className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
-                              >
-                                { item[headItem.fieldName] }
-                              </span>)
-                          )
-                        )
+                        headItem.options?.asInnerHTML
+                          ? (<span
+                            className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
+                            dangerouslySetInnerHTML={{ __html: item[headItem.fieldName].toString() }}
+                            ></span>)
+                          : (<span
+                            className={`text-value ${headItem.options?.forceColumnTextWrap ? 'wrap' : ''}`}
+                            >
+                              { item[headItem.fieldName] }
+                            </span>)
                       }
                   </td>)
                 )
               }
               <td className="artefact-table__favorite">
                 {
-                  options?.enableFavorite && <div className="favorite-holder">
+                  customOptions.enableFavorite && <div className="favorite-holder">
                     <a
                       className={`favorite icon ${item.isFavorite ? 'favorite--is-active' : ''} ${isArmed ? 'favorite--is-armed' : ''}`}
                       onClick={() => { onFavoriteToggle(item.id) }}
