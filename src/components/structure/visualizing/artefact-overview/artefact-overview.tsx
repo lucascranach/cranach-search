@@ -13,6 +13,7 @@ export enum ArtefactOverviewType {
 type OverviewProps = {
   viewType: ArtefactOverviewType,
   handleArtefactAmountChange?: (amount: number) => void;
+  resetArtefactAmount?: () => void;
 }
 
 const DefaultViewType = ArtefactOverviewType.CARD;
@@ -20,6 +21,7 @@ const DefaultViewType = ArtefactOverviewType.CARD;
 const Overview: FC<OverviewProps> = ({
   viewType = DefaultViewType,
   handleArtefactAmountChange = () => {},
+  resetArtefactAmount = () => {},
   children,
 }) => {
   const artefactOverviewElRef = useRef<HTMLDivElement | null>(null);
@@ -33,8 +35,7 @@ const Overview: FC<OverviewProps> = ({
       'height': elRef.clientHeight
     };
 
-    const safetyDistance = 1;
-    const rows = Math.floor(artefactOverviewDimensions.height / tileSize) - safetyDistance;
+    const rows = Math.floor(artefactOverviewDimensions.height / tileSize);
     const cols = Math.floor(artefactOverviewDimensions.width / tileSize);
 
     return cols * rows;
@@ -55,6 +56,8 @@ const Overview: FC<OverviewProps> = ({
       window.addEventListener('resize', setFittedArtefactAmount);
 
       return () => window.removeEventListener('resize', setFittedArtefactAmount);
+    } else {
+      resetArtefactAmount();
     }
   }, [viewType, artefactOverviewElRef]);
 
