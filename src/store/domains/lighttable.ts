@@ -24,6 +24,11 @@ import {
 import { UIArtifactKind as LighttableArtifactKind } from './ui';
 export { UIArtifactKind as LighttableArtifactKind } from './ui';
 
+const initialSorting: SortingItem[] = [
+  // Literature is by default sorted by referenceNumber (ascending), so we should indicate that initially
+  { fieldName: 'referenceNumber', direction: 'asc'},
+];
+
 export default class Lighttable implements LighttableStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
   providers: LighttableProviderInterface[] = [];
@@ -35,7 +40,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     size: 60,
     from: 0,
   };
-  sorting: SortingItem[] = [];
+  sorting: SortingItem[] = initialSorting;
 
   fetchDebounceWaitInMSecs: number = 500;
   fetchDebounceHandler: undefined | number = undefined;
@@ -218,7 +223,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
   }
 
   resetSorting() {
-    this.sorting = [];
+    this.sorting = initialSorting;
   }
 
   private updateRoutingForPage() {

@@ -319,17 +319,11 @@ const Dashboard: FC = () => {
     };
   };
 
-  const getNextSortDirection = (sortDirection: SortingDirection | null): SortingDirection | null => {
-    if (!sortDirection) {
-      return 'asc';
-    } else if (sortDirection === 'asc') {
-      return 'desc';
-    } else {
-      return null;
-    }
+  const getNextSortDirection = (sortDirection: SortingDirection): SortingDirection => {
+    return sortDirection === 'asc' ? 'desc' : 'asc';
   };
 
-  const updateSortingForFieldname = (fieldName: string, direction: SortingDirection | null): void => {
+  const updateSortingForFieldname = (fieldName: string, direction: SortingDirection): void => {
     lighttable.setSortingForFieldname(fieldName, getNextSortDirection(direction));
   };
 
