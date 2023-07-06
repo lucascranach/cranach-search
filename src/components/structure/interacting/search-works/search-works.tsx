@@ -50,22 +50,28 @@ const SearchWorks: FC = () => {
 
   const mappedFiltersInfos = mapFilterGroupItemsToTreeList(filterGroups);
 
+  const fetchResults = () => {
+     lighttable.resetPagePos();
+     lighttable.fetch();
+  };
+
   const toggleFilterItemActiveStatus = (groupKey: string, filterInfoId: string) => {
      searchWorks.toggleFilterItemActiveStatus(groupKey, filterInfoId);
+     fetchResults();
   };
 
   const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search-works--is-active' : '';
 
   const triggerFilterRequest = () => {
     searchWorks.applyFreetextFields();
-    searchWorks.triggerFilterRequest();
-  }
+    fetchResults();
+  };
 
   const triggerFilterRequestOnEnter = (e: KeyboardEvent) => {
     if ((e.code && e.code === 'Enter') || (e.keyCode === 13)) {
       triggerFilterRequest();
     }
-  }
+  };
 
   return (
     <div
@@ -151,7 +157,10 @@ const SearchWorks: FC = () => {
             <Checkbox
               className="filter-info-item__checkbox"
               checked={ searchWorks.selectedFilters.isBestOf }
-              onChange={ () => searchWorks.setIsBestOf(!searchWorks.selectedFilters.isBestOf) }
+              onChange={ () => {
+                searchWorks.setIsBestOf(!searchWorks.selectedFilters.isBestOf);
+                fetchResults();
+              }}
             />
             <span
               className="filter-info-item__name"
@@ -170,7 +179,10 @@ const SearchWorks: FC = () => {
               bounds={searchWorks.datingRangeBounds}
               start={searchWorks.selectedFilters.dating.fromYear}
               end={searchWorks.selectedFilters.dating.toYear}
-              onChange={ (start: number, end: number) => searchWorks.setDating(start, end) }
+              onChange={ (start: number, end: number) => {
+                searchWorks.setDating(start, end);
+                fetchResults();
+              }}
             ></DatingRangeslider>
           </Accordion.Entry>
 
@@ -217,7 +229,7 @@ const SearchWorks: FC = () => {
               icon="delete_sweep"
               click={ () => {
                 searchWorks.resetAllFilters();
-                searchWorks.triggerFilterRequest();
+                fetchResults();
               } }
             >{ t('reset filters') }</Btn>
           </div>

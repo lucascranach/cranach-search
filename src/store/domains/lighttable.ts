@@ -45,6 +45,8 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
   fetchDebounceWaitInMSecs: number = 500;
   fetchDebounceHandler: undefined | number = undefined;
 
+  loadingStateActivationDelayInMSecs: number = 50;
+
   constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
 
@@ -106,7 +108,9 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     this.fetchDebounceHandler = undefined;
 
     this.fetchDebounceHandler = window.setTimeout(async () => {
-      this.setResultLoading(true);
+      const loadingIndicatorTimeoutHandler = window.setTimeout(() => {
+        this.setResultLoading(true);
+      }, this.loadingStateActivationDelayInMSecs);
 
       try {
         // The provider is starts the request and is also the one setting
@@ -117,6 +121,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
       } catch(err: any) {
         this.setResultFetchingFailed(err.toString());
       } finally {
+        clearTimeout(loadingIndicatorTimeoutHandler);
         this.setResultLoading(false);
       }
     }, this.fetchDebounceWaitInMSecs);
@@ -240,7 +245,6 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
     this.setFrom(gatedPagePos * this.pagination.size);
     this.updateRoutingForPage();
-    this.fetch();
   }
 
   private updateRoutingForSorting() {

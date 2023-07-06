@@ -51,22 +51,28 @@ const SearchArchivals: FC = () => {
 
   const mappedFiltersFlatInfos = mapFilterGroupItemsToTreeList(filterFlatGroups);
 
+  const fetchResults = () => {
+     lighttable.resetPagePos();
+     lighttable.fetch();
+  };
+
   const toggleFilterItemActiveStatus = (groupKey: string, filterInfoId: string) => {
      searchArchivals.toggleFilterItemActiveStatus(groupKey, filterInfoId);
+     fetchResults();
   };
 
   const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search-archivals--is-active' : '';
 
   const triggerFilterRequest = () => {
     searchArchivals.applyFreetextFields();
-    searchArchivals.triggerFilterRequest();
-  }
+    fetchResults();
+  };
 
   const triggerFilterRequestOnEnter = (e: KeyboardEvent) => {
     if ((e.code && e.code === 'Enter') || (e.keyCode === 13)) {
       triggerFilterRequest();
     }
-  }
+  };
 
   return (
     <div
@@ -110,7 +116,10 @@ const SearchArchivals: FC = () => {
               bounds={searchArchivals.datingRangeBounds}
               start={searchArchivals.selectedFilters.dating.fromYear}
               end={searchArchivals.selectedFilters.dating.toYear}
-              onChange={ (start: number, end: number) => searchArchivals.setDating(start, end) }
+              onChange={ (start: number, end: number) => {
+                searchArchivals.setDating(start, end)
+                fetchResults();
+              } }
             ></DatingRangeslider>
           </Accordion.Entry>
 
@@ -157,7 +166,7 @@ const SearchArchivals: FC = () => {
               icon="delete_sweep"
               click={ () => {
                 searchArchivals.resetAllFilters();
-                searchArchivals.triggerFilterRequest();
+                fetchResults();
               } }
             >{ t('reset filters') }</Btn>
           </div>

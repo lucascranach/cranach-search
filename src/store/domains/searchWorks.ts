@@ -145,23 +145,12 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     this.selectedFilters.dating.fromYear = fromYear;
     this.selectedFilters.dating.toYear = toYear;
     this.updateRoutingForDating();
-    this.triggerFilterRequest();
-  }
-
-  setSize(size: number) {
-    this.lighttable.setSize(size);
-
-    this.triggerFilterRequest();
-  }
-
-  setFrom(from: number) {
-    this.lighttable.setFrom(from);
+    this.lighttable.fetch();
   }
 
   setIsBestOf(isBestOf: boolean) {
     this.selectedFilters.isBestOf = isBestOf;
     this.updateRoutingForIsBestOf();
-    this.triggerFilterRequest();
   }
 
   setFilters(filters: SearchWorksFilters) {
@@ -192,15 +181,10 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     }
 
     this.updateRoutingForFilterGroups();
-    this.triggerFilterRequest();
   }
 
-  async triggerFilterRequest(resetPagePos: boolean = true) {
+  async triggerFilterRequest() {
     const { lang } = this.rootStore.ui;
-
-    if (resetPagePos) {
-      this.lighttable.resetPagePos();
-    }
 
     const updatedFilters = {
       ...this.selectedFilters,
@@ -214,22 +198,21 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
       entityTypes: this.rootStore.lighttable.entityTypes,
     };
 
-    return this.worksSearchAPI.searchByFiltersAndTerm(
+    const response = await this.worksSearchAPI.searchByFiltersAndTerm(
       updatedFilters,
       this.freetextFields,
       lang,
-    ).then((response) => {
-      if (response) {
-        this.lighttable.setResult(response.result);
-        this.setFilters(response.filters);
-      }
-      this.lighttable.setResultLoading(false);
-      this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
-    });
+    )
+
+    if (response) {
+      this.lighttable.setResult(response.result);
+      this.setFilters(response.filters);
+    }
+    this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
   }
 
   async triggerRequest(): Promise<void> {
-      return this.triggerFilterRequest(false);
+      return this.triggerFilterRequest();
   }
 
   supportsArtifactKind(artifactKind: LighttableArtifactKind) {
@@ -431,11 +414,9 @@ export interface SearchWorksStoreInterface {
 
   setFreetextFields(fields: Partial<FreeTextFields>): void;
   setDating(fromYear: number, toYear: number): void;
-  setSize(size: number): void;
-  setFrom(from: number): void;
   setIsBestOf(isBestOf: boolean): void;
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
-  triggerFilterRequest(resetPagePos?: boolean): void;
+  triggerFilterRequest(): void;
   applyFreetextFields(): void;
   resetAllFilters(): void;
 }

@@ -144,17 +144,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
     this.selectedFilters.dating.fromYear = fromYear;
     this.selectedFilters.dating.toYear = toYear;
     this.updateRoutingForDating();
-    this.triggerFilterRequest();
-  }
-
-  setSize(size: number) {
-    this.lighttable.setSize(size);
-
-    this.triggerFilterRequest();
-  }
-
-  setFrom(from: number) {
-    this.lighttable.setFrom(from);
+    this.lighttable.fetch();
   }
 
   checkFilterItemActiveStatus(groupKey: string, filterItemId: string) {
@@ -181,15 +171,11 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
     }
 
     this.updateRoutingForFilterGroups();
-    this.triggerFilterRequest();
+    this.lighttable.fetch();
   }
 
-  async triggerFilterRequest(resetPagePos: boolean = true) {
+  async triggerFilterRequest() {
     const { lang } = this.rootStore.ui;
-
-    if (resetPagePos) {
-      this.lighttable.resetPagePos();
-    }
 
     const updatedFilters = {
       ...this.selectedFilters,
@@ -203,23 +189,22 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
       entityTypes: this.rootStore.lighttable.entityTypes,
     };
 
-    return this.literatureReferencesSearchAPI.searchByFilters(
+    const response = await this.literatureReferencesSearchAPI.searchByFilters(
       updatedFilters,
       this.freetextFields,
       this.lighttable.sorting,
       lang,
-    ).then((response) => {
-      if (response) {
-        this.lighttable.setResult(response.result);
-        this.setFilters(SearchLiteratureReferences.sortFilters(response.filters));
-      }
-      this.lighttable.setResultLoading(false);
-      this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
-    });
+    );
+
+    if (response) {
+      this.lighttable.setResult(response.result);
+      this.setFilters(SearchLiteratureReferences.sortFilters(response.filters));
+    }
+    this.triggerExtendedFilterRequestForLocalStorage(updatedFilters, lang);
   }
 
   async triggerRequest(): Promise<void> {
-      return this.triggerFilterRequest(false);
+      return this.triggerFilterRequest();
   }
 
   supportsArtifactKind(artifactKind: LighttableArtifactKind) {
@@ -277,7 +262,7 @@ export default class SearchLiteratureReferences implements SearchLiteratureRefer
     this.selectedFilters = createInitialFilters();
 
     this.updateAllFilterRoutings();
-    this.triggerFilterRequest();
+    this.lighttable.fetch();
   }
 
   private updateRoutingForFilterGroups() {
@@ -428,10 +413,8 @@ export interface SearchLiteratureReferencesStoreInterface {
   setFreetextFields(fields: Partial<FreeTextFields>): void;
   applyFreetextFields(): void;
   setDating(fromYear: number, toYear: number): void;
-  setSize(size: number): void;
-  setFrom(from: number): void;
   checkFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
   toggleFilterItemActiveStatus(groupKey: string, filterItemId: string): void;
-  triggerFilterRequest(resetPagePos?: boolean): void;
+  triggerFilterRequest(): void;
   resetAllFilters(): void;
 }
