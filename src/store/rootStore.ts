@@ -31,9 +31,9 @@ export default class RootStore implements RootStoreInterface {
       ? (import.meta.env.MODE).trim()
       : '';
     this.routing = new Routing(this, history);
+    this.lighttable = new Lighttable(this);
     this.ui = new UI(this);
     this.collection = new Collection(this, CollectionAPI);
-    this.lighttable = new Lighttable(this);
     this.searchWorks = new SearchWorks(this, WorksAPI);
     this.searchArchivals = new SearchArchivals(this, ArchivalsAPI);
     this.searchLiteratureReferences = new SearchLiteratureReferences(this, LiteratureReferencesAPI)
