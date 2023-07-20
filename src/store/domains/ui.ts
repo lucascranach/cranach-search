@@ -60,18 +60,6 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       () => this.fetchForCurrentSideBarContent(),
     );
 
-    // by limiting literature-references to the table overview type,
-    //  we also need to select that overview type when the artifact
-    //  kind changes to literature-references
-    reaction(
-      () => this.artifactKind,
-      () => {
-        if (this.artifactKind === UIArtifactKind.LITERATURE_REFERENCES) {
-          this.setOverviewViewType(UIOverviewViewType.TABLE);
-        }
-      }
-    );
-
     reaction(
       () => this.sidebarContent,
       () => {
@@ -154,6 +142,12 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
 
     // Clear current lighttable
     this.rootStore.lighttable.currentProvider?.resetAllFilters();
+
+    // we need to select the table overview type when the artifact
+    //  kind changes to literature-references
+    if (artifactKind === UIArtifactKind.LITERATURE_REFERENCES) {
+      this.setOverviewViewType(UIOverviewViewType.TABLE);
+    }
 
     this.artifactKind = artifactKind;
     this.rootStore.routing.resetSearchQueryParams();
@@ -335,27 +329,27 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   private handleRoutingNotificationKind(value: string) {
     switch (value) {
       case 'works':
-        this.artifactKind = UIArtifactKind.WORKS;
+        this.setArtifactKind(UIArtifactKind.WORKS);
         break;
 
       case 'paintings':
-        this.artifactKind = UIArtifactKind.PAINTINGS;
+        this.setArtifactKind(UIArtifactKind.PAINTINGS);
         break;
 
       case 'archivals':
-        this.artifactKind = UIArtifactKind.ARCHIVALS;
+        this.setArtifactKind(UIArtifactKind.ARCHIVALS);
         break;
 
       case 'literature_references':
-        this.artifactKind = UIArtifactKind.LITERATURE_REFERENCES;
+        this.setArtifactKind(UIArtifactKind.LITERATURE_REFERENCES);
         break;
 
       default:
-        this.artifactKind = UIArtifactKind.WORKS;
+        this.setArtifactKind(UIArtifactKind.WORKS);
 
         // Needed to be backwards compatible / support old kind values
         if (value === 'PAINTINGS') {
-          this.artifactKind = UIArtifactKind.PAINTINGS;
+          this.setArtifactKind(UIArtifactKind.PAINTINGS);
         }
 
         // Keep the routing info updated to use the new values
