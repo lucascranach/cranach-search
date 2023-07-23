@@ -88,8 +88,8 @@ const getQueryStringForFiltersAndTerm = (
     language: langCode,
   };
 
-  if (import.meta.env.VITE_LIST_ARTEFACTS_WITHOUT_IMAGES === 'false') {
-    params['size_height:gt'] = 200; // 9000: 2; 8000: 129; 7000: 393
+  if (import.meta.env.VITE_LIST_PUBLISHED_ARTEFACTS_ONLY === 'true') {
+    params['is_published'] = 'true';
   }
 
   if (filters.size) {
