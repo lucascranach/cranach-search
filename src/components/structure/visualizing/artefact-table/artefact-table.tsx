@@ -60,7 +60,7 @@ const ArtefactTable: FC<Props> = ({
   });
 
   const reducedHead = customOptions.hideEmptyColumns === true
-    ? head.filter((headItem) => nonEmptyFieldNames.includes(headItem.fieldName))
+    ? head.filter((headItem) => !!headItem.options?.sort || nonEmptyFieldNames.includes(headItem.fieldName))
     : head;
 
   useEffect(() => {
