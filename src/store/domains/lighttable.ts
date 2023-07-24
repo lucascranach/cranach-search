@@ -216,7 +216,6 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     this.sorting = (direction !== null) ? [{ fieldName, direction }] : [];
 
     this.updateRoutingForSorting();
-    this.fetch();
   }
 
   getSortingForFieldname(fieldName: string): SortingDirection | null {

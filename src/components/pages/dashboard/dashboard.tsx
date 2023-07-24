@@ -325,6 +325,8 @@ const Dashboard: FC = () => {
 
   const updateSortingForFieldname = (fieldName: string, direction: SortingDirection): void => {
     lighttable.setSortingForFieldname(fieldName, getNextSortDirection(direction));
+    lighttable.resetPagePos();
+    lighttable.fetch();
   };
 
   return (
