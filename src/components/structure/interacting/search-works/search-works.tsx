@@ -113,7 +113,8 @@ const SearchWorks: FC = () => {
 
           <TextInput
             className="search-input"
-            label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) } value={ searchWorks.freetextFields.FRNr }
+            label={ t('{{catalogWorkReferenceNames}} No.', { catalogWorkReferenceNames }) }
+            value={ searchWorks.freetextFields.FRNr }
             onChange={ FRNr => searchWorks.setFreetextFields({ FRNr }) }
             onKeyDown={ triggerFilterRequestOnEnter }
             onReset={ triggerFilterRequest }

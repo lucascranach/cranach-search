@@ -257,6 +257,7 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
             case 'search_term':
             case 'title':
+            case 'FRNr':
             case 'location':
             case 'inventory_number':
               this.handleRoutingNotificationForFreetext(name, value);
@@ -376,6 +377,10 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
 
       case 'title':
         this.freetextFields.title = value;
+        break;
+
+      case 'FRNr':
+        this.freetextFields.FRNr = value;
         break;
 
       case 'location':
