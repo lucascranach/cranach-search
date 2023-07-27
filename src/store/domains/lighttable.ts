@@ -24,6 +24,11 @@ import {
 import { UIArtifactKind as LighttableArtifactKind } from './ui';
 export { UIArtifactKind as LighttableArtifactKind } from './ui';
 
+const initialSorting: SortingItem[] = [
+  // Literature is by default sorted by referenceNumber (ascending), so we should indicate that initially
+  { fieldName: 'referenceNumber', direction: 'asc'},
+];
+
 export default class Lighttable implements LighttableStoreInterface, RoutingObservableInterface {
   rootStore: RootStoreInterface;
   providers: LighttableProviderInterface[] = [];
@@ -35,10 +40,12 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     size: 60,
     from: 0,
   };
-  sorting: SortingItem[] = [];
+  sorting: SortingItem[] = initialSorting;
 
   fetchDebounceWaitInMSecs: number = 500;
   fetchDebounceHandler: undefined | number = undefined;
+
+  loadingStateActivationDelayInMSecs: number = 50;
 
   constructor(rootStore: RootStoreInterface) {
     makeAutoObservable(this);
@@ -101,7 +108,9 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     this.fetchDebounceHandler = undefined;
 
     this.fetchDebounceHandler = window.setTimeout(async () => {
-      this.setResultLoading(true);
+      const loadingIndicatorTimeoutHandler = window.setTimeout(() => {
+        this.setResultLoading(true);
+      }, this.loadingStateActivationDelayInMSecs);
 
       try {
         // The provider is starts the request and is also the one setting
@@ -112,6 +121,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
       } catch(err: any) {
         this.setResultFetchingFailed(err.toString());
       } finally {
+        clearTimeout(loadingIndicatorTimeoutHandler);
         this.setResultLoading(false);
       }
     }, this.fetchDebounceWaitInMSecs);
@@ -206,7 +216,6 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     this.sorting = (direction !== null) ? [{ fieldName, direction }] : [];
 
     this.updateRoutingForSorting();
-    this.fetch();
   }
 
   getSortingForFieldname(fieldName: string): SortingDirection | null {
@@ -218,7 +227,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
   }
 
   resetSorting() {
-    this.sorting = [];
+    this.sorting = initialSorting;
   }
 
   private updateRoutingForPage() {
@@ -235,7 +244,6 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
     this.setFrom(gatedPagePos * this.pagination.size);
     this.updateRoutingForPage();
-    this.fetch();
   }
 
   private updateRoutingForSorting() {

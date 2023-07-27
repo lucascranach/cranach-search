@@ -4,7 +4,7 @@ import Image from '../../../base/visualizing/image';
 
 import './artefact-table.scss';
 
-export type ArtefactTableSortingDirection = 'asc' | 'desc' | null;
+export type ArtefactTableSortingDirection = 'asc' | 'desc';
 
 interface ItemProp {
   id: string;
@@ -33,7 +33,7 @@ export interface Props {
     enableFavorite?: boolean,
     hideEmptyColumns?: boolean,
   },
-  onSortChange?: (fieldName: string, direction: ArtefactTableSortingDirection | null) => void,
+  onSortChange?: (fieldName: string, direction: ArtefactTableSortingDirection) => void,
   onFavoriteToggle: (id: string) => void,
 }
 
@@ -60,7 +60,7 @@ const ArtefactTable: FC<Props> = ({
   });
 
   const reducedHead = customOptions.hideEmptyColumns === true
-    ? head.filter((headItem) => nonEmptyFieldNames.includes(headItem.fieldName))
+    ? head.filter((headItem) => !!headItem.options?.sort || nonEmptyFieldNames.includes(headItem.fieldName))
     : head;
 
   useEffect(() => {
@@ -85,6 +85,8 @@ const ArtefactTable: FC<Props> = ({
             className={ [
               headItem.options?.noWrapHead ? 'no-wrap' : '',
               headItem.options?.sort !== undefined ? 'is-sortable': '',
+              'sort',
+              headItem.options?.sort ? `sort--${headItem.options.sort}` : '',
             ].join(' ') }
             key={headItem.fieldName}
             scope="col"
@@ -92,23 +94,12 @@ const ArtefactTable: FC<Props> = ({
               (headItem.options?.sort !== undefined && onSortChange)
                 ? () => onSortChange(
                     headItem.fieldName,
-                    headItem.options?.sort || null,
+                    headItem.options?.sort || 'asc',
                   )
                 : () => {}
             }
           >
           {headItem.text}
-          {
-            headItem.options?.sort !== undefined && <div
-              className={[
-                'sort',
-                headItem.options?.sort ? `sort--${headItem.options.sort}` : ''
-              ].join(' ')}
-            >
-              <div className="sort__asc"></div>
-              <div className="sort__desc"></div>
-            </div>
-          }
         </th>)) }
         { customOptions.enableFavorite && <th></th> }
       </tr>
@@ -148,16 +139,16 @@ const ArtefactTable: FC<Props> = ({
                   </td>)
                 )
               }
-              <td className="artefact-table__favorite">
-                {
-                  customOptions.enableFavorite && <div className="favorite-holder">
+              {
+                customOptions.enableFavorite && (<td className="artefact-table__favorite">
+                  <div className="favorite-holder">
                     <a
                       className={`favorite icon ${item.isFavorite ? 'favorite--is-active' : ''} ${isArmed ? 'favorite--is-armed' : ''}`}
                       onClick={() => { onFavoriteToggle(item.id) }}
                     >{item.isFavorite ? 'remove' : 'add'}</a>
                   </div>
-                }
-              </td>
+                </td>)
+              }
             </tr>
           );
         })

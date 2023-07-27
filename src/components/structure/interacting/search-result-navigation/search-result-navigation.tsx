@@ -70,10 +70,12 @@ const SearchResultNavigation: FC<Props> = ({
       switch(e.code) {
         case ARROW_LEFT:
           lighttable.setPagination(-1);
+          lighttable.fetch();
           break;
 
         case ARROW_RIGHT:
           lighttable.setPagination(1);
+          lighttable.fetch();
           break;
       }
     };
@@ -90,14 +92,24 @@ const SearchResultNavigation: FC<Props> = ({
             ? arrayToClassName([paginationClass, firstItemClass, clickableClass])
             : arrayToClassName([paginationClass, firstItemClass])
           }
-          onClick={() => { firstIsActive && lighttable.setPagination(-1); }}
+          onClick={() => {
+            if(firstIsActive) {
+              lighttable.setPagination(-1);
+              lighttable.fetch();
+            }
+          }}
         >&lt;</li>
         <li
           className={lastIsActive
             ? arrayToClassName([paginationClass, lastItemClass, clickableClass])
             : arrayToClassName([paginationClass, lastItemClass])
           }
-          onClick={() => { lastIsActive && lighttable.setPagination(1); }}
+          onClick={() => {
+            if(lastIsActive) {
+              lighttable.setPagination(1);
+              lighttable.fetch();
+            }
+          }}
         >&gt;</li>
       </ul>
       <ul className="pagination is-hidden-vp-small">
@@ -105,7 +117,10 @@ const SearchResultNavigation: FC<Props> = ({
           <li
             className={navItem.className}
             key={navItem.pos}
-            onClick={() => { lighttable.jumpToPagePos(navItem.pos) }}
+            onClick={() => {
+              lighttable.jumpToPagePos(navItem.pos);
+              lighttable.fetch();
+            }}
           >{navItem.text}</li>))
         }
 
