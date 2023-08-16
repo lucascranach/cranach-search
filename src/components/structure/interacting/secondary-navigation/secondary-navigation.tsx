@@ -73,9 +73,9 @@ const SecondaryNavigation = () => {
 
         <li className="switcher-row">
           <ArtefactOverview.Switcher
-            viewType={overviewViewTypeMap[ui.overviewViewType]}
+            viewType={overviewViewTypeMap[ui.overviewViewType[ui.artifactKind]]}
             className="overview-switcher"
-            handleChange={(type) => ui.setOverviewViewType(reverseOverviewViewTypeMap[type]) }
+            handleChange={(type) => ui.setOverviewViewType(ui.artifactKind, reverseOverviewViewTypeMap[type]) }
             limitedToViews={ui.limitedToOverviews.map((currRestrictedOverview) => overviewViewTypeMap[currRestrictedOverview])}
           ></ArtefactOverview.Switcher>
 
