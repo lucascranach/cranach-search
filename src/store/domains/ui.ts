@@ -23,7 +23,13 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   artifactKind: UIArtifactKind = UIArtifactKind.WORKS;
   sidebarContent: UISidebarContentType = UISidebarContentType.FILTER;
   sidebarStatus: UISidebarStatusType = UISidebarStatusType.MAXIMIZED;
-  overviewViewType: UIOverviewViewType = UIOverviewViewType.CARD;
+  overviewViewType: UIOverviewViewTypeMap = {
+    [UIArtifactKind.WORKS]: UIOverviewViewType.CARD,
+    [UIArtifactKind.ARCHIVALS]: UIOverviewViewType.CARD,
+    [UIArtifactKind.GRAPHICS]: UIOverviewViewType.CARD,
+    [UIArtifactKind.LITERATURE_REFERENCES]: UIOverviewViewType.TABLE,
+    [UIArtifactKind.PAINTINGS]: UIOverviewViewType.CARD,
+  };
   secondaryNavigationIsVisible: boolean = false;
   additionalSearchInputsVisible: boolean = false;
   allowedLangs: Record<string, string> = { de: 'DE', en: 'EN' };
@@ -122,8 +128,8 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     this.sidebarStatus = status;
   }
 
-  setOverviewViewType(type: UIOverviewViewType) {
-    this.overviewViewType = type;
+  setOverviewViewType(artifactKind: UIArtifactKind, type: UIOverviewViewType) {
+    this.overviewViewType[artifactKind] = type;
     this.updateLocalStorage();
   }
 
@@ -146,7 +152,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     // we need to select the table overview type when the artifact
     //  kind changes to literature-references
     if (artifactKind === UIArtifactKind.LITERATURE_REFERENCES) {
-      this.setOverviewViewType(UIOverviewViewType.TABLE);
+      this.setOverviewViewType(artifactKind, UIOverviewViewType.TABLE);
     }
 
     this.artifactKind = artifactKind;
@@ -207,7 +213,9 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     }
 
     /* Sidebar status */
-    if (item.overviewViewType && Object.values(UIOverviewViewType).includes(item.overviewViewType)) {
+    
+    // TODO: Check if all values from local storage are valid (keys and values)
+    if (item.overviewViewType && item.overviewViewType[this.artifactKind] && (Object.values(UIOverviewViewType) as Array<string>).includes(item.overviewViewType[this.artifactKind])) {
       this.overviewViewType = item.overviewViewType;
     }
 
@@ -403,7 +411,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
 type StorageItemType = {
   sidebarContent: UISidebarContentType;
   sidebarStatus: UISidebarStatusType;
-  overviewViewType: UIOverviewViewType;
+  overviewViewType: UIOverviewViewTypeMap;
   secondaryNavigationIsVisible: boolean;
   additionalSearchInputsVisible: boolean;
   idsOfExpandedFiltersInFilterTree: string[];
@@ -423,6 +431,11 @@ export enum UIOverviewViewType {
   LIST = 'list',
   TABLE = 'table',
 }
+
+export type UIOverviewViewTypeMap = {
+  [key in UIArtifactKind]: UIOverviewViewType
+}
+
 export type UIDimensionsType = {
    width: number,
    height: number,
@@ -440,12 +453,13 @@ export enum UIArtifactKind {
   ARCHIVALS = 1 << 2,
   LITERATURE_REFERENCES = 1 << 3,
 }
+
 export interface UIStoreInterface {
   lang: string;
   artifactKind: UIArtifactKind;
   sidebarContent: UISidebarContentType;
   sidebarStatus: UISidebarStatusType;
-  overviewViewType: UIOverviewViewType;
+  overviewViewType: UIOverviewViewTypeMap;
   limitedToOverviews: UIOverviewViewType[];
   secondaryNavigationIsVisible: boolean;
   additionalSearchInputsVisible: boolean;
@@ -455,7 +469,7 @@ export interface UIStoreInterface {
   setLanguage(lang: string): void;
   setSideBarContent(content: UISidebarContentType): void;
   setSideBarStatus(status: UISidebarStatusType): void;
-  setOverviewViewType(type: UIOverviewViewType): void;
+  setOverviewViewType(artifactKind: UIArtifactKind, type: UIOverviewViewType): void;
   setSecondaryNavigationIsVisible(isVisible: boolean): void;
   setAdditionalSearchInputsVisible(isVisible: boolean): void;
   setArtifactKind(artifactKind: UIArtifactKind): void;
@@ -465,3 +479,4 @@ export interface UIStoreInterface {
   setFilterItemExpandedState(filterItemId: string, collapseState: boolean): void;
   fetchForCurrentSideBarContent(): void;
 }
+

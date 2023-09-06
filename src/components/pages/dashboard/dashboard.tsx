@@ -177,7 +177,7 @@ const Dashboard: FC = () => {
     return [];
   }
 
-  const viewType = mapSelectedOverviewViewType(ui.overviewViewType);
+  const viewType = mapSelectedOverviewViewType(ui.overviewViewType[ui.artifactKind]);
 
   const tablePropsMapper = (items: GlobalSearchArtifact[], artifactKind: UIArtifactKind): Pick<ArtifactTableProps, 'head' | 'items' | 'options'> => {
     if (items.length === 0) {
@@ -340,7 +340,7 @@ const Dashboard: FC = () => {
         ref={mainContentEl}
       >
         <ArtefactOverview.Overview
-          viewType={mapSelectedOverviewViewType(ui.overviewViewType)}
+          viewType={mapSelectedOverviewViewType(ui.overviewViewType[ui.artifactKind])}
           handleArtefactAmountChange={ (amount: number) => {
             lighttable.setSize(amount);
             lighttable.fetch();
