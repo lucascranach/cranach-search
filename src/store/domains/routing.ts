@@ -90,6 +90,7 @@ export default class Routing implements RoutingStoreInterface {
 
     const pathnameSegments = this.state.location.pathname.split('/').filter(seg => !!seg);
 
+    if (pathnameSegments[0] === 'search') pathnameSegments[1] = 'search';
     pathnameSegments[0] = langCode;
 
     this.history.replace({
