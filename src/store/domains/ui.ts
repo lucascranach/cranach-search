@@ -8,10 +8,12 @@ import {
 import type {
   ObserverInterface as RoutingObservableInterface,
   NotificationInterface as RoutingNotificationInterface,
+  SearchQueryParamChange,
 } from './routing';
 import {
   NotificationType as RoutingNotificationType,
   ChangeAction as RoutingChangeAction,
+  ChangeAction,
 } from './routing';
 import { RootStoreInterface } from '../rootStore';
 
@@ -55,6 +57,13 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
         useSuspense: false,
       },
     });
+
+    if (rootStore.routing.history.location.search.includes('loadLatestSearchConfiguration=true')) {
+      const lastParams = this.loadSearchQueryParamsFromLocalStorage();
+      const changes: SearchQueryParamChange = lastParams.split('&').map(pair => [ChangeAction.ADD, [pair.split('=')[0], pair.split('=')[1]]]);
+      rootStore.routing.resetSearchQueryParams();
+      rootStore.routing.updateSearchQueryParams(changes);
+    }
 
     this.loadFromLocalStorage();
     this.bindToScroll();
@@ -195,15 +204,21 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     window.localStorage.setItem(this.searchUiLocalStorageKey, JSON.stringify(item));
   }
 
+  loadSearchQueryParamsFromLocalStorage() {
+    const rawItem = window.localStorage.getItem('searchQueryParams');
+    if(!rawItem) return '';
+    return rawItem;
+  }
+
   loadFromLocalStorage() {
     const rawItem = window.localStorage.getItem(this.searchUiLocalStorageKey);
-
+    
     if (!rawItem) return;
-
+    
     const item = JSON.parse(rawItem) as Partial<StorageItemType>;
 
     /* Sidebar content */
-    if (item.sidebarContent && Object.values(UISidebarContentType).includes(item.sidebarContent )) {
+    if (item.sidebarContent && Object.values(UISidebarContentType).includes(item.sidebarContent)) {
       this.sidebarContent = item.sidebarContent;
     }
 
