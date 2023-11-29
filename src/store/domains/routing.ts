@@ -98,6 +98,7 @@ export default class Routing implements RoutingStoreInterface {
       search: Array.from(this.searchParams).length ? `?${this.searchParams.toString()}` : '',
     });
     this.disableNotify = false;
+    document.querySelector('html')?.setAttribute('lang', langCode)
   }
 
   updateSearchQueryParams(change: SearchQueryParamChange) {
