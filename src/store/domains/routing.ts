@@ -56,11 +56,17 @@ export default class Routing implements RoutingStoreInterface {
 
   updateState(newState: Update) {
     if (newState.location.search !== this.state.location.search) {
-      const searchParams = Array.from((new URLSearchParams(newState.location.search)).entries());
+      const newSearchParams = Array.from((new URLSearchParams(newState.location.search)).entries());
+      const currentSearchParams = Array.from((new URLSearchParams(this.state.location.search)).entries());
+      
+      const changedParams = currentSearchParams.filter(([key, value]) => {
+        const oldValue = newSearchParams.find(([oldKey]) => oldKey === key);
+        return !oldValue || oldValue[1] !== value;
+      });
 
       this.notifyAllObservers({
         type: NotificationType.SEARCH_CHANGE,
-        params: searchParams,
+        params: changedParams,
       });
     }
 
