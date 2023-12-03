@@ -308,8 +308,18 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
     const { fromYear, toYear } = this.selectedFilters.dating;
 
     this.rootStore.routing.updateSearchQueryParams([
-      [(fromYear ? RoutingChangeAction.ADD : RoutingChangeAction.REMOVE), ['from_year', fromYear.toString()]],
-      [RoutingChangeAction.ADD, ['to_year', toYear <= THRESOLD_UPPER_DATING_YEAR ? toYear.toString() : 'max']],
+      [
+        (fromYear !== MIN_LOWER_DATING_YEAR
+          ? RoutingChangeAction.ADD
+          : RoutingChangeAction.REMOVE),
+        ['from_year', fromYear.toString()],
+      ],
+      [
+        (toYear !== MAX_UPPER_DATING_YEAR
+          ? RoutingChangeAction.ADD
+          : RoutingChangeAction.REMOVE),
+        ['to_year', toYear <= THRESOLD_UPPER_DATING_YEAR ? toYear.toString() : 'max'],
+        ],
     ]);
   }
 
