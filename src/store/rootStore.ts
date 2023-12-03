@@ -36,7 +36,9 @@ export default class RootStore implements RootStoreInterface {
     this.collection = new Collection(this, CollectionAPI);
     this.searchWorks = new SearchWorks(this, WorksAPI);
     this.searchArchivals = new SearchArchivals(this, ArchivalsAPI);
-    this.searchLiteratureReferences = new SearchLiteratureReferences(this, LiteratureReferencesAPI)
+    this.searchLiteratureReferences = new SearchLiteratureReferences(this, LiteratureReferencesAPI);
+
+    this.routing.init();
   }
 }
 

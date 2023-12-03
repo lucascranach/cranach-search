@@ -9,6 +9,7 @@ export default class Routing implements RoutingStoreInterface {
   history: History;
   disableNotify: boolean = false;
   routingObservers: ObserverInterface[] = [];
+  initialized: boolean = false;
 
   public state: Update = {
     action: Action.Pop,
@@ -31,13 +32,6 @@ export default class Routing implements RoutingStoreInterface {
 
     this.rootStore = rootStore;
     this.history = history;
-
-    history.listen(this.updateState.bind(this));
-
-    this.updateState({
-      action: history.action,
-      location: history.location,
-    });
   }
 
   /* Computed */
@@ -54,12 +48,22 @@ export default class Routing implements RoutingStoreInterface {
 
   /* Actions */
 
-  updateState(newState: Update) {
+  init() {
+    this.updateState({
+      action: this.history.action,
+      location: this.history.location,
+    }, true);
+
+    this.history.listen(this.updateState.bind(this));
+
+    this.initialized = true;
+  }
+
+  updateState(newState: Update, initial: boolean = false) {
     if (newState.location.search !== this.state.location.search) {
       const searchParams = Array.from((new URLSearchParams(newState.location.search)).entries());
-
       this.notifyAllObservers({
-        type: NotificationType.SEARCH_CHANGE,
+        type: initial ? NotificationType.SEARCH_INIT : NotificationType.SEARCH_CHANGE,
         params: searchParams,
       });
     }
@@ -68,7 +72,7 @@ export default class Routing implements RoutingStoreInterface {
       const [lang = ''] = newState.location.pathname.split('/').filter((seg) => !!seg);
 
       this.notifyAllObservers({
-        type: NotificationType.PATH_CHANGE,
+        type: initial ? NotificationType.PATH_INIT : NotificationType.PATH_CHANGE,
         params: [['lang', lang]],
       })
     }
@@ -81,11 +85,14 @@ export default class Routing implements RoutingStoreInterface {
 
   addObserver(observer: ObserverInterface) {
     this.routingObservers.push(observer);
+
     this.notifyObserverWithCurrentSearchParams(observer);
     this.notifyObserverWithCurrentPathParams(observer);
   }
 
   updateLanguageParam(langCode: string) {
+    if (!this.initialized) return;
+
     this.disableNotify = true;
 
     const pathnameSegments = this.state.location.pathname.split('/').filter(seg => !!seg);
@@ -102,6 +109,8 @@ export default class Routing implements RoutingStoreInterface {
   }
 
   updateSearchQueryParams(change: SearchQueryParamChange) {
+    if (!this.initialized) return;
+
     const currentSearchParams = this.searchParams;
     const updatedSearchParams = change.reduce((acc, [action, [name, value] = ['', '']]) => {
       switch (action) {
@@ -126,6 +135,8 @@ export default class Routing implements RoutingStoreInterface {
   }
 
   resetSearchQueryParams() {
+    if (!this.initialized) return;
+
     const emptySearchParams = new URLSearchParams();
 
     this.disableNotify = true;
@@ -165,7 +176,7 @@ export default class Routing implements RoutingStoreInterface {
   }
 
   notifyAllObservers(notification: NotificationInterface) {
-    if (this.disableNotify) { return; }
+    if (this.disableNotify) return;
 
     this.routingObservers.forEach(observer => observer.notify(notification));
   }
@@ -178,6 +189,7 @@ export default class Routing implements RoutingStoreInterface {
 export interface RoutingStoreInterface {
   history: History;
 
+  init: () => void;
   addObserver: (observer: ObserverInterface) => void;
   updateLanguageParam: (langCode: string) => void;
   updateSearchQueryParams: (change: SearchQueryParamChange) => void;
