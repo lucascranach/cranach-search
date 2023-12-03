@@ -8,11 +8,11 @@ import translations from './translations.json';
 import './secondary-navigation.scss';
 
 
-import StoreContext, { UIArtifactKind, UIOverviewViewType, UISidebarContentType, UISidebarStatusType } from '../../../../store/StoreContext';
+import StoreContext, { UIOverviewViewType, UISidebarContentType, UISidebarStatusType } from '../../../../store/StoreContext';
 
 
 const SecondaryNavigation = () => {
-  const { root: { ui, collection, lighttable } } = useContext(StoreContext);
+  const { root: { ui } } = useContext(StoreContext);
   const { t } = ui.useTranslation('Navigation', translations);
 
   const toggleSecondaryMenu = () => {
