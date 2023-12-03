@@ -69,8 +69,9 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     reaction(
       () => this.sidebarContent,
       () => {
+        this.rootStore.lighttable.resetPagePos();
         this.fetchForCurrentSideBarContent();
-      },
+      }
     );
   }
 
