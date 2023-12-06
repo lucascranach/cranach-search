@@ -62,9 +62,8 @@ export default class Routing implements RoutingStoreInterface {
     if (this.rootStore.routing.history.location.search.includes('loadLatestSearchConfiguration=true')) {
       const lastParams = this.loadSearchQueryParamsFromLocalStorage();
       const changes: SearchQueryParamChange = lastParams.split('&').map(pair => [ChangeAction.ADD, [pair.split('=')[0], pair.split('=')[1]]]);
-      console.log(lastParams, changes)
       this.rootStore.routing.resetSearchQueryParams();
-      this.rootStore.routing.updateSearchQueryParams(changes);
+      if(lastParams) this.rootStore.routing.updateSearchQueryParams(changes);
     }
   }
 
@@ -145,7 +144,6 @@ export default class Routing implements RoutingStoreInterface {
     this.history.replace({
       search: Array.from(updatedSearchParams).length ? `?${decodeURI(updatedSearchParams.toString())}` : '',
     });
-    console.log(this.history.location)
     this.storeQueryParamsInLocalStorage();
     this.disableNotify = false;
   }
