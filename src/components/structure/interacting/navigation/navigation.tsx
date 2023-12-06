@@ -43,7 +43,7 @@ const Navigation = () => {
   ];
 
   const triggerAction = (kind: UIArtifactKind) => {
-    ui.setArtifactKind(kind);
+    ui.jumpToArtifactKind(kind);
   }
 
   return (

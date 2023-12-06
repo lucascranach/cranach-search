@@ -69,6 +69,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     reaction(
       () => this.sidebarContent,
       () => {
+        this.rootStore.lighttable.resetPagePos();
         this.fetchForCurrentSideBarContent();
       }
     );
@@ -144,6 +145,13 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   }
 
   setArtifactKind(artifactKind: UIArtifactKind): void {
+    this.artifactKind = artifactKind;
+    this.updateRoutingForArtifactKind();
+  }
+
+  jumpToArtifactKind(artifactKind: UIArtifactKind): void {
+    if (this.artifactKind === artifactKind) return;
+
     this.setSideBarContent(UISidebarContentType.FILTER);
 
     // Clear current lighttable
@@ -232,6 +240,11 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
   }
 
   notify(notification: RoutingNotificationInterface) {
+    const isInitial = [
+      RoutingNotificationType.PATH_INIT,
+      RoutingNotificationType.SEARCH_INIT,
+    ].includes(notification.type);
+
     switch (notification.type) {
       case RoutingNotificationType.PATH_INIT:
       case RoutingNotificationType.PATH_CHANGE:
@@ -249,7 +262,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
         notification.params.forEach(([name, value]) => {
           switch (name) {
             case 'kind':
-              this.handleRoutingNotificationKind(value);
+              this.handleRoutingNotificationKind(value, isInitial);
               return;
 
             case 'mode':
@@ -334,34 +347,29 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     handler();
   }
 
-  private handleRoutingNotificationKind(value: string) {
-    switch (value) {
-      case 'works':
-        this.setArtifactKind(UIArtifactKind.WORKS);
-        break;
+  private handleRoutingNotificationKind(value: string, isInitial: boolean) {
+    const valueToKindMap: Record<string, UIArtifactKind> = {
+      works: UIArtifactKind.WORKS,
+      paintings: UIArtifactKind.PAINTINGS,
+      archivals: UIArtifactKind.ARCHIVALS,
+      literature_references: UIArtifactKind.LITERATURE_REFERENCES,
+    };
 
-      case 'paintings':
-        this.setArtifactKind(UIArtifactKind.PAINTINGS);
-        break;
+    let kind = valueToKindMap[value];
 
-      case 'archivals':
-        this.setArtifactKind(UIArtifactKind.ARCHIVALS);
-        break;
-
-      case 'literature_references':
-        this.setArtifactKind(UIArtifactKind.LITERATURE_REFERENCES);
-        break;
-
-      default:
-        this.setArtifactKind(UIArtifactKind.WORKS);
-
+    if (!kind) {
         // Needed to be backwards compatible / support old kind values
         if (value === 'PAINTINGS') {
-          this.setArtifactKind(UIArtifactKind.PAINTINGS);
+          kind = UIArtifactKind.PAINTINGS;
+        } else {
+          kind = UIArtifactKind.WORKS;
         }
+    }
 
-        // Keep the routing info updated to use the new values
-        this.updateRoutingForArtifactKind();
+    if (isInitial) {
+      this.setArtifactKind(kind);
+    } else {
+      this.jumpToArtifactKind(kind);
     }
   }
 
@@ -473,6 +481,7 @@ export interface UIStoreInterface {
   setSecondaryNavigationIsVisible(isVisible: boolean): void;
   setAdditionalSearchInputsVisible(isVisible: boolean): void;
   setArtifactKind(artifactKind: UIArtifactKind): void;
+  jumpToArtifactKind(artifactKind: UIArtifactKind): void;
   resetArtifactKind(): void;
   useTranslation(namespace: string, resourceBundle: Record<string, Record<string, string>>): UseTranslationResponse<string>;
   filterItemIsExpanded(filterItemId: string): boolean;
