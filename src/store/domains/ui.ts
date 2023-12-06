@@ -62,7 +62,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       const lastParams = this.loadSearchQueryParamsFromLocalStorage();
       const changes: SearchQueryParamChange = lastParams.split('&').map(pair => [ChangeAction.ADD, [pair.split('=')[0], pair.split('=')[1]]]);
       rootStore.routing.resetSearchQueryParams();
-      rootStore.routing.updateSearchQueryParams(changes);
+      if(lastParams) rootStore.routing.updateSearchQueryParams(changes);
     }
 
     this.loadFromLocalStorage();
