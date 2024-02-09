@@ -15,14 +15,15 @@
     &__item {
       a {
         display: block;
-        padding: $s $m;
+        margin: 0 $m;
+        padding: $s 0;
         border-bottom: solid $border-stroke-weight transparent;
         color: $darker;
       }
     }
 
     &__item a.is-active {
-      border-bottom: solid $border-stroke-weight $accent;
+      border-bottom: solid $border-stroke-weight-m $accent;
     }
 
     &:hover {

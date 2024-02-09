@@ -24,3 +24,15 @@
     font-size: $l;
   }
 }
+
+.cda-logo {
+  height: $m;
+  opacity: 0.3;
+  transition: opacity $tr-fast;
+  padding-left: $m;
+  padding-right: $m;
+  
+  &:hover{
+    opacity: 1;
+  }
+}

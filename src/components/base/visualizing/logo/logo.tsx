@@ -13,7 +13,7 @@ export default () => {
   return (
     <div className="logo" data-component="atoms/logo">
       <a href={cdaContentURL}>
-        cda_&nbsp;
+        <img class="cda-logo" src="/assets/images/cda-logo-bw.svg" alt="CDA Logo" />
       </a>
     </div>
   )

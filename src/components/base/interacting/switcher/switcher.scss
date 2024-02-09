@@ -16,11 +16,16 @@
       border-bottom: solid $border-stroke-weight transparent;
       color: $darker;
     }
+
+    transition: transform $tr-fast;
+
+    &:hover{
+      transform: scale(1.2);
+    }
   }
 
   &-item + &-item {
     padding-left: $xxs;
-    border-left: solid $border-stroke-weight-s $accent;
   }
 
 }
