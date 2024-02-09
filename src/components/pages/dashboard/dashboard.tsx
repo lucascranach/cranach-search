@@ -131,7 +131,9 @@ const Dashboard: FC = () => {
       case ArtifactKind.LITERATURE_REFERENCE:
         return '';
       case ArtifactKind.WORK:
-        return `${item.classification}, ${item.printProcess}`;
+        return item.printProcess.match(/[a-z]/) ? 
+          `${item.classification}, ${item.printProcess}`
+          : `${item.classification}`;
     }
   }
 
