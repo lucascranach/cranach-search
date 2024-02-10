@@ -63,6 +63,8 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     this.bindToResize();
     this.rootStore.routing.addObserver(this);
 
+    document.documentElement.lang = this.lang;
+
     reaction(
       () => this.lang,
       () => this.fetchForCurrentSideBarContent(),
