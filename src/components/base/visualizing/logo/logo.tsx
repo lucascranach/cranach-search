@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import StoreContext from '../../../../store/StoreContext';
 import './logo.scss';
+import cdaLogo from './cda-logo-bw.svg';
 
 export default () => {
 
@@ -12,11 +13,11 @@ export default () => {
   const cdaContentURL: string = ui.lang === 'de'
     ? String(import.meta.env.VITE_CDA_CONTENT_URL_DE)
     : String(import.meta.env.VITE_CDA_CONTENT_URL_EN);
-
+  
   return (
     <div className="logo" data-component="atoms/logo">
       <a href={cdaContentURL}>
-        <img className="cda-logo" style={logoStyle} src="./assets/images/cda-logo-bw.svg" alt="CDA Logo" />
+        <img className="cda-logo" style={logoStyle} src={cdaLogo} alt="CDA Logo" />
       </a>
     </div>
   )
