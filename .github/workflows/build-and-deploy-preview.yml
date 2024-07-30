@@ -36,9 +36,9 @@ jobs:
           VITE_AUTH_USER: ${{secrets.VITE_AUTH_USER}}
           VITE_AUTH_PASS: ${{secrets.VITE_AUTH_PASS}}
           VITE_CDA_BASE_URL: ${{vars.VITE_CDA_BASE_URL}}
-          VITE_CDA_ARTEFACT_URL: "${VITE_CDA_BASE_URL}/{{lang}}/{{id}}"
-          VITE_CDA_CONTENT_URL_DE: "${VITE_CDA_BASE_URL}"
-          VITE_CDA_CONTENT_URL_EN: "${VITE_CDA_BASE_URL}/home"
+          VITE_CDA_ARTEFACT_URL: ${{vars.VITE_CDA_ARTEFACT_URL}}
+          VITE_CDA_CONTENT_URL_DE: ${{vars.VITE_CDA_CONTENT_URL_DE}}
+          VITE_CDA_CONTENT_URL_EN: ${{vars.VITE_CDA_CONTENT_URL_EN}}
           VITE_LIST_PUBLISHED_ARTEFACTS_ONLY: false
 
       - name: Install SSH Key
