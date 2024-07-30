@@ -216,7 +216,7 @@ export default class SearchWorks implements SearchWorksStoreInterface, RoutingOb
   }
 
   supportsArtifactKind(artifactKind: LighttableArtifactKind) {
-    const supportedArtifactKinds = new Set([LighttableArtifactKind.WORKS, LighttableArtifactKind.PAINTINGS]);
+    const supportedArtifactKinds = new Set([LighttableArtifactKind.WORKS, LighttableArtifactKind.PAINTINGS, LighttableArtifactKind.PRINTS, LighttableArtifactKind.DRAWINGS]);
 
     return supportedArtifactKinds.has(artifactKind);
   }

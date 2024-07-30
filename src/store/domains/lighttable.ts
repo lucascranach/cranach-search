@@ -51,7 +51,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
     makeAutoObservable(this);
 
     this.rootStore = rootStore;
-    this.rootStore.routing.addObserver(this);
+    // this.rootStore.routing.addObserver(this);
   }
 
   /* Computed */
@@ -75,6 +75,9 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
       [LighttableArtifactKind.WORKS]: [EntityType.PAINTING, EntityType.GRAPHIC],
       [LighttableArtifactKind.PAINTINGS]: [EntityType.PAINTING],
       [LighttableArtifactKind.ARCHIVALS]: [EntityType.ARCHIVAL],
+      [LighttableArtifactKind.PRINTS]: [EntityType.GRAPHIC],
+      [LighttableArtifactKind.DRAWINGS]: [EntityType.DRAWINGS],
+      [LighttableArtifactKind.LITERATURE_REFERENCES]: [EntityType.LITERATURE_REFERENCE]
     };
 
     const { artifactKind } = this.rootStore.ui;

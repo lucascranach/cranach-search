@@ -31,6 +31,7 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     [UIArtifactKind.GRAPHICS]: UIOverviewViewType.CARD,
     [UIArtifactKind.LITERATURE_REFERENCES]: UIOverviewViewType.TABLE,
     [UIArtifactKind.PAINTINGS]: UIOverviewViewType.CARD,
+    [UIArtifactKind.DRAWINGS]: UIOverviewViewType.CARD,
   };
   secondaryNavigationIsVisible: boolean = false;
   additionalSearchInputsVisible: boolean = false;
@@ -355,6 +356,8 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
     const valueToKindMap: Record<string, UIArtifactKind> = {
       works: UIArtifactKind.WORKS,
       paintings: UIArtifactKind.PAINTINGS,
+      drawings: UIArtifactKind.DRAWINGS,
+      prints: UIArtifactKind.PRINTS,
       archivals: UIArtifactKind.ARCHIVALS,
       literature_references: UIArtifactKind.LITERATURE_REFERENCES,
     };
@@ -394,6 +397,8 @@ export default class UI implements UIStoreInterface, RoutingObservableInterface 
       [UIArtifactKind.PAINTINGS]: 'paintings',
       [UIArtifactKind.ARCHIVALS]: 'archivals',
       [UIArtifactKind.LITERATURE_REFERENCES]: 'literature_references',
+      [UIArtifactKind.DRAWINGS]: 'drawings',
+      [UIArtifactKind.PRINTS]: 'prints',
     };
 
     if (this.artifactKind in artifactKindStringMap) {
@@ -459,11 +464,12 @@ export type UIDimensionPositionsType = {
 export enum UIArtifactKind {
   PAINTINGS = 1 << 0,
   GRAPHICS = 1 << 1,
-  WORKS = PAINTINGS | GRAPHICS,
-
-
   ARCHIVALS = 1 << 2,
   LITERATURE_REFERENCES = 1 << 3,
+  DRAWINGS = 1 << 4,
+  PRINTS = GRAPHICS, // TODO: Refactor old code
+  PUBLICATIONS = LITERATURE_REFERENCES, // TODO: Refactor old code
+  WORKS = PAINTINGS | PRINTS | DRAWINGS,
 }
 
 export interface UIStoreInterface {

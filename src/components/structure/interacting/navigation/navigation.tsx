@@ -27,6 +27,14 @@ const Navigation = () => {
       kind: UIArtifactKind.PAINTINGS,
     },
     {
+      title: 'Drawings',
+      kind: UIArtifactKind.DRAWINGS,
+    },
+    {
+      title: 'Prints',
+      kind: UIArtifactKind.GRAPHICS,
+    },
+    {
       title: 'Archival Documents',
       kind: UIArtifactKind.ARCHIVALS,
     },

@@ -1,9 +1,11 @@
 {
   "de": {
     "All Objects": "Alle Werke",
-    "Paintings": "Gemälde",
+    "Paintings": "Malerei",
+    "Drawings": "Zeichnung",
+    "Prints": "Druckgrafik",
     "Prints and Drawings": "Drucke und Zeichnungen",
-    "Archival Documents": "Archivalien",
+    "Archival Documents": "Archivalie",
     "Publications": "Literatur"
   }
 }

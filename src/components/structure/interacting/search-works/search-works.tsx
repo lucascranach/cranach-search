@@ -51,8 +51,8 @@ const SearchWorks: FC = () => {
   const mappedFiltersInfos = mapFilterGroupItemsToTreeList(filterGroups);
 
   const fetchResults = () => {
-     lighttable.resetPagePos();
-     lighttable.fetch();
+    lighttable.resetPagePos();
+    lighttable.fetch();
   };
 
   const toggleFilterItemActiveStatus = (groupKey: string, filterInfoId: string) => {
@@ -63,6 +63,7 @@ const SearchWorks: FC = () => {
   const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search-works--is-active' : '';
 
   const triggerFilterRequest = () => {
+    alert();
     searchWorks.applyFreetextFields();
     fetchResults();
   };
@@ -75,8 +76,8 @@ const SearchWorks: FC = () => {
 
   return (
     <div
-      className={`search-works ${isActiveFilter}`}
-      data-component="structure/interacting/search-works"
+    className={`search-works ${isActiveFilter}`}
+    data-component="structure/interacting/search-works"
     >
       <Logo />
       <div className="search-result-info">
