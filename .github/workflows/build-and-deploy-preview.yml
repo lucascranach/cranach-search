@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Run npm build
-        run: build:internal:preview
+        run: npm run build:internal:preview
         env:
           VITE_SEARCH_API_URL: ${{vars.VITE_SEARCH_API_URL}}
           VITE_AUTH_USER: ${{secrets.VITE_AUTH_USER}}
