@@ -1,0 +1,54 @@
+name: Build and deploy to cda Server (preview)
+
+on:
+  push:
+    branches: ['preview/2026']
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: string
+        default: intern
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['19']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Run npm build
+        run: build:internal:preview
+        env:
+          VITE_SEARCH_API_URL: ${{vars.VITE_SEARCH_API_URL}}
+          VITE_AUTH_USER: ${{secrets.VITE_AUTH_USER}}
+          VITE_AUTH_PASS: ${{secrets.VITE_AUTH_PASS}}
+          VITE_CDA_BASE_URL: ${{vars.VITE_CDA_BASE_URL}}
+          VITE_CDA_ARTEFACT_URL: "${VITE_CDA_BASE_URL}/{{lang}}/{{id}}"
+          VITE_CDA_CONTENT_URL_DE: "${VITE_CDA_BASE_URL}"
+          VITE_CDA_CONTENT_URL_EN: "${VITE_CDA_BASE_URL}/home"
+          VITE_LIST_PUBLISHED_ARTEFACTS_ONLY: false
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.CRANACH_SSH_AUTODEPLOY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy with rsync
+        run: rsync -avz ./dist/ -e 'ssh -p ${{ secrets.SSH_PORT }}' ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/intern/artefacts-preview-2026-autodeploy/
