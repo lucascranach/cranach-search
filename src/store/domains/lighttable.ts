@@ -76,7 +76,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
       [LighttableArtifactKind.PAINTINGS]: [EntityType.PAINTING],
       [LighttableArtifactKind.ARCHIVALS]: [EntityType.ARCHIVAL],
       [LighttableArtifactKind.PRINTS]: [EntityType.GRAPHIC],
-      [LighttableArtifactKind.DRAWINGS]: [EntityType.DRAWINGS],
+      [LighttableArtifactKind.DRAWINGS]: [EntityType.DRAWING],
       [LighttableArtifactKind.LITERATURE_REFERENCES]: [EntityType.LITERATURE_REFERENCE]
     };
 
