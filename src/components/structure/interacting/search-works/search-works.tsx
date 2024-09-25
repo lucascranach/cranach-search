@@ -63,7 +63,6 @@ const SearchWorks: FC = () => {
   const isActiveFilter = ui.sidebarStatus === UISidebarStatusType.MAXIMIZED && ui.sidebarContent === UISidebarContentType.FILTER ? 'search-works--is-active' : '';
 
   const triggerFilterRequest = () => {
-    alert();
     searchWorks.applyFreetextFields();
     fetchResults();
   };
