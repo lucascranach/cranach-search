@@ -72,7 +72,7 @@ export default class Lighttable implements LighttableStoreInterface, RoutingObse
 
   get entityTypes(): Set<EntityType> {
     const artifactKindToEntityTypeMap: Record<LighttableArtifactKind, EntityType[]> = {
-      [LighttableArtifactKind.WORKS]: [EntityType.PAINTING, EntityType.GRAPHIC],
+      [LighttableArtifactKind.WORKS]: [EntityType.PAINTING, EntityType.GRAPHIC, EntityType.DRAWING],
       [LighttableArtifactKind.PAINTINGS]: [EntityType.PAINTING],
       [LighttableArtifactKind.ARCHIVALS]: [EntityType.ARCHIVAL],
       [LighttableArtifactKind.PRINTS]: [EntityType.GRAPHIC],
