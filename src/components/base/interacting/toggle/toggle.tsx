@@ -17,7 +17,7 @@ const toggle: FC<Props> = ({
   children = {},
 }) => (<div className={ `toggle ${className} ${isOpen ? '-open' : ''}` }>
   <header className="head">
-    <span className="entry-title">{ title }</span>
+    <span className="entry-title" onClick={ () => onToggle(!isOpen) }>{ title }</span>
     <span
       className="toggle-control"
       onClick={ () => onToggle(!isOpen) }
