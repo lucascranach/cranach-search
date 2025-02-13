@@ -8,10 +8,11 @@
   background-color: $accent;
   border-radius: $border-radius;
   color: $lightest;
-  transition: opacity $op-full;
+  transition: margin-left $tr-fast;
 
   &:hover {
     cursor: pointer;
+    margin-left: $xxs;
   }
 
   &:active {

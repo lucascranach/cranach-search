@@ -71,3 +71,9 @@ th,
 td {
   line-height: $lh-normal;
 }
+
+/* View Transitions
+----------------------------------------------------------------------------- */
+@view-transition {
+  navigation: auto;
+}
