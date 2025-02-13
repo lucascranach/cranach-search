@@ -7,3 +7,5 @@ dist-ssr
 .vscode/
 .env
 .env.local
+.env.intern
+.env.prod

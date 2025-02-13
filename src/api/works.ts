@@ -15,6 +15,7 @@ import {
 const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   return [
     'catalog',
+    'technique',
     'attribution',
     'collection_repository',
     'examination_analysis',
@@ -22,7 +23,7 @@ const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
     'form',
     'component_parts',
     'subject',
-    'technique',
+
   ].map((filterGroupKey) => ({
     key: filterGroupKey,
     text: filters[filterGroupKey].display_value,
@@ -109,6 +110,7 @@ const getQueryStringForFiltersAndTerm = (
   }
 
   if (!filters.entityTypes.has(EntityType.UNKNOWN)) {
+    console.log(filters.entityTypes)
     params['entity_type:eq'] = Array.from(filters.entityTypes).join(',');
   }
 
