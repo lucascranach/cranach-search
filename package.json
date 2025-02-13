@@ -5,7 +5,7 @@
     "dev": "vite --host",
     "dev:preview": "vite --host --mode intern",
     "build": "tsc && vite build",
-    "build:external": "tsc && vite build --base=/search/",
+    "build:external": "tsc && vite build --base=/search/  --mode prod",
     "build:internal": "tsc && vite build --base=/intern/search/ --mode intern",
     "build:external:preview": "tsc && vite build --base=/intern/search-external-preview/",
     "build:internal:preview": "tsc && vite build --base=/intern/search-internal-preview/ --mode intern",
