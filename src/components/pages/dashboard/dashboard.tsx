@@ -8,7 +8,6 @@ import ArtefactLine, { Props as ArtifactLineProps } from '../../structure/visual
 import ArtefactTable, { Props as ArtifactTableProps } from '../../structure/visualizing/artefact-table';
 import Cloak from '../../base/visualizing/cloak';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
-import Navigation from '../../structure/interacting/navigation';
 import ScrollTo from '../../base/interacting/scroll-to';
 import StoreContext, { UIOverviewViewType, EntityType, UIArtifactKind, UISidebarContentType } from '../../../store/StoreContext';
 
@@ -334,7 +333,6 @@ const Dashboard: FC = () => {
       className="dashboard"
       data-component="page/search"
     >
-      <Navigation></Navigation>
       <main
         className={`main-content ${ lighttable.loading ? 'main-content--non-scrollable' : '' }`}
         ref={mainContentEl}
