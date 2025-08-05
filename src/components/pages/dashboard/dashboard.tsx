@@ -20,7 +20,7 @@ const Dashboard: FC = () => {
 
   const { t } = ui.useTranslation('Dashboard', translations);
 
-  const mainContentEl = useRef<HTMLElement|null>(null);
+  const mainContentEl = useRef<HTMLDivElement|null>(null);
 
   const maximumTitleLengthInWords = 10;
 
