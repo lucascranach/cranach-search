@@ -329,11 +329,11 @@ const Dashboard: FC = () => {
   };
 
   return (
-    <div
+    <main
       className="dashboard"
       data-component="page/search"
     >
-      <main
+      <div
         className={`main-content ${ lighttable.loading ? 'main-content--non-scrollable' : '' }`}
         ref={mainContentEl}
       >
@@ -380,10 +380,10 @@ const Dashboard: FC = () => {
           }
         </ArtefactOverview.Overview>
         { lighttable.loading && <Cloak /> }
-      </main>
+      </div>
       <SearchResultNavigation></SearchResultNavigation>
       <ScrollTo className="scroll-up" hideIf={ !ui.leftInitialViewArea }></ScrollTo>
-    </div>
+    </main>
   );
 };
 
