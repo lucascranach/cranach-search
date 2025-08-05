@@ -197,6 +197,8 @@ export default {
 };
 
 export const toArtefact = (item: any): WorkSearchArtifact => {
+
+  console.log(item.references_reprints);
   return {
     kind: ArtifactKind.WORK,
     id: item.inventory_number,
@@ -214,6 +216,7 @@ export const toArtefact = (item: any): WorkSearchArtifact => {
     imgSrc: item.img_src,
     medium: getMedium(item),
     searchSortingNumber: item.search_sorting_number,
+    referencesReprintsCount: item.references_reprints ? item.references_reprints.length : 0,
     _highlight: item._highlight,
   }
 };
@@ -235,6 +238,7 @@ export interface WorkSearchArtifact {
   imgSrc: string;
   medium: string;
   searchSortingNumber: string,
+  referencesReprintsCount: number,
   _highlight?: Record<string, Array<string>>;
 }
 
