@@ -16,7 +16,7 @@ const toggle: FC<Props> = ({
   onToggle = () => {},
   children = {},
 }) => (<div className={ `toggle ${className} ${isOpen ? '-open' : ''}` }>
-  <header className="head">
+  <div className="head">
     <span className="entry-title" onClick={ () => onToggle(!isOpen) }>{ title }</span>
     <span
       className="toggle-control"
@@ -24,12 +24,12 @@ const toggle: FC<Props> = ({
     >
       <i className="icon">expand_more</i>
     </span>
-  </header>
-  <main className="content">
+  </div>
+  <div className="content">
     <div className="box">
       { children }
     </div>
-  </main>
+  </div>
 </div>);
 
 export default toggle;
