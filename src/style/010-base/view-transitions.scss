@@ -18,11 +18,11 @@
 
 ::view-transition-old(root) {
   animation-name: move-out;
-  animation-duration: 2s;
+  animation-duration: var(--tr-medium);
   animation-timing-function: ease-in;
   animation-direction: both;
 }
 
 ::view-transition-new(root) {
-  animation: 2s ease-in both move-in;
+  animation: var(--tr-medium) ease-in both move-in;
 }
