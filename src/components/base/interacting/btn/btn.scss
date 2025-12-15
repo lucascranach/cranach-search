@@ -1,15 +1,18 @@
 @import "../../../../style/000-abstracts/__abstracts-dir";
 
 .btn {
+  position: relative;
+  z-index: 1;
   padding: $xs $s;
   border-width: 0;
   background-color: $accent;
   border-radius: $border-radius;
   color: $lightest;
-  transition: opacity $op-full;
+  transition: margin-left $tr-fast;
 
   &:hover {
     cursor: pointer;
+    margin-left: $xxs;
   }
 
   &:active {

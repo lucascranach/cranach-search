@@ -94,6 +94,13 @@ const SecondaryNavigation = () => {
         </li>
 
         <li>
+          <a target="_blank" rel="noopener noreferrer" href={`https://lucascranach.org/${ui.lang}/map/`}  className={`btn btn--is-reduced`}>
+            <i className="icon icon--is-inline">public</i>
+            {t('Go to Map View')}
+          </a>
+        </li>
+
+        <li>
           <button
             className={`btn btn--is-reduced`}
             onClick={() => showFilter()}

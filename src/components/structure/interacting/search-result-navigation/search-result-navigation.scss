@@ -27,9 +27,11 @@
     margin-bottom: $border-stroke-weight-s;
     background-color: $lighter;
     user-select: none;
+    transition: margin $tr-fast;
 
     &:hover {
       cursor: default;
+      margin-left: $xxxs;
     }
 
     &--clickable {
