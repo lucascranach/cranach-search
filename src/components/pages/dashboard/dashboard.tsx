@@ -130,7 +130,9 @@ const Dashboard: FC = () => {
       case ArtifactKind.LITERATURE_REFERENCE:
         return '';
       case ArtifactKind.WORK:
-        return item.medium;
+        return (item.entityType === EntityType.GRAPHIC)
+          ? `${item.classification}, ${item.printProcess}`
+          : item.medium;
     }
   }
 
@@ -154,7 +156,7 @@ const Dashboard: FC = () => {
 
       case ArtifactKind.WORK:
         return item.entityType === EntityType.GRAPHIC
-        ? `${item.inventor}`
+        ? ''
         : `${item.repository}`;
     }
   }
@@ -202,7 +204,7 @@ const Dashboard: FC = () => {
           id: item.id,
           to: getToUrlForArtifact(item.entityType, item.id),
           imgSrc: getImgSrcOrFallback(item),
-          imgAlt: '',
+          imgAlt: item.title,
           date: item.date,
           title: item.title,
           medium: item.kind === ArtifactKind.WORK ? item.medium : '',
