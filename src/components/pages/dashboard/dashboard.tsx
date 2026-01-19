@@ -307,16 +307,18 @@ const Dashboard: FC = () => {
     }
   };
 
-    const listPropsMapper = (item: GlobalSearchArtifact): ArtifactLineProps => {
+  const listPropsMapper = (item: GlobalSearchArtifact): ArtifactLineProps => {
+      
     return {
       id: item.id,
       title: assembleTitleForListView(item),
       subtitle: assembleSubTitleForListView(item),
       text: assembleTextForListView(item),
       additionalText: assembleAdditionalText(item),
-
+      referencesReprintsCount: item.kind === ArtifactKind.WORK ? item.referencesReprintsCount : 0,
       to: getToUrlForArtifact(item.entityType, item.id),
       imgSrc: getImgSrcOrFallback(item),
+      t,
     };
   };
 
