@@ -8,7 +8,6 @@ import ArtefactLine, { Props as ArtifactLineProps } from '../../structure/visual
 import ArtefactTable, { Props as ArtifactTableProps } from '../../structure/visualizing/artefact-table';
 import Cloak from '../../base/visualizing/cloak';
 import SearchResultNavigation from '../../structure/interacting/search-result-navigation';
-import Navigation from '../../structure/interacting/navigation';
 import ScrollTo from '../../base/interacting/scroll-to';
 import StoreContext, { UIOverviewViewType, EntityType, UIArtifactKind, UISidebarContentType } from '../../../store/StoreContext';
 
@@ -21,7 +20,7 @@ const Dashboard: FC = () => {
 
   const { t } = ui.useTranslation('Dashboard', translations);
 
-  const mainContentEl = useRef<HTMLElement|null>(null);
+  const mainContentEl = useRef<HTMLDivElement|null>(null);
 
   const maximumTitleLengthInWords = 10;
 
@@ -131,7 +130,9 @@ const Dashboard: FC = () => {
       case ArtifactKind.LITERATURE_REFERENCE:
         return '';
       case ArtifactKind.WORK:
-        return item.medium;
+        return (item.entityType === EntityType.GRAPHIC)
+          ? `${item.classification}, ${item.printProcess}`
+          : item.medium;
     }
   }
 
@@ -155,7 +156,7 @@ const Dashboard: FC = () => {
 
       case ArtifactKind.WORK:
         return item.entityType === EntityType.GRAPHIC
-        ? `${item.inventor}`
+        ? ''
         : `${item.repository}`;
     }
   }
@@ -203,7 +204,7 @@ const Dashboard: FC = () => {
           id: item.id,
           to: getToUrlForArtifact(item.entityType, item.id),
           imgSrc: getImgSrcOrFallback(item),
-          imgAlt: '',
+          imgAlt: item.title,
           date: item.date,
           title: item.title,
           medium: item.kind === ArtifactKind.WORK ? item.medium : '',
@@ -310,7 +311,7 @@ const Dashboard: FC = () => {
   };
 
   const listPropsMapper = (item: GlobalSearchArtifact): ArtifactLineProps => {
-      console.log(item)
+
     return {
       id: item.id,
       title: assembleTitleForListView(item),
@@ -336,12 +337,11 @@ const Dashboard: FC = () => {
   };
 
   return (
-    <div
+    <main
       className="dashboard"
       data-component="page/search"
     >
-      <Navigation></Navigation>
-      <main
+      <div
         className={`main-content ${ lighttable.loading ? 'main-content--non-scrollable' : '' }`}
         ref={mainContentEl}
       >
@@ -388,10 +388,10 @@ const Dashboard: FC = () => {
           }
         </ArtefactOverview.Overview>
         { lighttable.loading && <Cloak /> }
-      </main>
+      </div>
       <SearchResultNavigation></SearchResultNavigation>
       <ScrollTo className="scroll-up" hideIf={ !ui.leftInitialViewArea }></ScrollTo>
-    </div>
+    </main>
   );
 };
 

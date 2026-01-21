@@ -27,6 +27,14 @@ const Navigation = () => {
       kind: UIArtifactKind.PAINTINGS,
     },
     {
+      title: 'Drawings',
+      kind: UIArtifactKind.DRAWINGS,
+    },
+    {
+      title: 'Prints',
+      kind: UIArtifactKind.GRAPHICS,
+    },
+    {
       title: 'Archival Documents',
       kind: UIArtifactKind.ARCHIVALS,
     },
@@ -58,9 +66,7 @@ const Navigation = () => {
         <li><i className="icon" /></li>
         {
           navStructure.map(item => (
-            <li className="menu__item"
-              key={item.title}
-            >
+            <li className="menu__item" key={item.title}>
               { /* TODO: do not depend on searchWorks */ }
               <CategoryFilter
                 className={isActive(ui.artifactKind, item.kind)}

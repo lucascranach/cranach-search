@@ -42,6 +42,7 @@ const TreeList: FC<Props> = ({
     data-component="structure/interacting/tree-list"
   >
     { items.map((item) => {
+  
       const itemIsOpen = isOpen[item.id];
       const hasChildren = !!item.children && item.children.length > 0;
 

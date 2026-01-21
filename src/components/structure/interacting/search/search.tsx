@@ -12,7 +12,7 @@ import StoreContext, {
 const Search: FC = () => {
   const { root: { ui } } = useContext(StoreContext);
 
-  const worksArtifactKinds = new Set([UIArtifactKind.WORKS, UIArtifactKind.PAINTINGS]);
+  const worksArtifactKinds = new Set([UIArtifactKind.WORKS, UIArtifactKind.PAINTINGS, UIArtifactKind.DRAWINGS, UIArtifactKind.PRINTS]);
   const archivalsArtifactKinds = new Set([UIArtifactKind.ARCHIVALS]);
   const literatureReferencesArtifactKinds = new Set([UIArtifactKind.LITERATURE_REFERENCES]);
 
