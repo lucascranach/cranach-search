@@ -197,8 +197,6 @@ export default {
 };
 
 export const toArtefact = (item: any): WorkSearchArtifact => {
-
-  console.log(item.references_reprints);
   return {
     kind: ArtifactKind.WORK,
     id: item.inventory_number,
