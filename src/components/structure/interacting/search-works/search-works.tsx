@@ -73,6 +73,7 @@ const SearchWorks: FC = () => {
     }
   };
 
+
   return (
     <div
     className={`search-works ${isActiveFilter}`}

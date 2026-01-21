@@ -6,6 +6,7 @@ import './artefact-card.scss';
 
 export type Props = {
   id?: string,
+  classification?: string,
   title?: string,
   subtitle?: string,
   text?: string,
@@ -14,12 +15,15 @@ export type Props = {
   imgAlt?: string,
   openInNewWindow?: boolean,
   isFavorite?: boolean,
+  referencesReprintsCount?: number,
   onFavoriteToggle?: () => void,
+  t?: (key: string) => string,
 }
 
 
 const ArtefactCard: FC<Props> = ({
   id = '',
+  classification = '',
   title = '',
   subtitle = '',
   text = '',
@@ -28,8 +32,12 @@ const ArtefactCard: FC<Props> = ({
   imgAlt = '',
   openInNewWindow = false,
   isFavorite = null,
+  referencesReprintsCount = 0,
   onFavoriteToggle = (() => {}),
+  t = ((key: string) => key),
 }) => {
+  const countofReprints = referencesReprintsCount > 0 ? `(${referencesReprintsCount} ${t('Reprints')})` : `(${t('No Reprints')})`;
+
   const [isArmed, setIsArmed] = useState(false);
 
   useEffect(() => {
@@ -70,7 +78,10 @@ const ArtefactCard: FC<Props> = ({
             >
               <h2 className="artefact-card__title" dangerouslySetInnerHTML={{__html: title}}></h2>
               <p className="artefact-card__subtitle">{subtitle}</p>
-              <p className="artefact-card__text">{text}</p>
+            <p className="artefact-card__text">{text}</p>
+              {(classification === 'Druckgrafik' || classification === 'Print') && (
+                <p className="artefact-card__text">{countofReprints}</p>
+              )}
             </a>
 
           </div>

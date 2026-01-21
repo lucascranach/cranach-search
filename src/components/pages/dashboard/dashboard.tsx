@@ -296,6 +296,9 @@ const Dashboard: FC = () => {
         to: getToUrlForArtifact(item.entityType, item.id),
         imgSrc: getImgSrcOrFallback(item),
         openInNewWindow: false,
+        classification: item.kind === ArtifactKind.WORK ? item.classification : '',
+        referencesReprintsCount: item.kind === ArtifactKind.WORK ? item.referencesReprintsCount : 0,
+        t,
       };
     } else {
       return {
@@ -308,13 +311,14 @@ const Dashboard: FC = () => {
   };
 
   const listPropsMapper = (item: GlobalSearchArtifact): ArtifactLineProps => {
-      
+
     return {
       id: item.id,
       title: assembleTitleForListView(item),
       subtitle: assembleSubTitleForListView(item),
       text: assembleTextForListView(item),
       additionalText: assembleAdditionalText(item),
+      classification: item.kind === ArtifactKind.WORK ? item.classification : '',
       referencesReprintsCount: item.kind === ArtifactKind.WORK ? item.referencesReprintsCount : 0,
       to: getToUrlForArtifact(item.entityType, item.id),
       imgSrc: getImgSrcOrFallback(item),
