@@ -51,6 +51,7 @@ export interface GlobalSearchResult {
   items: GlobalSearchArtifact[];
   meta: {
     hits: number;
+    reprints?: number;
   };
 }
 
