@@ -36,7 +36,11 @@ const ArtefactCard: FC<Props> = ({
   onFavoriteToggle = (() => {}),
   t = ((key: string) => key),
 }) => {
-  const countofReprints = referencesReprintsCount > 0 ? `(${referencesReprintsCount} ${t('Reprints')})` : `(${t('No Reprints')})`;
+  const countofReprints = referencesReprintsCount === 1
+    ? `1 ${t('Reprint')}`
+    : referencesReprintsCount > 1
+      ? `${referencesReprintsCount} ${t('Reprints')}`
+      : t('No Reprints');
 
   const [isArmed, setIsArmed] = useState(false);
 
