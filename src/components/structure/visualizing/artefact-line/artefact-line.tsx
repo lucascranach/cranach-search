@@ -37,7 +37,7 @@ const ArtefactLine: FC<Props> = ({
 }) => {
 
   const additionalTextString = additionalText.map((item, index) => (<p key={index} className="artefact-line__text">{item}</p>));
-  const countofReprints = referencesReprintsCount > 0 ? `(${referencesReprintsCount} ${t('Reprints')})` : `(${t('No Reprints')})`;
+  const countofReprints = referencesReprintsCount > 0 ? `(${t('Impressions')}: ${referencesReprintsCount})` : `(${t('No Impressions')})`;
 
 
   const [isArmed, setIsArmed] = useState(false);
@@ -47,7 +47,7 @@ const ArtefactLine: FC<Props> = ({
     return () => clearTimeout(timer);
   }, []);
 
-  
+
 
   return (<div
     className="artefact-line"
