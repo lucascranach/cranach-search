@@ -37,10 +37,10 @@ const ArtefactCard: FC<Props> = ({
   t = ((key: string) => key),
 }) => {
   const countofReprints = referencesReprintsCount === 1
-    ? `1 ${t('Reprint')}`
+    ? `${t('Impressions')}: 1`
     : referencesReprintsCount > 1
-      ? `${referencesReprintsCount} ${t('Reprints')}`
-      : t('No Reprints');
+      ? `${t('Impressions')}: ${referencesReprintsCount}`
+      : t('No Impressions');
 
   const [isArmed, setIsArmed] = useState(false);
 
