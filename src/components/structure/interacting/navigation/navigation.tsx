@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import Logo from '../../../base/visualizing/logo';
@@ -12,6 +12,7 @@ import StoreContext, { UIArtifactKind } from '../../../../store/StoreContext';
 
 const Navigation = () => {
   const { root: { ui } } = useContext(StoreContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { t } = ui.useTranslation('Navigation', translations);
 
@@ -56,13 +57,25 @@ const Navigation = () => {
 
   return (
     <nav
-      className="main-navigation is-hidden-vp-small"
+      className="main-navigation"
       role="navigation"
       aria-label="main navigation"
       data-component="structure/interacting/navigation"
     >
-      <Logo />
-      <ul className="menu">
+      <div className="main-navigation__header">
+        <Logo />
+        <button
+          className={`main-navigation__hamburger${isMenuOpen ? ' is-open' : ''}`}
+          aria-label={isMenuOpen ? 'Menü schließen' : 'Menü öffnen'}
+          aria-expanded={isMenuOpen}
+          aria-controls="main-menu"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        />
+      </div>
+      <ul
+        id="main-menu"
+        className={`menu${isMenuOpen ? ' is-open' : ''}`}
+      >
         <li><i className="icon" /></li>
         {
           navStructure.map(item => (
