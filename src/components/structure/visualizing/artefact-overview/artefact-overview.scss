@@ -24,7 +24,7 @@
   @container (min-width: 400px) {
     &--is-grid:not([data-active-view="list"]):not([data-active-view="table"]) {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      @include grid-auto-columns();
     }
 
     &--is-grid[data-active-view="card-small"] {

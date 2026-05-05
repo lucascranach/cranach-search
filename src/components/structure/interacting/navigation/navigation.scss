@@ -112,6 +112,48 @@
   }
 }
 
+
+@media only screen and (min-width: $vp-medium) and (max-width: #{$vp-nav - 1px}) {
+
+  .main-navigation {
+
+    .menu {
+      transform: scale(0.97);
+      transition: opacity $tr-medium, visibility $tr-medium, transform $tr-medium;
+
+      &.is-open {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: calc(100vw - #{$sidebar-width} - #{$xl});
+        height: 100vh;
+        background-color: $lightest;
+        z-index: 100;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        transform: scale(1);
+
+        .menu__item {
+          text-align: center;
+
+          a, button {
+            font-size: $xl;
+            padding: $m 0;
+            margin: 0;
+          }
+        }
+      }
+    }
+
+    &__hamburger {
+      position: relative;
+      z-index: 101;
+    }
+  }
+}
+
 @media only screen and (max-width: #{$vp-medium - 1px}) {
 
   .main-navigation {
