@@ -14,7 +14,7 @@
     transition: transform $tr-fast;
     position: absolute;
     right: $s;
-    top: $s;
+    top: $l - $xs;
 
     &::after{
       content: "more_vert";

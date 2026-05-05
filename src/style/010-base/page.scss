@@ -4,7 +4,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto 1fr;
-  grid-template-areas: 
+  grid-template-areas:
     "navigation sidebar"
     "dashboard sidebar";
 }
@@ -25,6 +25,12 @@
   flex: 1 1 auto;
 }
 
+@media screen and (max-width: #{$vp-nav - 1px}) {
+  .sidebar {
+    background-color: $lighter;
+  }
+}
+
 @media screen and (max-width: $vp-medium) {
 
   .page{
@@ -32,15 +38,15 @@
     display: flex;
     flex-direction: column-reverse;
   }
-  
+
   .main-navigation {
     order: 2;
   }
-  
+
   .dashboard {
     order: 1;
   }
-  
+
   .sidebar {
     order: 0;
   }
