@@ -14,15 +14,15 @@ import {
 
 const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   return [
-    'catalog',
     'technique',
+    'function',
     'attribution',
     'collection_repository',
-    'examination_analysis',
-    'function',
+    'subject',
     'form',
     'component_parts',
-    'subject',
+    'examination_analysis',
+    'catalog',
 
   ].map((filterGroupKey) => ({
     key: filterGroupKey,
