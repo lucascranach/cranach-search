@@ -22,12 +22,13 @@
   }
 
   @container (min-width: 400px) {
-    &--is-grid:not([data-active-view="list"]):not([data-active-view="table"]) {
+    &--is-grid:not([data-active-view="list"]):not([data-active-view="table"]):not([data-active-view="card-small"]) {
       display: grid;
       @include grid-auto-columns();
     }
 
     &--is-grid[data-active-view="card-small"] {
+      display: grid;
       @include grid-auto-columns-small();
 
       column-gap: $xxs !important;
