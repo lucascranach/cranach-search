@@ -66,12 +66,16 @@ const assembleResultData = (resultset: any): GlobalSearchResponse => {
 
 const getInventor = (item: any):string => {
   const inventor = item.involved_persons.find((person: any) => person.roleType === 'INVENTOR');
-  return inventor ? `${inventor.name}${inventor.suffix}` : '';
+  if (!inventor) return '';
+  if (inventor.isUnknown) return inventor.suffix;
+  return `${inventor.name}${inventor.suffix}`;
 }
 
 const getArtist = (item: any):string => {
   const artist = item.involved_persons.find((person: any) => person.roleType === 'ARTIST');
-  return artist ? artist.name : '';
+  if (!artist) return '';
+  if (artist.isUnknown) return artist.suffix;
+  return artist.name;
 }
 
 const getMedium = (item: any):string => {
