@@ -5,6 +5,7 @@
     "Artist": "Künstler",
     "Repository": "Besitzer",
     "Date": "Datum",
+    "Dating": "Datierung",
     "Summary": "Zusammenfassung",
 
     "Signature": "Kürzel",
@@ -16,6 +17,8 @@
 
     "Journal": "Zeitschrift",
     "Article": "Aufsatz",
-    "Monography / Miscellany": "Monographie / Sammelband"
+    "Monography / Miscellany": "Monographie / Sammelband",
+    "Impressions": "Abzüge",
+    "No Impressions": "Keine Abzüge"
   }
 }

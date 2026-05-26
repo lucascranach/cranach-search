@@ -130,7 +130,9 @@ const Dashboard: FC = () => {
       case ArtifactKind.LITERATURE_REFERENCE:
         return '';
       case ArtifactKind.WORK:
-        return item.medium;
+        return (item.entityType === EntityType.GRAPHIC)
+          ? `${item.classification}, ${item.printProcess}`
+          : item.medium;
     }
   }
 
@@ -160,9 +162,10 @@ const Dashboard: FC = () => {
   }
 
   const assembleTextForListView = (item: GlobalSearchArtifact): string => {
-    return item.kind === ArtifactKind.WORK
-      ? `${item.artist}`
-      : '';
+    if (item.kind !== ArtifactKind.WORK) return '';
+    return item.entityType === EntityType.GRAPHIC
+      ? `${item.inventor}`
+      : `${item.artist}`;
   }
 
   const assembleAdditionalText = (item: GlobalSearchArtifact): Array<string> => {
@@ -196,17 +199,21 @@ const Dashboard: FC = () => {
           { fieldName: 'artist', text: t('Artist'), options: { noWrap: true } },
           { fieldName: 'medium', text: t('Medium') },
           { fieldName: 'repository', text: t('Repository') },
-          { fieldName: 'date', text: t('Date'), options: { noWrap: true } },
+          { fieldName: 'date', text: t('Dating'), options: { noWrap: true } },
         ],
         items: items.map((item) => ({
           id: item.id,
           to: getToUrlForArtifact(item.entityType, item.id),
           imgSrc: getImgSrcOrFallback(item),
-          imgAlt: '',
+          imgAlt: item.title,
           date: item.date,
           title: item.title,
-          medium: item.kind === ArtifactKind.WORK ? item.medium : '',
-          artist: item.kind === ArtifactKind.WORK ? item.artist : '',
+          medium: item.kind === ArtifactKind.WORK
+            ? (item.entityType === EntityType.GRAPHIC ? `${item.classification}, ${item.printProcess}` : item.medium)
+            : '',
+          artist: item.kind === ArtifactKind.WORK
+            ? (item.entityType === EntityType.GRAPHIC ? item.inventor : item.artist)
+            : '',
           repository: item.kind === ArtifactKind.WORK ? item.repository : '',
           isFavorite: isFavorite(item.id),
         })),
@@ -269,7 +276,7 @@ const Dashboard: FC = () => {
 
     return {
       head: [
-        { fieldName: 'date', text: t('Date'), options: { noWrap: true } },
+        { fieldName: 'date', text: t('Dating'), options: { noWrap: true } },
         { fieldName: 'summary', text: t('Summary'), options: { forceColumnTextWrap: true } },
       ],
       items: items.map((item) => ({
@@ -294,6 +301,9 @@ const Dashboard: FC = () => {
         to: getToUrlForArtifact(item.entityType, item.id),
         imgSrc: getImgSrcOrFallback(item),
         openInNewWindow: false,
+        classification: item.kind === ArtifactKind.WORK ? item.classification : '',
+        referencesReprintsCount: item.kind === ArtifactKind.WORK ? item.referencesReprintsCount : 0,
+        t,
       };
     } else {
       return {
@@ -305,16 +315,19 @@ const Dashboard: FC = () => {
     }
   };
 
-    const listPropsMapper = (item: GlobalSearchArtifact): ArtifactLineProps => {
+  const listPropsMapper = (item: GlobalSearchArtifact): ArtifactLineProps => {
+
     return {
       id: item.id,
       title: assembleTitleForListView(item),
       subtitle: assembleSubTitleForListView(item),
       text: assembleTextForListView(item),
       additionalText: assembleAdditionalText(item),
-
+      classification: item.kind === ArtifactKind.WORK ? item.classification : '',
+      referencesReprintsCount: item.kind === ArtifactKind.WORK ? item.referencesReprintsCount : 0,
       to: getToUrlForArtifact(item.entityType, item.id),
       imgSrc: getImgSrcOrFallback(item),
+      t,
     };
   };
 

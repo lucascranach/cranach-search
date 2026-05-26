@@ -6,6 +6,8 @@ export enum EntityType {
   PAINTING = 'PAINTING',
   GRAPHIC = 'GRAPHIC',
   ARCHIVAL = 'ARCHIVAL',
+  DRAWING = 'DRAWING',
+  PRINTS = 'GRAPHIC',
   LITERATURE_REFERENCE = 'LITERATURE_REFERENCE',
   UNKNOWN = 'UNKNOWN',
 };
@@ -49,6 +51,7 @@ export interface GlobalSearchResult {
   items: GlobalSearchArtifact[];
   meta: {
     hits: number;
+    reprints?: number;
   };
 }
 

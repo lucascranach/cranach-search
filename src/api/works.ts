@@ -14,15 +14,16 @@ import {
 
 const mapFilterGroups = (filters: any): GlobalSearchFilterGroupItem[] => {
   return [
-    'catalog',
+    'technique',
+    'function',
     'attribution',
     'collection_repository',
-    'examination_analysis',
-    'function',
+    'subject',
     'form',
     'component_parts',
-    'subject',
-    'technique',
+    'examination_analysis',
+    'catalog',
+
   ].map((filterGroupKey) => ({
     key: filterGroupKey,
     text: filters[filterGroupKey].display_value,
@@ -65,12 +66,16 @@ const assembleResultData = (resultset: any): GlobalSearchResponse => {
 
 const getInventor = (item: any):string => {
   const inventor = item.involved_persons.find((person: any) => person.roleType === 'INVENTOR');
-  return inventor ? `${inventor.name}${inventor.suffix}` : '';
+  if (!inventor) return '';
+  if (inventor.isUnknown) return inventor.suffix;
+  return `${inventor.name}${inventor.suffix}`;
 }
 
 const getArtist = (item: any):string => {
   const artist = item.involved_persons.find((person: any) => person.roleType === 'ARTIST');
-  return artist ? artist.name : '';
+  if (!artist) return '';
+  if (artist.isUnknown) return artist.suffix;
+  return artist.name;
 }
 
 const getMedium = (item: any):string => {
@@ -109,6 +114,7 @@ const getQueryStringForFiltersAndTerm = (
   }
 
   if (!filters.entityTypes.has(EntityType.UNKNOWN)) {
+    console.log(filters.entityTypes)
     params['entity_type:eq'] = Array.from(filters.entityTypes).join(',');
   }
 
@@ -197,6 +203,7 @@ export default {
 };
 
 export const toArtefact = (item: any): WorkSearchArtifact => {
+
   return {
     kind: ArtifactKind.WORK,
     id: item.inventory_number,
@@ -214,6 +221,7 @@ export const toArtefact = (item: any): WorkSearchArtifact => {
     imgSrc: item.img_src,
     medium: getMedium(item),
     searchSortingNumber: item.search_sorting_number,
+    referencesReprintsCount: item.references_reprints ? item.references_reprints.length : 0,
     _highlight: item._highlight,
   }
 };
@@ -235,6 +243,7 @@ export interface WorkSearchArtifact {
   imgSrc: string;
   medium: string;
   searchSortingNumber: string,
+  referencesReprintsCount: number,
   _highlight?: Record<string, Array<string>>;
 }
 
