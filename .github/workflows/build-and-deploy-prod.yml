@@ -7,7 +7,7 @@ on:
     inputs:
       environment:
         type: string
-        default: prod
+        default: external
         required: true
 jobs:
   build:
