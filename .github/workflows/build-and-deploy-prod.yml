@@ -39,7 +39,7 @@ jobs:
           VITE_CDA_ARTEFACT_URL: ${{vars.VITE_CDA_ARTEFACT_URL}}
           VITE_CDA_CONTENT_URL_DE: ${{vars.VITE_CDA_CONTENT_URL_DE}}
           VITE_CDA_CONTENT_URL_EN: ${{vars.VITE_CDA_CONTENT_URL_EN}}
-          VITE_LIST_PUBLISHED_ARTEFACTS_ONLY: false
+          VITE_LIST_PUBLISHED_ARTEFACTS_ONLY: true
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
