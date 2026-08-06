@@ -23,6 +23,22 @@ For local development one can also create a `.env.local` not tracked by the VCS,
 
 **Important:** Only environment variables prefixed with a `VITE_` are accessible in the application and are replaced wih their value at build time.
 
+### Modes
+
+The build commands run in different modes, each loading an additional mode specific env file that
+overwrites the values of `.env`:
+
+| Command                | Mode     | Additional env file | API URL                          |
+| ---------------------- | -------- | ------------------- | -------------------------------- |
+| `npm run dev`          | –        | –                   | from `.env`                      |
+| `npm run build:external`| `prod`  | `.env.prod`         | from `.env.prod`                 |
+| `npm run build:internal`| `intern`| `.env.intern`       | `https://mivs02.gm.fh-koeln.de`  |
+
+`.env.intern` is tracked by the VCS, since it only pins the internal API URL and holds no credentials.
+`.env` and `.env.prod` are not tracked and have to be created locally.
+
+In CI the values are passed as process environment variables, which take precedence over the env files.
+
 ## Custom environment variables
 
 | Environment variable            | Description                        | Example                                        |
