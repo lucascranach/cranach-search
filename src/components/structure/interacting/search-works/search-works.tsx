@@ -84,8 +84,8 @@ const SearchWorks: FC = () => {
       <div className="search-result-info">
         {hits === 1 && <p><Size size={hits} /> {t('work found')}</p>}
         {(hits > 1 || hits === 0) && <p><Size size={hits} /> { t('works found') }</p>}
-        {reprints === 1 && <p className="search-result-info__reprints"><Size size={reprints} /> {t('reprint found')}</p>}
-        {reprints > 1 && <p className="search-result-info__reprints"><Size size={reprints} /> {t('reprints found')}</p>}
+        {reprints === 1 && <p className="search-result-info__reprints"><Size size={reprints} /> {t('version found')}</p>}
+        {reprints > 1 && <p className="search-result-info__reprints"><Size size={reprints} /> {t('versions found')}</p>}
       </div>
       <fieldset className="block keyword-search">
         <TextInput
