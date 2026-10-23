@@ -1,0 +1,78 @@
+@import "../../../style/000-abstracts/__abstracts-dir";
+
+.maintenance-notice {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 0 $m;
+  background-color: $lightest;
+  color: $darkest;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $m 0;
+  }
+
+  &__logo {
+    display: block;
+    height: $m;
+  }
+
+  &__langs {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    gap: $s;
+    list-style: none;
+  }
+
+  &__lang {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: $darkest;
+    cursor: pointer;
+    font: inherit;
+    opacity: $op-medium;
+
+    &:hover,
+    &--is-active {
+      opacity: $op-full;
+    }
+
+    &--is-active {
+      font-weight: $fw-bold;
+    }
+  }
+
+  &__content {
+    width: 100%;
+    max-width: $bfs * 40;
+    margin: $xl auto;
+    font-size: $bfs * 1.1;
+
+    p {
+      margin-bottom: $m;
+      line-height: $lh-loose;
+    }
+
+    .title {
+      /* Avoids a single word dangling on the last line */
+      text-wrap: balance;
+    }
+
+    @media screen and (min-width: $vp-medium) {
+      margin-top: $xxl * 2;
+
+      .title {
+        font-size: $l;
+      }
+    }
+  }
+
+  &__availability {
+    font-weight: $fw-semibold;
+  }
+}
