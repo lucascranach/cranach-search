@@ -1,11 +1,10 @@
 {
-  "plugin": "stylelint-order",
+  "plugins": ["stylelint-order"],
   "extends": [
-      "stylelint-config-standard",
+      "stylelint-config-standard-scss",
       "stylelint-config-idiomatic-order"
   ],
   "rules": {
-      "indentation": 2,
-      "at-rule-no-unknown": null
+      "scss/load-no-partial-leading-underscore": null
   }
 }
