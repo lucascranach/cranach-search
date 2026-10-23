@@ -56,7 +56,7 @@ For more infos see: [Vite: Env Variables and Modes](https://vitejs.dev/guide/env
 
 ## Maintenance mode
 
-If the Search API is not available (e.g. during server maintenance), the application can show a maintenance notice instead of the search.
+If the Search API is not available (e.g. during server maintenance), the application can show a maintenance notice before the search.
 
 The notice is switched on and off with the constant `MAINTENANCE_MODE` in `src/maintenance.ts`:
 
@@ -64,9 +64,10 @@ The notice is switched on and off with the constant `MAINTENANCE_MODE` in `src/m
 export const MAINTENANCE_MODE = true;
 ```
 
-- `true`: show the maintenance notice instead of the search
+- `true`: show the maintenance notice before the search
 - `false`: show the search as usual
-- While `MAINTENANCE_MODE` is `true`, only the notice is rendered and no requests are sent to the API.
+- The notice can be dismissed with the button "Weiter zur Suche" / "Continue to search", e.g. by people who can still reach the API via the VPN of TH Köln. The dismissal lasts until the browser tab is closed (`sessionStorage`).
+- No requests are sent to the API until the notice has been dismissed.
 - The notice is available in German and English. The language is taken from the URL (`/de/…` or `/en/…`) and can be switched in the notice itself.
 - The texts can be found in `src/components/pages/maintenance-notice/translations.json`; adjust them (e.g. the expected date of availability) for each maintenance.
 - The change only takes effect after a new build and deployment. A push to `master` triggers the production deployment.
