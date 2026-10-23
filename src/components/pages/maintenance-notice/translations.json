@@ -3,12 +3,16 @@
     "title": "Cranach-Suche vorübergehend nicht verfügbar",
     "reason": "Im Zusammenhang mit einer kritischen Sicherheitslücke in der Programmiersprache PHP, vor der das Bundesamt für Sicherheit in der Informationstechnik (BSI) aktuell warnt, sind unsere Server vorsorglich vom Netz getrennt. Dadurch ist auch die Cranach-Suche derzeit nicht erreichbar. Unsere IT prüft alle Systeme sorgfältig und spielt die notwendigen Updates ein.",
     "availability": "Voraussichtlich steht Ihnen die Suche ab Mittwoch, dem 28. Oktober 2026, wieder zur Verfügung.",
-    "apology": "Wir bitten um Ihr Verständnis und entschuldigen uns für die Unannehmlichkeiten."
+    "apology": "Wir bitten um Ihr Verständnis und entschuldigen uns für die Unannehmlichkeiten.",
+    "vpnHint": "Mit einer VPN-Verbindung der TH Köln ist die Suche weiterhin erreichbar.",
+    "continue": "Weiter zur Suche"
   },
   "en": {
     "title": "Cranach Search temporarily unavailable",
     "reason": "Due to a critical security vulnerability in the PHP programming language, about which the German Federal Office for Information Security (BSI) is currently issuing warnings, our servers have been taken offline as a precaution. As a result, the Cranach Search is currently not available. Our IT team is carefully checking all systems and installing the necessary updates.",
     "availability": "We expect the search to be available again from Wednesday, 28 October 2026.",
-    "apology": "We apologise for the inconvenience and thank you for your understanding."
+    "apology": "We apologise for the inconvenience and thank you for your understanding.",
+    "vpnHint": "With a VPN connection of TH Köln, the search remains available.",
+    "continue": "Continue to search"
   }
 }

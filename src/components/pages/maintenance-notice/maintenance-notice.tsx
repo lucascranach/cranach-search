@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 
+import Btn from '../../base/interacting/btn';
 import cdaLogo from '../../base/visualizing/logo/cda-logo-bw.svg';
 import translations from './translations.json';
 import './maintenance-notice.scss';
@@ -32,7 +33,11 @@ const setLangInPath = (lang: Lang) => {
   window.history.replaceState(window.history.state, '', url);
 };
 
-const MaintenanceNotice: FC = () => {
+type Props = {
+  onDismiss: () => void,
+};
+
+const MaintenanceNotice: FC<Props> = ({ onDismiss }) => {
   const [lang, setLang] = useState<Lang>(getLangFromPath);
   const t = translations[lang];
 
@@ -77,6 +82,17 @@ const MaintenanceNotice: FC = () => {
         <p>{t.reason}</p>
         <p className="maintenance-notice__availability">{t.availability}</p>
         <p>{t.apology}</p>
+
+        <div className="maintenance-notice__vpn">
+          <p>{t.vpnHint}</p>
+          <Btn
+            className="maintenance-notice__continue"
+            click={onDismiss}
+          >
+            {t.continue}
+            <i className="icon" aria-hidden="true">arrow_forward</i>
+          </Btn>
+        </div>
       </main>
     </div>
   );

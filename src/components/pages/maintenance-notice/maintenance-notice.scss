@@ -75,4 +75,21 @@
   &__availability {
     font-weight: $fw-semibold;
   }
+
+  &__vpn {
+    padding-top: $m;
+    border-top: solid $border-stroke-weight-s $light;
+    margin-top: $l;
+  }
+
+  /* Like .btn--with-icon, but with the icon on the right */
+  &__continue {
+    display: flex;
+    align-items: center;
+    padding: $xxs $xs $xxs $s;
+
+    .icon {
+      margin-left: $xxxs;
+    }
+  }
 }
