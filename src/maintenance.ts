@@ -4,7 +4,7 @@
   the API is only requested after that.
   Set to false (and rebuild) once the API is reachable again.
 */
-export const MAINTENANCE_MODE = true;
+export const MAINTENANCE_MODE = false;
 
 /* The dismissal lasts until the browser tab is closed */
 const DISMISSED_STORAGE_KEY = 'cranachSearchMaintenanceNoticeDismissed';
